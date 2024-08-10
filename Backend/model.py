@@ -41,3 +41,33 @@ class Course(BaseModel):
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+class WorkingDay(BaseModel):
+    day: str
+    satrt_hr: int
+    end_hr: int
+    total_hours: int
+
+
+class CreateConstraints(BaseModel):
+    working_days: List[WorkingDay]
+    consecutive_subjects: List[str]
+    non_consecutive_subjects: List[str]
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+class Constraints(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId. alias="_id")
+    working_days: List[WorkingDay]
+    consecutive_subjects: List[str]
+    non_consecutive_subjects: List[str]
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
