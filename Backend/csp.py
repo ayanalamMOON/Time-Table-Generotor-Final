@@ -99,5 +99,70 @@ def generate(constraints, courses) -> Dict[str,str]:
             item['lectureno']) * int(item['duration'])
         subjects.append(item["name"])
         subject_data[item['name']] = {'start_hr': int(
-            item
-        )}
+            item['start_hr']), 'end_hr': int(item['end_hr'])}
+        if item["duration"] != 1:
+            consecutive_subjects[item["name"]] = item["duration"]
+
+    if constraints['consecutive_subjects'][0] == "":
+        diff_consecutive_mode = False
+
+    if constraints['non_consecutive_subjects'][0] == "":
+        diff_non_consecutive_mode = False
+
+    time_slots, slot_time, mapping = get_time_slots(
+        constraints_dict, start_times)
+    
+    Scheduling = Problem()
+    Scheduling.addVariables(time_slots, subjects)
+
+    def everySubject(*args):
+        Timetable = args
+        for subject in subjects:
+            if Timetable.count(subject) != subject_hrs[subject]:
+                return False
+        return True
+    
+    def sameConsecutive(*args):
+        Timetable = args
+        for key, vakue in consecutive_subjects.items():
+            index = Timetable.index(key)
+            if (value == 2 index in end_time[2]) or (value == 3 and index in end_times[3]):
+                return False
+        return True
+    
+    def teacherTimings(*args):
+        Timetable = args
+        for index, value in enumerate(constraints['consecutive_subjects']):
+            index = [i for i, letter in enumerate(
+                Timetable) if letter == value]
+            for i in indexs:
+                if index == 0:
+                    if i ==0:
+                        if Timetable[i + 1] != constraints['consecutive_subjects'][1]:
+                            return False
+                    elif i == len(Timetable) - 1:
+                        if Timetable[i - 1] != constraints['consecutive_subjects'][1]:
+                            return False
+                    else:
+                        if Timetable[i + 1]  != constraints['consecutive_subjects'][1] or Timetable[i - 1] != constraints['consecutive_subjects'][1]:
+                            return False
+                
+                else:
+                    if i == 0:
+                        if Timetable[i + 1] != constraints['consecutive_subjects'][0]:
+                            return False
+                    elif i == len(Timetable) - 1:
+                        if Timetable[i - 1] != constraints['consecutive_subjects'][0]:
+                            return False
+                    else:
+                        if Timetable[i + 1] != constraints['consecutive_subjects'][0] or Timetable[i - 1] != constraints['consecutive_subjects'][0]:
+                            return False
+            return True
+        Scheduling.addConstraints(everySubject)
+
+    
+
+
+
+
+    
