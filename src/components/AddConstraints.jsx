@@ -110,5 +110,10 @@ const AddConstraints = () => {
         setEndSundayHours(newValue);
     };
 
-    const 
+    const handleSubmit = () => {
+        var working_days = [];
+        if(monday) working_days.push({
+            day: 
+        })
+    }
 }
