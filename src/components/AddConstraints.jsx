@@ -113,7 +113,92 @@ const AddConstraints = () => {
     const handleSubmit = () => {
         var working_days = [];
         if(monday) working_days.push({
-            day: 
-        })
+            day: "Monday",
+            start_hr: startMondayHours.getHours(),
+            end_hr: endMondayHours.getHours()
+            total_hours: 
+                parseInt(endMondayHours.getHours()) - 
+                parseInt(startMondayHours.getHours())
+        });
     }
+    if(tuesday){
+        working_days.push({
+            day: "Tuesday",
+            start_hr: startTuesdayHours.getHours(),
+            end_hr: endTuesdayHours.getHours(),
+            total_hours: 
+                parseInt(endTuesdayHours.getHours()) - 
+                parseInt(startTuesdayHours.getHours())
+        });
+    }
+    if(wednesday){
+        working_days.push({
+            day: "Wednesday",
+            start_hr: startWednesdayHours.getHours(),
+            end_hr: endWednesdayHours.getHours(),
+            total_hours: 
+                parseInt(endWednesdayHours.getHours()) - 
+                parseInt(startWednesdayHours.getHours())
+        });
+    }
+    if(thursday){
+        working_days.push({
+            day: "Thursday",
+            start_hr: startThursdayHours.getHours(),
+            end_hr: endThursdayHours.getHours(),
+            total_hours: 
+                parseInt(endThursdayHours.getHours()) - 
+                parseInt(startThursdayHours.getHours())
+        });
+    }
+    if(friday){
+        working_days.push({
+            day: "Friday",
+            start_hr: startFridayHours.getHours(),
+            end_hr: endFridayHours.getHours(),
+            total_hours: 
+                parseInt(endFridayHours.getHours()) - 
+                parseInt(startFridayHours.getHours())
+        });
+    }
+    if(saturday){
+        working_days.push({
+            day: "Saturday",
+            start_hr: startSaturdayHours.getHours(),
+            end_hr: endSaturdayHours.getHours(),
+            total_hours: 
+                parseInt(endSaturdayHours.getHours()) - 
+                parseInt(startSaturdayHours.getHours())
+        });
+    }
+    if(sunday){
+        working_days.push({
+            day: "Sunday",
+            start_hr: startSundayHours.getHours(),
+            end_hr: endSundayHours.getHours(),
+            total_hours: 
+                parseInt(endSundayHours.getHours()) - 
+                parseInt(startSundayHours.getHours())
+        });
+    }
+
+    var consecutive_subjects = [sub1, sub2];
+    var non_consecutive_subjects = [nsub1, nsub2];
+    var body = {
+        working_days: working_days,
+        consecutive_subjects: consecutive_subjects,
+        non_consecutive_subjects: non_consecutive_subjects
+    };
+    console.log(body);
+    axios
+        .post("http://localhost:8000/add.constraints", body)
+        .then(() => {
+            Swal.fire({
+                text: "Constraints added successfully!",
+                icon: "Success"
+            });
+            setMonday
+        })
+
+
 }
