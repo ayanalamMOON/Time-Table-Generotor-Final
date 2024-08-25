@@ -197,8 +197,45 @@ const AddConstraints = () => {
                 text: "Constraints added successfully!",
                 icon: "Success"
             });
-            setMonday
+            setMonday(false);
+            setTuesday(false);
+            setWednesday(false);
+            setThursday(false);
+            setFriday(false);
+            setSaturday(false);
+            setSunday(false);
+            setStartMondayHours(new Date());
+            setEndMondayHours(new Date());
+            setStartTuesdayHours(new Date());
+            setEndTuesdayHours(new Date());
+            setStartWednesdayHours(new Date());
+            setEndWednesdayHours(new Date());
+            setStartThursdayHours(new Date());
+            setEndThursdayHours(new Date());
+            setStartFridayHours(new Date());
+            setEndFridayHours(new Date());
+            setStartSaturdayHours(new Date());
+            setEndSaturdayHours(new Date());
+            setStartSundayHours(new Date());
+            setEndSundayHours(new Date());
+            setCheckedA(false);
+            setCheckedB(false);
+            setSub1("");
+            setSub2("");
+            setnSub1("");
+            setnSub2("");
+
         })
+        .catch((e) => console.log(e));
+    };
 
-
-}
+    useEffect(() => {
+        axios.get("http://localhost:8000/subjects").then((res) => {
+            setLoading(false);
+            var temp_subjects = [];
+            //eslint-disable-next-line
+            res.data.map => {
+                temp_subjects.push({ lable: })
+            }
+        })
+    })
