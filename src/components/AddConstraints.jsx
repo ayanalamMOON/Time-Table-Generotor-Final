@@ -230,12 +230,48 @@ const AddConstraints = () => {
     };
 
     useEffect(() => {
-        axios.get("http://localhost:8000/subjects").then((res) => {
-            setLoading(false);
-            var temp_subjects = [];
-            //eslint-disable-next-line
-            res.data.map => {
-                temp_subjects.push({ lable: })
-            }
-        })
-    })
+        axios.get("http://localhost:8000/get-courses").then((res) => {
+        setLoading(false);
+        var temp_subjects = [];
+          // eslint-disable-next-line
+        res.data.map((item) => {
+            temp_subjects.push({ label: item.name, value: item.name });
+        });
+        setSubjects(temp_subjects);
+        });
+    }, []);
+    return(
+        <>
+        {loading ?(
+            <CircularProgress/>
+        ) : (
+            <>
+            <container component="main" maxWitdh="md" sx {{mb: 4}} >
+                <Paper
+                varient="outlined"
+                sx{{my: {xs:3, md: 6}, p:{xs:2, md: 3} }}>
+                >
+                    <center>
+                        <Typography varient="h6" gutterBottom>
+                            Time Table Details
+                        </Typography>
+                    <center/>
+
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={3}>
+                            <Stack direction="row" spacing={1} justifyContent="center">
+                                {monday ? (
+                                    <Chip
+                                    lable="Monday"
+                                    color="primary"
+                                    omClick={() => setMonday(!monday)}
+                                    />
+                                ) : (
+                                    
+                                )}
+                        </Grid>
+                    </Grid>
+                </>
+        )}
+        </>
+    )
