@@ -264,11 +264,96 @@ const AddConstraints = () => {
                                     <Chip
                                     lable="Monday"
                                     color="primary"
-                                    omClick={() => setMonday(!monday)}
+                                    onClick={() => setMonday(!monday)}
                                     />
                                 ) : (
-                                    
-                                )}
+                                <Chip
+                                    lable="Monday"
+                                    color="outlined"
+                                    onClick={() => setMonday(!monday)}
+                                />
+
+                            )}
+                                {tuesday ? (
+                                    <Chip
+                                    lable="Tuesday"
+                                    color="primary"
+                                    onClick={() => setTuesday(!tuesday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Tuesday"
+                                    color="outlined"
+                                    onClick={() => setTuesday(!tuesday)}
+                                />
+                            )}
+                                {wednesday ? (
+                                    <Chip
+                                    lable="Wednesday"
+                                    color="primary"
+                                    onClick={() => setWednesday(!wednesday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Wednesday"
+                                    color="outlined"
+                                    onClick={() => setWednesday(!wednesday)}
+                                />
+                            )}
+                                {thursday ? (
+                                    <Chip
+                                    lable="Thursday"
+                                    color="primary"
+                                    onClick={() => setThursday(!thursday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Thursday"
+                                    color="outlined"
+                                    onClick={() => setThursday(!thursday)}
+                                />
+                            )}
+                                {friday ? (
+                                    <Chip
+                                    lable="Friday"
+                                    color="primary"
+                                    onClick={() => setFriday(!friday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Friday"
+                                    color="outlined"
+                                    onClick={() => setFriday(!friday)}
+                                />
+                            )}
+                                {saturday ? (
+                                    <Chip
+                                    lable="Saturday"
+                                    color="primary"
+                                    onClick={() => setSaturday(!saturday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Saturday"
+                                    color="outlined"
+                                    onClick={() => setSaturday(!saturday)}
+                                />
+                            )}
+                                {sunday ? (
+                                    <Chip
+                                    lable="Sunday"
+                                    color="primary"
+                                    onClick={() => setSunday(!sunday)}
+                                    />
+                                ) : (
+                                <Chip
+                                    lable="Sunday"
+                                    color="outlined"
+                                    onClick={() => setSunday(!sunday)}
+                                />
+                            )}
+                            </Stack>
+                            
                         </Grid>
                     </Grid>
                 </>
