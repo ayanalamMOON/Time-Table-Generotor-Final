@@ -1,14 +1,19 @@
 from typing import List
 from pydantic import BaseModel, Field
 from bson import ObjectId
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM
+import numpy as np
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 
 class PyObjectId(ObjectId):
     @classmethod
-    def __get_validators__(cls)
+    def __get_validators__(cls):
         yield cls.validate
 
-    @clssmethod
+    @classmethod
     def validate(cls, v):
         if not ObjectId.is_valid(v):
             raise ValueError("Invalid ObjectId")
@@ -19,7 +24,7 @@ class PyObjectId(ObjectId):
         field_schema.update(type="string")
 
 
-class CeateCourse(BaseModel):
+class CreateCourse(BaseModel):
     name: str
     lectureno : int 
     duration : int 
@@ -45,7 +50,7 @@ class Course(BaseModel):
 
 class WorkingDay(BaseModel):
     day: str
-    satrt_hr: int
+    start_hr: int
     end_hr: int
     total_hours: int
 
@@ -62,7 +67,7 @@ class CreateConstraints(BaseModel):
 
 
 class Constraints(BaseModel):
-    id: PyObjectId = Field(default_factory=PyObjectId. alias="_id")
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
     non_consecutive_subjects: List[str]
@@ -71,3 +76,50 @@ class Constraints(BaseModel):
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
+
+
+class TimetableAIModel:
+    def __init__(self):
+        self.model = Sequential()
+        self.model.add(LSTM(50, return_sequences=True, input_shape=(10, 1)))
+        self.model.add(LSTM(50, return_sequences=False))
+        self.model.add(Dense(25))
+        self.model.add(Dense(1))
+        self.model.compile(optimizer='adam', loss='mean_squared_error')
+
+    def train(self, X_train, y_train, epochs=10, batch_size=32):
+        self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
+
+    def predict(self, X_test):
+        return self.model.predict(X_test)
+
+
+def train_ai_model(historical_data):
+    model = TimetableAIModel()
+    X_train = np.array([data['features'] for data in historical_data])
+    y_train = np.array([data['label'] for data in historical_data])
+    model.train(X_train, y_train)
+
+    # Calculate performance metrics
+    y_pred = model.predict(X_train)
+    mse = mean_squared_error(y_train, y_pred)
+    mae = mean_absolute_error(y_train, y_pred)
+    rmse = np.sqrt(mse)
+
+    print(f"Training Performance - MSE: {mse}, MAE: {mae}, RMSE: {rmse}")
+
+    return model
+
+
+def predict_timetable(model, input_data):
+    X_test = np.array([input_data])
+    predictions = model.predict(X_test)
+
+    # Calculate performance metrics
+    mse = mean_squared_error(input_data, predictions)
+    mae = mean_absolute_error(input_data, predictions)
+    rmse = np.sqrt(mse)
+
+    print(f"Prediction Performance - MSE: {mse}, MAE: {mae}, RMSE: {rmse}")
+
+    return predictions
