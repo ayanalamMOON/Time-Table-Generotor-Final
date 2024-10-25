@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 from csp import generate
-from model import Constraint, Course, CreateConstraint, CreateCourse
+from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable
 from fastapi import FastAPI
 import motor.motor_asyncio
 import uvicorn
@@ -79,6 +79,12 @@ async def generate_timetable():
         return HTMLResponse(status_code=400)
 
     courses = [item.dict() for item in courses]
+
+    # Use AI model for timetable prediction
+    historical_data = []  # Load historical data here
+    ai_model = train_ai_model(historical_data)
+    input_data = []  # Prepare input data here
+    predicted_timetable = predict_timetable(ai_model, input_data)
 
     data = generate(constraints[-1].dict(), courses)
     return data
