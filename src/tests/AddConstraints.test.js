@@ -101,4 +101,46 @@ describe('AddConstraints Component', () => {
     fireEvent.change(input, { target: { value: '9 AM to 5 PM' } });
     expect(input.value).toBe('9 AM to 5 PM');
   });
+
+  test('handles edge cases for adding constraints', async () => {
+    mock.onPost('http://localhost:8000/add.constraints').reply(200);
+
+    render(<AddConstraints />);
+
+    fireEvent.click(screen.getByText('Monday'));
+    fireEvent.click(screen.getByText('Tuesday'));
+
+    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '00:00' } });
+    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '23:59' } });
+
+    fireEvent.click(screen.getByText('Submit'));
+
+    await screen.findByText('Constraints added successfully!');
+
+    expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Constraints added successfully!',
+      icon: 'success',
+    });
+  });
+
+  test('handles edge cases for API error', async () => {
+    mock.onPost('http://localhost:8000/add.constraints').reply(500);
+
+    render(<AddConstraints />);
+
+    fireEvent.click(screen.getByText('Monday'));
+    fireEvent.click(screen.getByText('Tuesday'));
+
+    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '00:00' } });
+    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '23:59' } });
+
+    fireEvent.click(screen.getByText('Submit'));
+
+    await screen.findByText('Error adding constraints');
+
+    expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Error adding constraints',
+      icon: 'error',
+    });
+  });
 });
