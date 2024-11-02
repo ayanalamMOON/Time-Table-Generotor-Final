@@ -184,3 +184,64 @@ async def test_generate_timetable_ai_model_issues():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get("/generate-timetable")
     assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_get_templates():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-templates")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+@pytest.mark.asyncio
+async def test_get_template():
+    template_id = "some_template_id"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get(f"/get-template/{template_id}")
+    assert response.status_code == 200 or response.status_code == 404
+
+@pytest.mark.asyncio
+async def test_add_template():
+    template_data = {
+        "name": "Test Template",
+        "working_days": [
+            {
+                "day": "Monday",
+                "start_hr": 9,
+                "end_hr": 17,
+                "total_hours": 8
+            }
+        ],
+        "consecutive_subjects": ["Math", "Science"],
+        "non_consecutive_subjects": ["History", "Art"]
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/add-template", json=template_data)
+    assert response.status_code == 200
+    assert response.json()["name"] == "Test Template"
+
+@pytest.mark.asyncio
+async def test_import_template():
+    template_data = {
+        "name": "Test Template",
+        "working_days": [
+            {
+                "day": "Monday",
+                "start_hr": 9,
+                "end_hr": 17,
+                "total_hours": 8
+            }
+        ],
+        "consecutive_subjects": ["Math", "Science"],
+        "non_consecutive_subjects": ["History", "Art"]
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/import-template", json=template_data)
+    assert response.status_code == 200
+    assert response.json()["name"] == "Test Template"
+
+@pytest.mark.asyncio
+async def test_export_template():
+    template_id = "some_template_id"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get(f"/export-template/{template_id}")
+    assert response.status_code == 200 or response.status_code == 404

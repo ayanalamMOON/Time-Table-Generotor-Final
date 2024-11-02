@@ -2,6 +2,42 @@
 
 This project is a Time Table Generator that allows users to create and manage timetables for various courses and constraints.
 
+## Setup and Run the Project
+
+### Backend
+
+1. Install the required dependencies:
+
+```bash
+pip install -r Backend/requirements.txt
+```
+
+2. Navigate to the `Backend` directory:
+
+```bash
+cd Backend
+```
+
+3. Start the backend server:
+
+```bash
+uvicorn app:app --reload
+```
+
+### Frontend
+
+1. Install the required dependencies:
+
+```bash
+npm install
+```
+
+2. Start the frontend development server:
+
+```bash
+npm start
+```
+
 ## Running the Tests
 
 To run the tests for this project, follow the instructions below:

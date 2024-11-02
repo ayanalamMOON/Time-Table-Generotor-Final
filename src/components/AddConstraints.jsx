@@ -90,7 +90,13 @@ const AddConstraints = () => {
         setnSub1("");
         setnSub2("");
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        Swal.fire({
+          text: "Error adding constraints",
+          icon: "error",
+        });
+        console.log(e);
+      });
   };
 
   useEffect(() => {

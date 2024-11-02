@@ -1,7 +1,7 @@
 from constraint import *
 from typing import Dict, List
 
-
+# Function to get time slots based on the provided slot dictionary and start times
 def get_time_slots(slot_dict, start_times) -> List[str]:
     subjects = []
     slot_time = {}
@@ -74,7 +74,7 @@ def get_time_slots(slot_dict, start_times) -> List[str]:
 
     return subjects, slot_time, mapping
 
-
+# Function to generate a timetable based on the provided constraints and courses
 def generate(constraints, courses) -> Dict[str, str]:
     constraints_dict = {}
     start_times = {}
@@ -87,6 +87,7 @@ def generate(constraints, courses) -> Dict[str, str]:
     diff_consecutive_mode = True
     diff_non_consecutive_mode = True
 
+    # Process working days constraints
     for course in constraints["working_days"]:
         constraints_dict[course["day"]] = course["total_hours"]
         start_times[course["day"]] = int(course["start_hr"])
@@ -95,6 +96,7 @@ def generate(constraints, courses) -> Dict[str, str]:
             end_times[3].append(i)
         offset += int(course["total_hours"]) - 1
 
+    # Process course data
     for item in courses:
         subject_hrs[item["name"]] = int(
             item['lectureno']) * int(item["duration"])
@@ -116,6 +118,7 @@ def generate(constraints, courses) -> Dict[str, str]:
     Scheduling = Problem()
     Scheduling.addVariables(time_slots, subjects)
 
+    # Constraint to ensure every subject is scheduled the required number of times
     def everySubject(*args):
         Timetable = args
         for subject in subjects:
@@ -123,6 +126,7 @@ def generate(constraints, courses) -> Dict[str, str]:
                 return False
         return True
 
+    # Constraint to ensure consecutive subjects are scheduled together
     def sameConsecutive(*args):
         Timetable = args
         for key, value in consecutive_subjects.items():
@@ -134,6 +138,7 @@ def generate(constraints, courses) -> Dict[str, str]:
                     return False
         return True
 
+    # Constraint to ensure subjects are scheduled within the teacher's available hours
     def teacherTimings(*args):
         Timetable = args
         for key, value in subject_data.items():
@@ -144,6 +149,7 @@ def generate(constraints, courses) -> Dict[str, str]:
                     return False
         return True
 
+    # Constraint to ensure different consecutive subjects are scheduled together
     def diffConsecutive(*args):
         Timetable = args
         for index, value in enumerate(constraints['consecutive_subjects']):
@@ -172,6 +178,7 @@ def generate(constraints, courses) -> Dict[str, str]:
                             return False
         return True
 
+    # Constraint to ensure different non-consecutive subjects are not scheduled together
     def diffNonConsecutive(*args):
         Timetable = args
         for index, value in enumerate(constraints['non_consecutive_subjects']):
