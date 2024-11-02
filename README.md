@@ -41,3 +41,21 @@ npm test
 ```
 
 The tests will run and display the results in the terminal.
+
+## Format of Historical Data for AI Model
+
+The historical data for the AI model should be in the following format:
+
+- A list of dictionaries, where each dictionary represents a data point.
+- Each dictionary should have two keys: 'features' and 'label'.
+  - 'features' should be a list of numerical values representing time series data.
+  - 'label' should be a numerical value representing the target variable.
+
+Example:
+
+```python
+historical_data = [
+    {"features": [0.1, 0.2, 0.3], "label": 1},
+    {"features": [0.4, 0.5, 0.6], "label": 0}
+]
+```

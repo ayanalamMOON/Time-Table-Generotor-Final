@@ -100,6 +100,7 @@ def train_ai_model(historical_data):
     model = TimetableAIModel()
     X_train = np.array([data['features'] for data in historical_data])
     y_train = np.array([data['label'] for data in historical_data])
+    X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))  # Reshape for LSTM input
     model.train(X_train, y_train)
 
     # Calculate performance metrics
@@ -115,6 +116,7 @@ def train_ai_model(historical_data):
 
 def predict_timetable(model, input_data):
     X_test = np.array([input_data])
+    X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))  # Reshape for LSTM input
     predictions = model.predict(X_test)
 
     # Calculate performance metrics

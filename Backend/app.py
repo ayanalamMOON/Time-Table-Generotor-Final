@@ -81,10 +81,17 @@ async def generate_timetable():
 
     courses = [item.dict() for item in courses]
 
+    # Load historical data in the specified format
+    historical_data = [
+        {"features": [0.1, 0.2, 0.3], "label": 1},
+        {"features": [0.4, 0.5, 0.6], "label": 0}
+    ]
+
     # Use AI model for timetable prediction
-    historical_data = []  # Load historical data here
     ai_model = train_ai_model(historical_data)
-    input_data = []  # Prepare input data here
+
+    # Prepare input data in the specified format
+    input_data = [0.7, 0.8, 0.9]
     predicted_timetable = predict_timetable(ai_model, input_data)
 
     data = generate(constraints[-1].dict(), courses)
