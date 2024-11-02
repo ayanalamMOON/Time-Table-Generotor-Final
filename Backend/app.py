@@ -2,7 +2,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 from csp import generate
 from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 import motor.motor_asyncio
 import uvicorn
 
@@ -88,3 +89,22 @@ async def generate_timetable():
 
     data = generate(constraints[-1].dict(), courses)
     return data
+
+
+class UpdateCourse(BaseModel):
+    name: str
+    lectureno: int
+    duration: int
+    instructor_name: str
+    start_hr: int
+    end_hr: int
+
+
+@app.put("/update-course/{course_id}", response_model=Course)
+async def update_course(course_id: str, course: UpdateCourse):
+    document = course.dict()
+    result = await courses_collection.update_one({"_id": course_id}, {"$set": document})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Course not found")
+    updated_course = await courses_collection.find_one({"_id": course_id})
+    return updated_course

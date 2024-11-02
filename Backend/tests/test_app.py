@@ -55,3 +55,18 @@ async def test_generate_timetable():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get("/generate-timetable")
     assert response.status_code == 200 or response.status_code == 400
+
+@pytest.mark.asyncio
+async def test_update_course():
+    course_data = {
+        "name": "Updated Course",
+        "lectureno": 15,
+        "duration": 3,
+        "instructor_name": "Updated Instructor",
+        "start_hr": 10,
+        "end_hr": 12
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.put("/update-course/{course_id}", json=course_data)
+    assert response.status_code == 200
+    assert response.json()["name"] == "Updated Course"

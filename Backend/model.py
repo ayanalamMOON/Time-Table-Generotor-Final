@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from bson import ObjectId
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM
+from tensorflow.keras.layers import Dense, LSTM, Dropout
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
@@ -81,13 +81,15 @@ class Constraints(BaseModel):
 class TimetableAIModel:
     def __init__(self):
         self.model = Sequential()
-        self.model.add(LSTM(50, return_sequences=True, input_shape=(10, 1)))
-        self.model.add(LSTM(50, return_sequences=False))
-        self.model.add(Dense(25))
+        self.model.add(LSTM(100, return_sequences=True, input_shape=(10, 1)))
+        self.model.add(Dropout(0.2))
+        self.model.add(LSTM(100, return_sequences=False))
+        self.model.add(Dropout(0.2))
+        self.model.add(Dense(50))
         self.model.add(Dense(1))
         self.model.compile(optimizer='adam', loss='mean_squared_error')
 
-    def train(self, X_train, y_train, epochs=10, batch_size=32):
+    def train(self, X_train, y_train, epochs=20, batch_size=64):
         self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
 
     def predict(self, X_test):
