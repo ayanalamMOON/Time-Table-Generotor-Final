@@ -234,3 +234,5 @@ def generate(constraints, courses) -> Dict[str, str]:
                 'endTime': f'2018-02-25T{str(slot_time[key]+1).zfill(2)}:00:00'
             })
         return resp_data
+    else:
+        return None
