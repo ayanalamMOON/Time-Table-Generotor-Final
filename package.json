@@ -6,7 +6,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "axios": "^0.21.1",
@@ -23,7 +24,8 @@
     "date-fns": "^2.23.0"
   },
   "devDependencies": {
-    "jest": "^27.0.6"
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2"
   },
   "jest": {
     "testEnvironment": "jsdom"

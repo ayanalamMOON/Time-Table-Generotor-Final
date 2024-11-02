@@ -6,9 +6,16 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import motor.motor_asyncio
 import uvicorn
+import os
 
-client = motor.motor_asyncio.AsyncIOMotorClient(
-    'mongodb://localhost:27017/timetable')
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
+# Get the MongoDB connection string from environment variables
+MONGODB_CONNECTION_STRING = os.getenv('MONGODB_CONNECTION_STRING', 'mongodb://localhost:27017/timetable')
+
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_CONNECTION_STRING)
 database = client.timetable
 courses_collection = database.courses
 constraints_collection = database.constraints
