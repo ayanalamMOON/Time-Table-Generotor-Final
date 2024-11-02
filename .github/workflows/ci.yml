@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: 3.8
 
@@ -26,18 +26,24 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r Backend/requirements.txt
 
+    - name: Check for Python linting errors
+      run: flake8 Backend
+
     - name: Run backend tests
       run: |
         cd Backend
         pytest
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: '14'
 
     - name: Install frontend dependencies
       run: npm install
+
+    - name: Check for JavaScript linting errors
+      run: eslint src
 
     - name: Run frontend tests
       run: npm test
