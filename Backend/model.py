@@ -4,8 +4,11 @@ from bson import ObjectId
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout
+from tensorflow.keras.optimizers import Adam, RMSprop
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
+from sklearn.ensemble import BaggingRegressor, GradientBoostingRegressor
 
 
 class PyObjectId(ObjectId):
@@ -79,7 +82,7 @@ class Constraints(BaseModel):
 
 
 class TimetableAIModel:
-    def __init__(self):
+    def __init__(self, optimizer='adam'):
         self.model = Sequential()
         self.model.add(LSTM(100, return_sequences=True, input_shape=(10, 1)))
         self.model.add(Dropout(0.2))
@@ -87,7 +90,10 @@ class TimetableAIModel:
         self.model.add(Dropout(0.2))
         self.model.add(Dense(50))
         self.model.add(Dense(1))
-        self.model.compile(optimizer='adam', loss='mean_squared_error')
+        if optimizer == 'adam':
+            self.model.compile(optimizer=Adam(), loss='mean_squared_error')
+        elif optimizer == 'rmsprop':
+            self.model.compile(optimizer=RMSprop(), loss='mean_squared_error')
 
     def train(self, X_train, y_train, epochs=20, batch_size=64):
         self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
@@ -110,6 +116,22 @@ def train_ai_model(historical_data):
     rmse = np.sqrt(mse)
 
     print(f"Training Performance - MSE: {mse}, MAE: {mae}, RMSE: {rmse}")
+
+    # Hyperparameter tuning
+    param_grid = {
+        'batch_size': [32, 64, 128],
+        'epochs': [10, 20, 30]
+    }
+    grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3)
+    grid_search.fit(X_train, y_train)
+    best_params = grid_search.best_params_
+    print(f"Best Hyperparameters: {best_params}")
+
+    # Ensemble learning
+    bagging_model = BaggingRegressor(base_estimator=model, n_estimators=10, random_state=42)
+    boosting_model = GradientBoostingRegressor(n_estimators=100, random_state=42)
+    bagging_model.fit(X_train, y_train)
+    boosting_model.fit(X_train, y_train)
 
     return model
 
