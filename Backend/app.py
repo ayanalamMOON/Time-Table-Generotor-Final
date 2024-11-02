@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 from csp import generate
-from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable
+from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable, ConstraintTemplate, ConstraintTemplateManager
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import motor.motor_asyncio
@@ -12,6 +12,7 @@ client = motor.motor_asyncio.AsyncIOMotorClient(
 database = client.timetable
 courses_collection = database.courses
 constraints_collection = database.constraints
+templates_collection = database.templates
 
 app = FastAPI()
 
@@ -115,3 +116,42 @@ async def update_course(course_id: str, course: UpdateCourse):
         raise HTTPException(status_code=404, detail="Course not found")
     updated_course = await courses_collection.find_one({"_id": course_id})
     return updated_course
+
+
+@app.post("/add-template", response_model=ConstraintTemplate)
+async def add_template(template: ConstraintTemplate):
+    document = template.dict()
+    await templates_collection.insert_one(document)
+    return document
+
+
+@app.get("/get-templates")
+async def get_templates():
+    templates = []
+    cursor = templates_collection.find({})
+    async for document in cursor:
+        templates.append(ConstraintTemplate(**document))
+    return templates
+
+
+@app.get("/get-template/{template_id}", response_model=ConstraintTemplate)
+async def get_template(template_id: str):
+    document = await templates_collection.find_one({"_id": template_id})
+    if document is None:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return ConstraintTemplate(**document)
+
+
+@app.post("/import-template", response_model=ConstraintTemplate)
+async def import_template(template: ConstraintTemplate):
+    document = template.dict()
+    await templates_collection.insert_one(document)
+    return document
+
+
+@app.get("/export-template/{template_id}", response_model=ConstraintTemplate)
+async def export_template(template_id: str):
+    document = await templates_collection.find_one({"_id": template_id})
+    if document is None:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return ConstraintTemplate(**document)

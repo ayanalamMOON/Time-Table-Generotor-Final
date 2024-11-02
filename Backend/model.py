@@ -81,6 +81,19 @@ class Constraints(BaseModel):
         json_encoders = {ObjectId: str}
 
 
+class ConstraintTemplate(BaseModel):
+    id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
+    name: str
+    working_days: List[WorkingDay]
+    consecutive_subjects: List[str]
+    non_consecutive_subjects: List[str]
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
 class TimetableAIModel:
     def __init__(self, optimizer='adam'):
         self.model = Sequential()
@@ -149,3 +162,29 @@ def predict_timetable(model, input_data):
     print(f"Prediction Performance - MSE: {mse}, MAE: {mae}, RMSE: {rmse}")
 
     return predictions
+
+
+class ConstraintTemplateManager:
+    def __init__(self):
+        self.templates = []
+
+    def save_template(self, template: ConstraintTemplate):
+        self.templates.append(template)
+
+    def get_template(self, template_id: str) -> ConstraintTemplate:
+        for template in self.templates:
+            if str(template.id) == template_id:
+                return template
+        return None
+
+    def get_all_templates(self) -> List[ConstraintTemplate]:
+        return self.templates
+
+    def import_template(self, template: ConstraintTemplate):
+        self.templates.append(template)
+
+    def export_template(self, template_id: str) -> ConstraintTemplate:
+        for template in self.templates:
+            if str(template.id) == template_id:
+                return template
+        return None

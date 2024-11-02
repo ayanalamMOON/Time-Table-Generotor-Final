@@ -1,362 +1,215 @@
-import React, { useState } from "react";
-import{
-    Typography,
-    Stack,
-    Chip,
-    Paper,
-    Grid,
-    Container,
-    Paper,
-    Grid,
-    TextField,
-    Checkbox,
-    FromGrop,
-    FormControlLabel,
-    Autocomplete,
-    CircularProgress,
-    Button,
-} form "@mui/marerial";
-import{ LocalizationProvider, TimePicker} from "@mui/lab";
+import React, { useState, useEffect } from "react";
+import {
+  Typography,
+  Stack,
+  Chip,
+  Paper,
+  Grid,
+  Container,
+  TextField,
+  Checkbox,
+  FormGroup,
+  FormControlLabel,
+  Autocomplete,
+  CircularProgress,
+  Button,
+  Slider,
+} from "@mui/material";
+import { LocalizationProvider, TimePicker } from "@mui/lab";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { AddCircleOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
 const AddConstraints = () => {
-    const [monday, setMonday] = useState(false);
-    const [tuesday, setTuesday] = useState(false);4
-    const [wednesday, setWednesday] = useState(false);
-    const [thursday, setThursday] = useState(false);
-    const [friday, setFriday] = useState(false);
-    const [saturday, setSaturday] = useState(false);
-    const [sunday, setSunday] = useState(false);
-    const [startMondayHours, setStartMondayHours] = useState(new Date())
-    const [endMondayHours, setEndMondayHours] = useState(new Date())
-    const [startTuesdayHours, setStartTuesdayHours] = useState(new Date())
-    const [endTuesdayHours, setEndTuesdayHours] = useState(new Date())
-    const [startWednesdayHours, setStartWednesdayHours] = useState(new Date())
-    const [endWednesdayHours, setEndWednesdayHours] = useState(new Date())
-    const [startThursdayHours, setStartThursdayHours] = useState(new Date())
-    const [endThursdayHours, setEndThursdayHours] = useState(new Date())
-    const [startFridayHours, setStartFridayHours] = useState(new Date())
-    const [endFridayHours, setEndFridayHours] = useState(new Date())
-    const [startSaturdayHours, setStartSaturdayHours] = useState(new Date())
-    const [endSaturdayHours, setEndSaturdayHours] = useState(new Date())
-    const [startSundayHours, setStartSundayHours] = useState(new Date())
-    const [endSundayHours, setEndSundayHours] = useState(new Date())
-    const [checkedA, setCheckedA] = useState(false);
-    //eslint-disable-next-line
-    const [checkedB, setCheckedB] = useState(false);
-    const[loading, setLoading] = useState(true);
-    const[subjects, setSubjects] = useState([]);
-    const[sub1, setSub1] = useState("");
-    const[sub2, setSub2] = useState("");
-    const[nsub1, setnSub1] = useState("");
-    const[nsub2, setnSub2] = useState("");
+  const [selectedDays, setSelectedDays] = useState([]);
+  const [timeRange, setTimeRange] = useState([9, 17]);
+  const [naturalLanguageTime, setNaturalLanguageTime] = useState("");
+  const [checkedA, setCheckedA] = useState(false);
+  const [checkedB, setCheckedB] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [subjects, setSubjects] = useState([]);
+  const [sub1, setSub1] = useState("");
+  const [sub2, setSub2] = useState("");
+  const [nsub1, setnSub1] = useState("");
+  const [nsub2, setnSub2] = useState("");
 
-    const handleMonday = (newValue) => {
-        setStartMondayHours(newValue);
-    };
-
-    const handleTuesday = (newValue) => {
-        setStartTuesdayHours(newValue);
-    };
-
-    const handleWednesday = (newValue) => {
-        setStartWednesdayHours(newValue);
-    };
-
-    const handleThursday = (newValue) => {
-        setStartThursdayHours(newValue);
-    };
-
-    const handleFriday = (newValue) => {
-        setStartFridayHours(newValue);
-    };
-
-    const handleSaturday = (newValue) => {
-        setStartSaturdayHours(newValue);
-    };
-
-    const handleSunday = (newValue) => {
-        setStartSundayHours(newValue);
-    };
-
-    const handleMondayEnd = (newValue) => {
-        setEndMondayHours(newValue);
-    };
-
-    const handleTuesdayEnd = (newValue) => {
-        setEndTuesdayHours(newValue);
-    };  
-
-    const handleWednesdayEnd = (newValue) => {
-        setEndWednesdayHours(newValue);
-    };
-
-    const handleThursdayEnd = (newValue) => {
-        setEndThursdayHours(newValue);
-    };
-
-    const handleFridayEnd = (newValue) => {
-        setEndFridayHours(newValue);
-    };
-
-    const handleSaturdayEnd = (newValue) => {
-        setEndSaturdayHours(newValue);
-    };
-
-    const handleSundayEnd = (newValue) => {
-        setEndSundayHours(newValue);
-    };
-
-    const handleSubmit = () => {
-        var working_days = [];
-        if(monday) working_days.push({
-            day: "Monday",
-            start_hr: startMondayHours.getHours(),
-            end_hr: endMondayHours.getHours()
-            total_hours: 
-                parseInt(endMondayHours.getHours()) - 
-                parseInt(startMondayHours.getHours())
-        });
+  const handleDayClick = (day) => {
+    const newSelectedDays = [...selectedDays];
+    const index = newSelectedDays.findIndex(
+      (selectedDay) => selectedDay.getTime() === day.getTime()
+    );
+    if (index > -1) {
+      newSelectedDays.splice(index, 1);
+    } else {
+      newSelectedDays.push(day);
     }
-    if(tuesday){
-        working_days.push({
-            day: "Tuesday",
-            start_hr: startTuesdayHours.getHours(),
-            end_hr: endTuesdayHours.getHours(),
-            total_hours: 
-                parseInt(endTuesdayHours.getHours()) - 
-                parseInt(startTuesdayHours.getHours())
-        });
-    }
-    if(wednesday){
-        working_days.push({
-            day: "Wednesday",
-            start_hr: startWednesdayHours.getHours(),
-            end_hr: endWednesdayHours.getHours(),
-            total_hours: 
-                parseInt(endWednesdayHours.getHours()) - 
-                parseInt(startWednesdayHours.getHours())
-        });
-    }
-    if(thursday){
-        working_days.push({
-            day: "Thursday",
-            start_hr: startThursdayHours.getHours(),
-            end_hr: endThursdayHours.getHours(),
-            total_hours: 
-                parseInt(endThursdayHours.getHours()) - 
-                parseInt(startThursdayHours.getHours())
-        });
-    }
-    if(friday){
-        working_days.push({
-            day: "Friday",
-            start_hr: startFridayHours.getHours(),
-            end_hr: endFridayHours.getHours(),
-            total_hours: 
-                parseInt(endFridayHours.getHours()) - 
-                parseInt(startFridayHours.getHours())
-        });
-    }
-    if(saturday){
-        working_days.push({
-            day: "Saturday",
-            start_hr: startSaturdayHours.getHours(),
-            end_hr: endSaturdayHours.getHours(),
-            total_hours: 
-                parseInt(endSaturdayHours.getHours()) - 
-                parseInt(startSaturdayHours.getHours())
-        });
-    }
-    if(sunday){
-        working_days.push({
-            day: "Sunday",
-            start_hr: startSundayHours.getHours(),
-            end_hr: endSundayHours.getHours(),
-            total_hours: 
-                parseInt(endSundayHours.getHours()) - 
-                parseInt(startSundayHours.getHours())
-        });
-    }
+    setSelectedDays(newSelectedDays);
+  };
 
-    var consecutive_subjects = [sub1, sub2];
-    var non_consecutive_subjects = [nsub1, nsub2];
-    var body = {
-        working_days: working_days,
-        consecutive_subjects: consecutive_subjects,
-        non_consecutive_subjects: non_consecutive_subjects
+  const handleTimeRangeChange = (event, newValue) => {
+    setTimeRange(newValue);
+  };
+
+  const handleNaturalLanguageTimeChange = (event) => {
+    setNaturalLanguageTime(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    const working_days = selectedDays.map((day) => ({
+      day: day.toLocaleDateString("en-US", { weekday: "long" }),
+      start_hr: timeRange[0],
+      end_hr: timeRange[1],
+      total_hours: timeRange[1] - timeRange[0],
+    }));
+
+    const consecutive_subjects = [sub1, sub2];
+    const non_consecutive_subjects = [nsub1, nsub2];
+    const body = {
+      working_days: working_days,
+      consecutive_subjects: consecutive_subjects,
+      non_consecutive_subjects: non_consecutive_subjects,
     };
     console.log(body);
     axios
-        .post("http://localhost:8000/add.constraints", body)
-        .then(() => {
-            Swal.fire({
-                text: "Constraints added successfully!",
-                icon: "Success"
-            });
-            setMonday(false);
-            setTuesday(false);
-            setWednesday(false);
-            setThursday(false);
-            setFriday(false);
-            setSaturday(false);
-            setSunday(false);
-            setStartMondayHours(new Date());
-            setEndMondayHours(new Date());
-            setStartTuesdayHours(new Date());
-            setEndTuesdayHours(new Date());
-            setStartWednesdayHours(new Date());
-            setEndWednesdayHours(new Date());
-            setStartThursdayHours(new Date());
-            setEndThursdayHours(new Date());
-            setStartFridayHours(new Date());
-            setEndFridayHours(new Date());
-            setStartSaturdayHours(new Date());
-            setEndSaturdayHours(new Date());
-            setStartSundayHours(new Date());
-            setEndSundayHours(new Date());
-            setCheckedA(false);
-            setCheckedB(false);
-            setSub1("");
-            setSub2("");
-            setnSub1("");
-            setnSub2("");
-
-        })
-        .catch((e) => console.log(e));
-    };
-
-    useEffect(() => {
-        axios.get("http://localhost:8000/get-courses").then((res) => {
-        setLoading(false);
-        var temp_subjects = [];
-          // eslint-disable-next-line
-        res.data.map((item) => {
-            temp_subjects.push({ label: item.name, value: item.name });
+      .post("http://localhost:8000/add.constraints", body)
+      .then(() => {
+        Swal.fire({
+          text: "Constraints added successfully!",
+          icon: "success",
         });
-        setSubjects(temp_subjects);
-        });
-    }, []);
-    return(
+        setSelectedDays([]);
+        setTimeRange([9, 17]);
+        setNaturalLanguageTime("");
+        setCheckedA(false);
+        setCheckedB(false);
+        setSub1("");
+        setSub2("");
+        setnSub1("");
+        setnSub2("");
+      })
+      .catch((e) => console.log(e));
+  };
+
+  useEffect(() => {
+    axios.get("http://localhost:8000/get-courses").then((res) => {
+      setLoading(false);
+      const temp_subjects = [];
+      res.data.forEach((item) => {
+        temp_subjects.push({ label: item.name, value: item.name });
+      });
+      setSubjects(temp_subjects);
+    });
+  }, []);
+
+  return (
+    <>
+      {loading ? (
+        <CircularProgress />
+      ) : (
         <>
-        {loading ?(
-            <CircularProgress/>
-        ) : (
-            <>
-            <container component="main" maxWitdh="md" sx {{mb: 4}} >
-                <Paper
-                varient="outlined"
-                sx{{my: {xs:3, md: 6}, p:{xs:2, md: 3} }}>
-                >
-                    <center>
-                        <Typography varient="h6" gutterBottom>
-                            Time Table Details
-                        </Typography>
-                    <center/>
-
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={3}>
-                            <Stack direction="row" spacing={1} justifyContent="center">
-                                {monday ? (
-                                    <Chip
-                                    lable="Monday"
-                                    color="primary"
-                                    onClick={() => setMonday(!monday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Monday"
-                                    color="outlined"
-                                    onClick={() => setMonday(!monday)}
-                                />
-
-                            )}
-                                {tuesday ? (
-                                    <Chip
-                                    lable="Tuesday"
-                                    color="primary"
-                                    onClick={() => setTuesday(!tuesday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Tuesday"
-                                    color="outlined"
-                                    onClick={() => setTuesday(!tuesday)}
-                                />
-                            )}
-                                {wednesday ? (
-                                    <Chip
-                                    lable="Wednesday"
-                                    color="primary"
-                                    onClick={() => setWednesday(!wednesday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Wednesday"
-                                    color="outlined"
-                                    onClick={() => setWednesday(!wednesday)}
-                                />
-                            )}
-                                {thursday ? (
-                                    <Chip
-                                    lable="Thursday"
-                                    color="primary"
-                                    onClick={() => setThursday(!thursday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Thursday"
-                                    color="outlined"
-                                    onClick={() => setThursday(!thursday)}
-                                />
-                            )}
-                                {friday ? (
-                                    <Chip
-                                    lable="Friday"
-                                    color="primary"
-                                    onClick={() => setFriday(!friday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Friday"
-                                    color="outlined"
-                                    onClick={() => setFriday(!friday)}
-                                />
-                            )}
-                                {saturday ? (
-                                    <Chip
-                                    lable="Saturday"
-                                    color="primary"
-                                    onClick={() => setSaturday(!saturday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Saturday"
-                                    color="outlined"
-                                    onClick={() => setSaturday(!saturday)}
-                                />
-                            )}
-                                {sunday ? (
-                                    <Chip
-                                    lable="Sunday"
-                                    color="primary"
-                                    onClick={() => setSunday(!sunday)}
-                                    />
-                                ) : (
-                                <Chip
-                                    lable="Sunday"
-                                    color="outlined"
-                                    onClick={() => setSunday(!sunday)}
-                                />
-                            )}
-                            </Stack>
-                            
-                        </Grid>
-                    </Grid>
-                </>
-        )}
+          <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
+            <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
+              <center>
+                <Typography variant="h6" gutterBottom>
+                  Time Table Details
+                </Typography>
+              </center>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={3}>
+                  <Calendar
+                    onClickDay={handleDayClick}
+                    tileClassName={({ date }) =>
+                      selectedDays.find((selectedDay) => selectedDay.getTime() === date.getTime())
+                        ? "selected-day"
+                        : ""
+                    }
+                  />
+                </Grid>
+                <Grid item xs={12} sm={9}>
+                  <Stack direction="row" spacing={1} justifyContent="center">
+                    <Slider
+                      value={timeRange}
+                      onChange={handleTimeRangeChange}
+                      valueLabelDisplay="auto"
+                      min={0}
+                      max={24}
+                      step={1}
+                      marks
+                    />
+                    <TextField
+                      label="Natural Language Time"
+                      value={naturalLanguageTime}
+                      onChange={handleNaturalLanguageTimeChange}
+                      fullWidth
+                    />
+                  </Stack>
+                </Grid>
+              </Grid>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    options={subjects}
+                    getOptionLabel={(option) => option.label}
+                    value={sub1}
+                    onChange={(event, newValue) => setSub1(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Consecutive Subject 1" />}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    options={subjects}
+                    getOptionLabel={(option) => option.label}
+                    value={sub2}
+                    onChange={(event, newValue) => setSub2(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Consecutive Subject 2" />}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    options={subjects}
+                    getOptionLabel={(option) => option.label}
+                    value={nsub1}
+                    onChange={(event, newValue) => setnSub1(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 1" />}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Autocomplete
+                    options={subjects}
+                    getOptionLabel={(option) => option.label}
+                    value={nsub2}
+                    onChange={(event, newValue) => setnSub2(newValue)}
+                    renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 2" />}
+                  />
+                </Grid>
+              </Grid>
+              <FormGroup>
+                <FormControlLabel
+                  control={<Checkbox checked={checkedA} onChange={(e) => setCheckedA(e.target.checked)} />}
+                  label="Checked A"
+                />
+                <FormControlLabel
+                  control={<Checkbox checked={checkedB} onChange={(e) => setCheckedB(e.target.checked)} />}
+                  label="Checked B"
+                />
+              </FormGroup>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<AddCircleOutlined />}
+                onClick={handleSubmit}
+              >
+                Submit
+              </Button>
+            </Paper>
+          </Container>
         </>
-    )
+      )}
+    </>
+  );
+};
+
+export default AddConstraints;
