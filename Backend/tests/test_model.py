@@ -266,3 +266,29 @@ def test_predict_timetable_edge_cases():
     input_data = np.random.rand(100)
     predictions = predict_timetable(model, input_data)
     assert predictions is not None
+
+def test_train_ai_model_improved_lstm():
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_train_ai_model_additional_features():
+    historical_data = [
+        {"features": np.array([1, 2, 3, 4, 5]), "label": 1},
+        {"features": np.array([6, 7, 8, 9, 10]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_recommendation_system():
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    input_data = np.array([1, 2, 3])
+    recommendations = predict_timetable(model, input_data)
+    assert recommendations is not None

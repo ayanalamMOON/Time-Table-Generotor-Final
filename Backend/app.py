@@ -7,6 +7,7 @@ from pydantic import BaseModel
 import motor.motor_asyncio
 import uvicorn.run
 import os
+import logging
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -35,13 +36,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0",
                 port=8000, reload=True, debug=True)
 
 
 @app.get("/get-courses")
-async def get_courses():
+async def get_courses() -> list[Course]:
     courses = []
     cursor = courses_collection.find({})
     async for document in cursor:
@@ -50,7 +55,7 @@ async def get_courses():
 
 
 @app.get("/get-constraints")
-async def get_constraints():
+async def get_constraints() -> list[Constraint]:
     constraints = []
     cursor = constraints_collection.find({})
     async for document in cursor:
@@ -59,21 +64,21 @@ async def get_constraints():
 
 
 @app.post("/add-course", response_model=Course)
-async def post_course(course: CreateCourse):
+async def post_course(course: CreateCourse) -> Course:
     document = course.dict()
     await courses_collection.insert_one(document)
     return document
 
 
 @app.post("/add-constraints", response_model=Constraint)
-async def post_constraints(constraint: CreateConstraint):
+async def post_constraints(constraint: CreateConstraint) -> Constraint:
     document = constraint.dict()
     await constraints_collection.insert_one(document)
     return document
 
 
 @app.get("/generate-timetable")
-async def generate_timetable():
+async def generate_timetable() -> dict:
     constraints = []
     cursor = constraints_collection.find({})
     async for document in cursor:
@@ -85,6 +90,7 @@ async def generate_timetable():
         courses.append(Course(**document))
 
     if constraints == [] or courses == []:
+        logger.error("Constraints or courses are missing")
         return HTMLResponse(status_code=400)
 
     courses = [item.dict() for item in courses]
@@ -116,24 +122,25 @@ class UpdateCourse(BaseModel):
 
 
 @app.put("/update-course/{course_id}", response_model=Course)
-async def update_course(course_id: str, course: UpdateCourse):
+async def update_course(course_id: str, course: UpdateCourse) -> Course:
     document = course.dict()
     result = await courses_collection.update_one({"_id": course_id}, {"$set": document})
     if result.matched_count == 0:
+        logger.error(f"Course with id {course_id} not found")
         raise HTTPException(status_code=404, detail="Course not found")
     updated_course = await courses_collection.find_one({"_id": course_id})
     return updated_course
 
 
 @app.post("/add-template", response_model=ConstraintTemplate)
-async def add_template(template: ConstraintTemplate):
+async def add_template(template: ConstraintTemplate) -> ConstraintTemplate:
     document = template.dict()
     await templates_collection.insert_one(document)
     return document
 
 
 @app.get("/get-templates")
-async def get_templates():
+async def get_templates() -> list[ConstraintTemplate]:
     templates = []
     cursor = templates_collection.find({})
     async for document in cursor:
@@ -142,23 +149,25 @@ async def get_templates():
 
 
 @app.get("/get-template/{template_id}", response_model=ConstraintTemplate)
-async def get_template(template_id: str):
+async def get_template(template_id: str) -> ConstraintTemplate:
     document = await templates_collection.find_one({"_id": template_id})
     if document is None:
+        logger.error(f"Template with id {template_id} not found")
         raise HTTPException(status_code=404, detail="Template not found")
     return ConstraintTemplate(**document)
 
 
 @app.post("/import-template", response_model=ConstraintTemplate)
-async def import_template(template: ConstraintTemplate):
+async def import_template(template: ConstraintTemplate) -> ConstraintTemplate:
     document = template.dict()
     await templates_collection.insert_one(document)
     return document
 
 
 @app.get("/export-template/{template_id}", response_model=ConstraintTemplate)
-async def export_template(template_id: str):
+async def export_template(template_id: str) -> ConstraintTemplate:
     document = await templates_collection.find_one({"_id": template_id})
     if document is None:
+        logger.error(f"Template with id {template_id} not found")
         raise HTTPException(status_code=404, detail="Template not found")
     return ConstraintTemplate(**document)
