@@ -534,3 +534,9 @@ async def test_generate_timetable_recommendation_system():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.get("/generate-timetable")
     assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_project_running():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/")
+    assert response.status_code == 200
