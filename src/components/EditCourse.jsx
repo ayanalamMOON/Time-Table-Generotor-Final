@@ -8,6 +8,7 @@ import {
   TextField,
   Button,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import { EditOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -37,6 +38,14 @@ const EditCourse = () => {
   };
 
   const handleSubmit = () => {
+    if (courseName.trim() === "" || courseCode.trim() === "") {
+      Swal.fire({
+        text: "Please fill in all fields.",
+        icon: "warning",
+      });
+      return;
+    }
+
     const body = {
       name: courseName,
       code: courseCode,
@@ -78,20 +87,24 @@ const EditCourse = () => {
               </center>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <TextField
-                    label="Course Name"
-                    value={courseName}
-                    onChange={(e) => setCourseName(e.target.value)}
-                    fullWidth
-                  />
+                  <Tooltip title="Enter the name of the course">
+                    <TextField
+                      label="Course Name"
+                      value={courseName}
+                      onChange={(e) => setCourseName(e.target.value)}
+                      fullWidth
+                    />
+                  </Tooltip>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    label="Course Code"
-                    value={courseCode}
-                    onChange={(e) => setCourseCode(e.target.value)}
-                    fullWidth
-                  />
+                  <Tooltip title="Enter the code of the course">
+                    <TextField
+                      label="Course Code"
+                      value={courseCode}
+                      onChange={(e) => setCourseCode(e.target.value)}
+                      fullWidth
+                    />
+                  </Tooltip>
                 </Grid>
               </Grid>
               <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>

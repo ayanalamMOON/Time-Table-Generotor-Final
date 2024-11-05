@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { TextField, Pagination } from '@mui/material';
 
 const ConstraintList = () => {
   const [constraints, setConstraints] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [constraintsPerPage] = useState(10);
 
   useEffect(() => {
     fetchConstraints();
@@ -30,11 +34,35 @@ const ConstraintList = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredConstraints = constraints.filter((constraint) =>
+    constraint.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLastConstraint = currentPage * constraintsPerPage;
+  const indexOfFirstConstraint = indexOfLastConstraint - constraintsPerPage;
+  const currentConstraints = filteredConstraints.slice(indexOfFirstConstraint, indexOfLastConstraint);
+
+  const paginate = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <div>
       <h2>Constraint List</h2>
+      <TextField
+        label="Search Constraints"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearch}
+        fullWidth
+        margin="normal"
+      />
       <ul>
-        {constraints.map((constraint) => (
+        {currentConstraints.map((constraint) => (
           <li key={constraint.id}>
             {constraint.name}
             <button onClick={() => handleEdit(constraint.id)}>Edit</button>
@@ -42,6 +70,12 @@ const ConstraintList = () => {
           </li>
         ))}
       </ul>
+      <Pagination
+        count={Math.ceil(filteredConstraints.length / constraintsPerPage)}
+        page={currentPage}
+        onChange={paginate}
+        color="primary"
+      />
     </div>
   );
 };

@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { TextField, Button, Pagination } from '@mui/material';
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [coursesPerPage] = useState(10);
 
   useEffect(() => {
     fetchCourses();
@@ -30,11 +34,35 @@ const CourseList = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const filteredCourses = courses.filter((course) =>
+    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const indexOfLastCourse = currentPage * coursesPerPage;
+  const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
+  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+
+  const paginate = (event, value) => {
+    setCurrentPage(value);
+  };
+
   return (
     <div>
       <h2>Course List</h2>
+      <TextField
+        label="Search Courses"
+        variant="outlined"
+        value={searchTerm}
+        onChange={handleSearch}
+        fullWidth
+        margin="normal"
+      />
       <ul>
-        {courses.map((course) => (
+        {currentCourses.map((course) => (
           <li key={course.id}>
             {course.name}
             <button onClick={() => handleEdit(course.id)}>Edit</button>
@@ -42,6 +70,12 @@ const CourseList = () => {
           </li>
         ))}
       </ul>
+      <Pagination
+        count={Math.ceil(filteredCourses.length / coursesPerPage)}
+        page={currentPage}
+        onChange={paginate}
+        color="primary"
+      />
     </div>
   );
 };
