@@ -27,7 +27,7 @@ const EditCourse = () => {
 
   const fetchCourseDetails = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/get-course/${courseId}`);
+      const response = await axios.get(`/api/get-course/${courseId}`);
       setCourseName(response.data.name);
       setCourseCode(response.data.code);
       setLoading(false);
@@ -53,7 +53,7 @@ const EditCourse = () => {
     console.log(body);
     setLoading(true);
     axios
-      .put(`http://localhost:8000/update-course/${courseId}`, body)
+      .put(`/api/update-course/${courseId}`, body)
       .then(() => {
         Swal.fire({
           text: "Course updated successfully!",

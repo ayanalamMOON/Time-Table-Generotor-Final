@@ -92,7 +92,7 @@ const AddConstraints = () => {
     console.log(body);
     setLoading(true);
     axios
-      .post("http://localhost:8000/add.constraints", body)
+      .post("/api/add-constraints", body)
       .then(() => {
         Swal.fire({
           text: "Constraints added successfully!",

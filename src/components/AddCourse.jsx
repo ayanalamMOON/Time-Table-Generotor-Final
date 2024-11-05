@@ -35,7 +35,7 @@ const AddCourse = () => {
     console.log(body);
     setLoading(true);
     axios
-      .post("http://localhost:8000/add-course", body)
+      .post("/api/add-course", body)
       .then(() => {
         Swal.fire({
           text: "Course added successfully!",

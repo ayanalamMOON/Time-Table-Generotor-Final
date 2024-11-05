@@ -13,7 +13,7 @@ const EditTemplate = () => {
   useEffect(() => {
     const fetchTemplate = async () => {
       try {
-        const response = await axios.get(`/api/templates/${id}`);
+        const response = await axios.get(`/api/get-template/${id}`);
         setTemplateName(response.data.name);
         setTemplateDescription(response.data.description);
       } catch (error) {
@@ -39,7 +39,7 @@ const EditTemplate = () => {
 
     setLoading(true);
     try {
-      const response = await axios.put(`/api/templates/${id}`, {
+      const response = await axios.put(`/api/update-template/${id}`, {
         name: templateName,
         description: templateDescription,
       });

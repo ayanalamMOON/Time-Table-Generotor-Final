@@ -21,7 +21,7 @@ const AddTemplate = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('/api/templates', {
+      const response = await axios.post('/api/add-template', {
         name: templateName,
         description: templateDescription,
       });
