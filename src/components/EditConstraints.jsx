@@ -15,7 +15,7 @@ const EditConstraints = ({ match, history }) => {
   useEffect(() => {
     const fetchConstraint = async () => {
       try {
-        const response = await axios.get(`/api/constraints/${match.params.id}`);
+        const response = await axios.get(`/api/get-constraint/${match.params.id}`);
         setConstraint(response.data);
       } catch (error) {
         console.error('Error fetching constraint:', error);
@@ -48,7 +48,7 @@ const EditConstraints = ({ match, history }) => {
 
     setLoading(true);
     try {
-      await axios.put(`/api/constraints/${match.params.id}`, constraint);
+      await axios.put(`/api/update-constraint/${match.params.id}`, constraint);
       history.push('/constraints');
     } catch (error) {
       console.error('Error updating constraint:', error);

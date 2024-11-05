@@ -14,7 +14,7 @@ const ConstraintList = () => {
 
   const fetchConstraints = async () => {
     try {
-      const response = await axios.get('/api/constraints');
+      const response = await axios.get('/api/get-constraints');
       setConstraints(response.data);
     } catch (error) {
       console.error('Error fetching constraints:', error);

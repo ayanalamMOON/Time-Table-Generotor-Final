@@ -84,6 +84,12 @@ cd Backend
 pytest
 ```
 
+4. To check if the project is running, run the following test:
+
+```bash
+pytest Backend/tests/test_app.py::test_project_running
+```
+
 ### Frontend Tests
 
 1. Install the required dependencies:
