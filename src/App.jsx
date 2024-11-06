@@ -11,6 +11,9 @@ import EditTemplate from './components/EditTemplate';
 import RecommendationSystem from './components/RecommendationSystem';
 import TemplateList from './components/TemplateList';
 import Timetable from './components/Timetable';
+import UserRegistration from './components/UserRegistration';
+import UserLogin from './components/UserLogin';
+import RoleBasedAccessControl from './components/RoleBasedAccessControl';
 
 const App = () => {
   return (
@@ -27,6 +30,9 @@ const App = () => {
         <Route path="/recommendations" component={RecommendationSystem} />
         <Route path="/template-list" component={TemplateList} />
         <Route path="/timetable" component={Timetable} />
+        <Route path="/register" component={UserRegistration} />
+        <Route path="/login" component={UserLogin} />
+        <Route path="/role-based-access-control" component={RoleBasedAccessControl} />
       </Switch>
     </Router>
   );

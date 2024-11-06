@@ -67,6 +67,9 @@ class CreateConstraints(BaseModel):
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
     non_consecutive_subjects: List[str]
+    room_availability: Dict[str, List[int]] = None
+    teacher_preferences: Dict[str, List[int]] = None
+    student_preferences: Dict[str, List[int]] = None
 
     class Config:
         allow_population_by_field_name = True
@@ -79,6 +82,9 @@ class Constraints(BaseModel):
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
     non_consecutive_subjects: List[str]
+    room_availability: Dict[str, List[int]] = None
+    teacher_preferences: Dict[str, List[int]] = None
+    student_preferences: Dict[str, List[int]] = None
 
     class Config:
         allow_population_by_field_name = True
@@ -92,6 +98,9 @@ class ConstraintTemplate(BaseModel):
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
     non_consecutive_subjects: List[str]
+    room_availability: Dict[str, List[int]] = None
+    teacher_preferences: Dict[str, List[int]] = None
+    student_preferences: Dict[str, List[int]] = None
 
     class Config:
         allow_population_by_field_name = True
