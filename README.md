@@ -2,6 +2,10 @@
 
 This project is a Time Table Generator that allows users to create and manage timetables for various courses and constraints.
 
+## Overview
+
+The Time Table Generator project is designed to help users create and manage timetables for various courses and constraints. It consists of a backend server built with FastAPI and a frontend application built with React. The project also includes an AI model for timetable prediction and a recommendation system for course suggestions.
+
 ## Setup and Run the Project
 
 ### Backend
@@ -263,3 +267,12 @@ Export a specific constraint template by its ID.
   "sunday": []
 }
 ```
+
+## Documentation
+
+For more detailed documentation, please refer to the following files:
+
+- [Backend Documentation](docs/Backend.md)
+- [Frontend Documentation](docs/Frontend.md)
+- [API Documentation](docs/API.md)
+- [Setup Documentation](docs/Setup.md)
