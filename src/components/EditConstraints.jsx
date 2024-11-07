@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import axios from 'axios';
 import { CircularProgress, TextField, Button, Tooltip, Paper, Typography, Container, Grid, Stack } from '@mui/material';
 import Swal from 'sweetalert2';

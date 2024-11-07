@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import axios from 'axios';
 import { CircularProgress, Typography, Container, Paper, List, ListItem, ListItemText, Snackbar, Alert } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';

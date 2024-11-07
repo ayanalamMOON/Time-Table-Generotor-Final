@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
 import { TextField, Pagination, Button, Snackbar, Alert } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -86,26 +86,28 @@ const TemplateList = () => {
       {calendarView ? (
         <Calendar />
       ) : (
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="templates">
-            {(provided) => (
-              <ul {...provided.droppableProps} ref={provided.innerRef}>
-                {currentTemplates.map((template, index) => (
-                  <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
-                    {(provided) => (
-                      <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                        {template.name}
-                        <button onClick={() => handleEdit(template.id)}>Edit</button>
-                        <button onClick={() => handleDelete(template.id)}>Delete</button>
-                      </li>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </ul>
-            )}
-          </Droppable>
-        </DragDropContext>
+        <Suspense fallback={<div>Loading...</div>}>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="templates">
+              {(provided) => (
+                <ul {...provided.droppableProps} ref={provided.innerRef}>
+                  {currentTemplates.map((template, index) => (
+                    <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
+                      {(provided) => (
+                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                          {template.name}
+                          <button onClick={() => handleEdit(template.id)}>Edit</button>
+                          <button onClick={() => handleDelete(template.id)}>Delete</button>
+                        </li>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </ul>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Suspense>
       )}
       <Pagination
         count={Math.ceil(filteredTemplates.length / templatesPerPage)}
@@ -122,6 +124,19 @@ const TemplateList = () => {
           {notification.message}
         </Alert>
       </Snackbar>
+      <style jsx>{`
+        @media (max-width: 600px) {
+          h2 {
+            font-size: 1.5rem;
+          }
+          ul {
+            padding: 0;
+          }
+          li {
+            font-size: 0.9rem;
+          }
+        }
+      `}</style>
     </div>
   );
 };
