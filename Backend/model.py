@@ -33,6 +33,9 @@ class PyObjectId(ObjectId):
 
 
 class CreateCourse(BaseModel):
+    """
+    Model for creating a course.
+    """
     name: str
     lectureno: int
     duration: int
@@ -42,6 +45,9 @@ class CreateCourse(BaseModel):
 
 
 class Course(BaseModel):
+    """
+    Model for a course.
+    """
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     lectureno: int
@@ -57,6 +63,9 @@ class Course(BaseModel):
 
 
 class WorkingDay(BaseModel):
+    """
+    Model for a working day.
+    """
     day: str
     start_hr: int
     end_hr: int
@@ -64,6 +73,9 @@ class WorkingDay(BaseModel):
 
 
 class CreateConstraints(BaseModel):
+    """
+    Model for creating constraints.
+    """
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
     non_consecutive_subjects: List[str]
@@ -78,6 +90,9 @@ class CreateConstraints(BaseModel):
 
 
 class Constraints(BaseModel):
+    """
+    Model for constraints.
+    """
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     working_days: List[WorkingDay]
     consecutive_subjects: List[str]
@@ -93,6 +108,9 @@ class Constraints(BaseModel):
 
 
 class ConstraintTemplate(BaseModel):
+    """
+    Model for a constraint template.
+    """
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
     name: str
     working_days: List[WorkingDay]
@@ -109,6 +127,9 @@ class ConstraintTemplate(BaseModel):
 
 
 class TimetableAIModel:
+    """
+    AI model for generating timetables.
+    """
     def __init__(self, optimizer: str = 'adam'):
         self.model = Sequential()
         self.model.add(Bidirectional(LSTM(100, return_sequences=True, input_shape=(10, 1))))
@@ -123,14 +144,23 @@ class TimetableAIModel:
             self.model.compile(optimizer=RMSprop(), loss='mean_squared_error')
 
     def train(self, X_train: np.ndarray, y_train: np.ndarray, epochs: int = 20, batch_size: int = 64) -> None:
+        """
+        Train the AI model.
+        """
         early_stopping = EarlyStopping(monitor='loss', patience=5)
         self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, callbacks=[early_stopping])
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
+        """
+        Predict using the AI model.
+        """
         return self.model.predict(X_test)
 
 
 def train_ai_model(historical_data: List[Dict[str, Any]]) -> TimetableAIModel:
+    """
+    Train the AI model using historical data.
+    """
     model = TimetableAIModel()
     X_train = np.array([data['features'] for data in historical_data])
     y_train = np.array([data['label'] for data in historical_data])
@@ -167,6 +197,9 @@ def train_ai_model(historical_data: List[Dict[str, Any]]) -> TimetableAIModel:
 
 
 def predict_timetable(model: TimetableAIModel, input_data: List[float]) -> np.ndarray:
+    """
+    Predict the timetable using the AI model.
+    """
     X_test = np.array([input_data])
     X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))  # Reshape for LSTM input
     predictions = model.predict(X_test)
@@ -182,25 +215,43 @@ def predict_timetable(model: TimetableAIModel, input_data: List[float]) -> np.nd
 
 
 class ConstraintTemplateManager:
+    """
+    Manager for constraint templates.
+    """
     def __init__(self) -> None:
         self.templates = []
 
     def save_template(self, template: ConstraintTemplate) -> None:
+        """
+        Save a constraint template.
+        """
         self.templates.append(template)
 
     def get_template(self, template_id: str) -> ConstraintTemplate:
+        """
+        Get a constraint template by ID.
+        """
         for template in self.templates:
             if str(template.id) == template_id:
                 return template
         return None
 
     def get_all_templates(self) -> List[ConstraintTemplate]:
+        """
+        Get all constraint templates.
+        """
         return self.templates
 
     def import_template(self, template: ConstraintTemplate) -> None:
+        """
+        Import a constraint template.
+        """
         self.templates.append(template)
 
     def export_template(self, template_id: str) -> ConstraintTemplate:
+        """
+        Export a constraint template by ID.
+        """
         for template in self.templates:
             if str(template.id) == template_id:
                 return template

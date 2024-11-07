@@ -3,6 +3,9 @@ from model import CreateCourse, Course, CreateConstraints, Constraints, Timetabl
 import numpy as np
 
 def test_create_course():
+    """
+    Test the creation of a course using the CreateCourse model.
+    """
     course_data = {
         "name": "Test Course",
         "lectureno": 10,
@@ -20,6 +23,9 @@ def test_create_course():
     assert course.end_hr == 11
 
 def test_course():
+    """
+    Test the creation of a course using the Course model.
+    """
     course_data = {
         "name": "Test Course",
         "lectureno": 10,
@@ -37,6 +43,9 @@ def test_course():
     assert course.end_hr == 11
 
 def test_create_constraints():
+    """
+    Test the creation of constraints using the CreateConstraints model.
+    """
     constraints_data = {
         "working_days": [
             {
@@ -58,6 +67,9 @@ def test_create_constraints():
     assert constraints.non_consecutive_subjects == ["History", "Art"]
 
 def test_constraints():
+    """
+    Test the creation of constraints using the Constraints model.
+    """
     constraints_data = {
         "working_days": [
             {
@@ -79,10 +91,16 @@ def test_constraints():
     assert constraints.non_consecutive_subjects == ["History", "Art"]
 
 def test_timetable_ai_model():
+    """
+    Test the creation of the TimetableAIModel.
+    """
     model = TimetableAIModel()
     assert model.model is not None
 
 def test_train_ai_model():
+    """
+    Test the training of the AI model using historical data.
+    """
     historical_data = [
         {"features": np.array([1, 2, 3]), "label": 1},
         {"features": np.array([4, 5, 6]), "label": 0}
@@ -91,12 +109,18 @@ def test_train_ai_model():
     assert model is not None
 
 def test_predict_timetable():
+    """
+    Test the prediction of the timetable using the AI model.
+    """
     model = TimetableAIModel()
     input_data = np.array([1, 2, 3])
     predictions = predict_timetable(model, input_data)
     assert predictions is not None
 
 def test_create_course_edge_cases():
+    """
+    Test the creation of a course using the CreateCourse model with edge cases.
+    """
     # Test with minimum values
     course_data = {
         "name": "",
@@ -132,6 +156,9 @@ def test_create_course_edge_cases():
     assert course.end_hr == 24
 
 def test_course_edge_cases():
+    """
+    Test the creation of a course using the Course model with edge cases.
+    """
     # Test with minimum values
     course_data = {
         "name": "",
@@ -167,6 +194,9 @@ def test_course_edge_cases():
     assert course.end_hr == 24
 
 def test_create_constraints_edge_cases():
+    """
+    Test the creation of constraints using the CreateConstraints model with edge cases.
+    """
     # Test with minimum values
     constraints_data = {
         "working_days": [],
@@ -200,6 +230,9 @@ def test_create_constraints_edge_cases():
     assert constraints.non_consecutive_subjects == ["C" * 100, "D" * 100]
 
 def test_constraints_edge_cases():
+    """
+    Test the creation of constraints using the Constraints model with edge cases.
+    """
     # Test with minimum values
     constraints_data = {
         "working_days": [],
@@ -233,6 +266,9 @@ def test_constraints_edge_cases():
     assert constraints.non_consecutive_subjects == ["C" * 100, "D" * 100]
 
 def test_timetable_ai_model_edge_cases():
+    """
+    Test the creation of the TimetableAIModel with different optimizers.
+    """
     # Test with different optimizers
     model_adam = TimetableAIModel(optimizer='adam')
     assert model_adam.model is not None
@@ -241,6 +277,9 @@ def test_timetable_ai_model_edge_cases():
     assert model_rmsprop.model is not None
 
 def test_train_ai_model_edge_cases():
+    """
+    Test the training of the AI model using edge cases in historical data.
+    """
     # Test with empty historical data
     historical_data = []
     model = train_ai_model(historical_data)
@@ -255,6 +294,9 @@ def test_train_ai_model_edge_cases():
     assert model is not None
 
 def test_predict_timetable_edge_cases():
+    """
+    Test the prediction of the timetable using edge cases in input data.
+    """
     model = TimetableAIModel()
 
     # Test with empty input data
@@ -268,6 +310,9 @@ def test_predict_timetable_edge_cases():
     assert predictions is not None
 
 def test_train_ai_model_improved_lstm():
+    """
+    Test the training of the AI model using improved LSTM architecture.
+    """
     historical_data = [
         {"features": np.array([1, 2, 3]), "label": 1},
         {"features": np.array([4, 5, 6]), "label": 0}
@@ -276,6 +321,9 @@ def test_train_ai_model_improved_lstm():
     assert model is not None
 
 def test_train_ai_model_additional_features():
+    """
+    Test the training of the AI model using additional features in historical data.
+    """
     historical_data = [
         {"features": np.array([1, 2, 3, 4, 5]), "label": 1},
         {"features": np.array([6, 7, 8, 9, 10]), "label": 0}
@@ -284,6 +332,9 @@ def test_train_ai_model_additional_features():
     assert model is not None
 
 def test_recommendation_system():
+    """
+    Test the recommendation system using the AI model.
+    """
     historical_data = [
         {"features": np.array([1, 2, 3]), "label": 1},
         {"features": np.array([4, 5, 6]), "label": 0}

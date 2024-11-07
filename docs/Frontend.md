@@ -20,6 +20,9 @@ The frontend application follows a component-based architecture. Each component 
 - `RecommendationSystem.jsx`: A component for displaying course recommendations.
 - `TemplateList.jsx`: A component for displaying a list of templates.
 - `Timetable.jsx`: A component for displaying the generated timetable.
+- `UserRegistration.jsx`: A component for user registration.
+- `UserLogin.jsx`: A component for user login.
+- `RoleBasedAccessControl.jsx`: A component for managing role-based access control.
 
 ## Technologies Used
 
@@ -98,3 +101,15 @@ The `TemplateList.jsx` component displays a list of templates. It allows users t
 ### `Timetable.jsx`
 
 The `Timetable.jsx` component displays the generated timetable. It fetches the timetable data from the backend and renders it in a calendar view.
+
+### `UserRegistration.jsx`
+
+The `UserRegistration.jsx` component provides a form for user registration. It allows users to create a new account by entering their details.
+
+### `UserLogin.jsx`
+
+The `UserLogin.jsx` component provides a form for user login. It allows users to log in to their account by entering their credentials.
+
+### `RoleBasedAccessControl.jsx`
+
+The `RoleBasedAccessControl.jsx` component provides an interface for managing role-based access control. It allows administrators to assign roles and permissions to users.

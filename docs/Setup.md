@@ -128,3 +128,19 @@ npm install
 ```bash
 npm test
 ```
+
+## Troubleshooting Tips
+
+### Common Issues
+
+1. **Issue**: Backend server not starting.
+   **Solution**: Ensure that the MongoDB server is running and the connection string in the `.env` file is correct.
+
+2. **Issue**: Frontend server not starting.
+   **Solution**: Ensure that all dependencies are installed correctly by running `npm install` again.
+
+3. **Issue**: Docker container not starting.
+   **Solution**: Check the Docker logs for any errors and ensure that the Docker daemon is running.
+
+4. **Issue**: Tests failing.
+   **Solution**: Ensure that all dependencies are installed correctly and that the backend server is running before running the tests.

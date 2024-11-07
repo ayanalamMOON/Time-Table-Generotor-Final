@@ -161,3 +161,50 @@ Alternatively, you can use Docker Compose to start the services. A `docker-compo
 ```bash
 docker-compose up
 ```
+
+## Detailed Explanation of the AI Model and Training Process
+
+The AI model used in the Time Table Generator project is designed to predict timetables based on historical data. The model is built using TensorFlow and consists of a bidirectional LSTM (Long Short-Term Memory) network. The LSTM network is well-suited for time series data and can capture long-term dependencies in the data.
+
+### AI Model Architecture
+
+The AI model architecture consists of the following layers:
+
+1. **Input Layer**: The input layer takes in the time series data as input features.
+2. **Bidirectional LSTM Layer**: The bidirectional LSTM layer processes the input data in both forward and backward directions, capturing long-term dependencies in the data.
+3. **Dense Layer**: The dense layer is a fully connected layer that maps the output of the LSTM layer to the target variable.
+4. **Output Layer**: The output layer produces the final prediction.
+
+### Training Process
+
+The training process for the AI model involves the following steps:
+
+1. **Data Preparation**: The historical data is prepared in the required format, with each data point represented as a dictionary containing 'features' and 'label' keys.
+2. **Model Initialization**: The AI model is initialized with the specified architecture.
+3. **Model Training**: The model is trained on the historical data using the `train_ai_model` function. The training process involves optimizing the model's parameters to minimize the prediction error.
+4. **Model Evaluation**: The trained model is evaluated on a validation dataset to assess its performance and generalization ability.
+
+### Using the Trained AI Model
+
+Once the AI model is trained, it can be used to predict timetables based on input features. The `predict_timetable` function takes the trained AI model and input data as input and returns the predicted timetable. The input data should be in the same format as the historical data used for training.
+
+Example:
+
+```python
+# Load historical data in the specified format
+historical_data = [
+    {"features": [0.1, 0.2, 0.3], "label": 1},
+    {"features": [0.4, 0.5, 0.6], "label": 0}
+]
+
+# Train the AI model
+ai_model = train_ai_model(historical_data)
+
+# Prepare input data in the specified format
+input_data = [0.7, 0.8, 0.9]
+
+# Predict the timetable using the trained AI model
+predicted_timetable = predict_timetable(ai_model, input_data)
+```
+
+The predicted timetable can then be used to generate the final timetable based on the provided constraints and courses.
