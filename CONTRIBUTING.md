@@ -31,6 +31,17 @@ To ensure consistent code quality and maintainability, please follow these codin
 - Ensure that all functions and classes have docstrings to provide clear explanations of their purpose and usage.
 - Follow the existing code style and conventions used in the project.
 
+## Code Formatting Guidelines
+
+To ensure consistent code formatting in the repository, follow these guidelines:
+
+- Use ESLint and Prettier for consistent code formatting. The repository includes configuration files for these tools (`.eslintrc.json` and `.prettierrc`).
+- Add a pre-commit hook to automatically run ESLint and Prettier on staged files before each commit. This is configured using Husky and lint-staged.
+- Configure your IDE or code editor to use the ESLint and Prettier settings from the repository. This will help maintain consistent formatting while writing code.
+- Regularly run ESLint and Prettier on the entire codebase to ensure all files adhere to the defined formatting rules.
+- For Python code, use Black for code formatting. The repository includes a configuration file for Black (`pyproject.toml`).
+- Document the code formatting guidelines in the `CONTRIBUTING.md` file to guide new contributors on the project's coding standards.
+
 ## Testing Procedures
 
 To maintain a high level of code quality, please follow these testing procedures:

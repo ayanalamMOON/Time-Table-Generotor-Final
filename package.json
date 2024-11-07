@@ -25,10 +25,23 @@
   },
   "devDependencies": {
     "jest": "^27.0.6",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "husky": "^7.0.0",
+    "lint-staged": "^11.0.0"
   },
   "jest": {
     "testEnvironment": "jsdom"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "author": "",
   "license": "ISC"
