@@ -5,10 +5,13 @@ import { useTheme } from '@mui/material/styles';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
-import { Paper, Typography, Tooltip } from '@mui/material';
+import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 
 const Timetable = ({ timetable }) => {
   const [events, setEvents] = useState(timetable);
+  const [analyticsOpen, setAnalyticsOpen] = useState(false);
+  const [collaborationOpen, setCollaborationOpen] = useState(false);
+  const [comment, setComment] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -28,12 +31,78 @@ const Timetable = ({ timetable }) => {
     });
   };
 
+  const handleAnalyticsOpen = () => {
+    setAnalyticsOpen(true);
+  };
+
+  const handleAnalyticsClose = () => {
+    setAnalyticsOpen(false);
+  };
+
+  const handleCollaborationOpen = () => {
+    setCollaborationOpen(true);
+  };
+
+  const handleCollaborationClose = () => {
+    setCollaborationOpen(false);
+  };
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
+  };
+
+  const handleCommentSubmit = () => {
+    // Placeholder for comment submission logic
+    console.log('Comment submitted:', comment);
+    setComment('');
+    setCollaborationOpen(false);
+  };
+
   return (
     <div>
       <Typography variant="h4" gutterBottom>
         Generated Timetable
       </Typography>
       <Calendar />
+      <Button variant="contained" color="primary" onClick={handleAnalyticsOpen}>
+        View Analytics
+      </Button>
+      <Button variant="contained" color="secondary" onClick={handleCollaborationOpen}>
+        Collaborate
+      </Button>
+      <Dialog open={analyticsOpen} onClose={handleAnalyticsClose}>
+        <DialogTitle>Analytics and Reporting</DialogTitle>
+        <DialogContent>
+          {/* Placeholder for analytics and reporting content */}
+          <Typography variant="body1">Analytics data goes here...</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAnalyticsClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={collaborationOpen} onClose={handleCollaborationClose}>
+        <DialogTitle>Collaboration Features</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Comment"
+            value={comment}
+            onChange={handleCommentChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCollaborationClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCommentSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Suspense fallback={<div>Loading...</div>}>
         <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="events">

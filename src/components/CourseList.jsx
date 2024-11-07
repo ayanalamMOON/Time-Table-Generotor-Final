@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Pagination, Snackbar, Alert, Paper, Typography, Tooltip, CircularProgress } from '@mui/material';
+import { TextField, Button, Pagination, Snackbar, Alert, Paper, Typography, Tooltip, CircularProgress, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -12,6 +12,7 @@ const CourseList = () => {
   const [coursesPerPage] = useState(10);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'success' });
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -49,6 +50,10 @@ const CourseList = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+  };
+
   const handleDragEnd = (result) => {
     if (!result.destination) return;
 
@@ -60,7 +65,8 @@ const CourseList = () => {
   };
 
   const filteredCourses = courses.filter((course) =>
-    course.name.toLowerCase().includes(searchTerm.toLowerCase())
+    course.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (filter === '' || course.category === filter)
   );
 
   const indexOfLastCourse = currentPage * coursesPerPage;
@@ -92,6 +98,19 @@ const CourseList = () => {
               margin="normal"
             />
           </Tooltip>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Filter by Category</InputLabel>
+            <Select
+              value={filter}
+              onChange={handleFilterChange}
+              label="Filter by Category"
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="Category1">Category1</MenuItem>
+              <MenuItem value="Category2">Category2</MenuItem>
+              <MenuItem value="Category3">Category3</MenuItem>
+            </Select>
+          </FormControl>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="courses">
               {(provided) => (

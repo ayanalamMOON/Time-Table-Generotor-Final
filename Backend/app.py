@@ -2,7 +2,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 from csp import generate
 from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable, ConstraintTemplate, ConstraintTemplateManager
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 import motor.motor_asyncio
 import uvicorn.run
@@ -18,6 +18,10 @@ from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 from starlette.middleware.gzip import GZipMiddleware
 import aioredis
+import google.auth
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -165,6 +169,30 @@ class UserCreate(BaseModel):
     password: str
     role: str
 
+class RoleUpdate(BaseModel):
+    username: str
+    role: str
+
+class Notification(BaseModel):
+    user_id: str
+    message: str
+
+class CalendarEvent(BaseModel):
+    summary: str
+    location: str
+    description: str
+    start: dict
+    end: dict
+
+class TimetableAnalytics(BaseModel):
+    course_distribution: dict
+    instructor_workload: dict
+    constraint_satisfaction: dict
+
+class CollaborationAction(BaseModel):
+    action: str
+    data: dict
+
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """
@@ -194,6 +222,76 @@ async def register_user(user: UserCreate) -> User:
     del user_dict["password"]
     await users_collection.insert_one(user_dict)
     return user_dict
+
+@app.post("/update-role", response_model=User)
+async def update_user_role(role_update: RoleUpdate, current_user: User = Depends(get_current_admin_user)) -> User:
+    """
+    Endpoint to update a user's role.
+    """
+    result = await users_collection.update_one({"username": role_update.username}, {"$set": {"role": role_update.role}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    updated_user = await users_collection.find_one({"username": role_update.username})
+    return updated_user
+
+@app.websocket("/ws/notifications/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, user_id: str):
+    """
+    WebSocket endpoint for sending notifications to users.
+    """
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_text()
+            notification = Notification(user_id=user_id, message=data)
+            await websocket.send_text(f"Notification: {notification.message}")
+    except WebSocketDisconnect:
+        logger.info(f"User {user_id} disconnected")
+
+@app.post("/calendar/sync", response_model=dict)
+async def sync_calendar_event(event: CalendarEvent, current_user: User = Depends(get_current_active_user)) -> dict:
+    """
+    Endpoint to sync a calendar event with Google Calendar.
+    """
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            raise HTTPException(status_code=401, detail="Invalid Google Calendar credentials")
+    service = build('calendar', 'v3', credentials=creds)
+    event_result = service.events().insert(calendarId='primary', body=event.dict()).execute()
+    return event_result
+
+@app.get("/analytics", response_model=TimetableAnalytics)
+async def get_timetable_analytics(current_user: User = Depends(get_current_admin_user)) -> TimetableAnalytics:
+    """
+    Endpoint to retrieve analytics and reporting data for timetables.
+    """
+    # Placeholder for actual analytics data
+    analytics_data = {
+        "course_distribution": {"course1": 10, "course2": 5},
+        "instructor_workload": {"instructor1": 15, "instructor2": 10},
+        "constraint_satisfaction": {"constraint1": 90, "constraint2": 80}
+    }
+    return TimetableAnalytics(**analytics_data)
+
+@app.websocket("/ws/collaboration/{timetable_id}")
+async def collaboration_endpoint(websocket: WebSocket, timetable_id: str):
+    """
+    WebSocket endpoint for real-time collaboration on timetables.
+    """
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+            action = CollaborationAction(**data)
+            # Placeholder for handling collaboration actions
+            await websocket.send_json({"status": "success", "action": action.action})
+    except WebSocketDisconnect:
+        logger.info(f"Collaboration session for timetable {timetable_id} disconnected")
 
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0",

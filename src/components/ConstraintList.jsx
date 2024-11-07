@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Pagination, CircularProgress, Paper, Typography, Tooltip } from '@mui/material';
+import { TextField, Pagination, CircularProgress, Paper, Typography, Tooltip, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -15,6 +15,7 @@ const ConstraintList = () => {
   const [constraintsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
+  const [filterType, setFilterType] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -58,8 +59,13 @@ const ConstraintList = () => {
     setSearchTerm(event.target.value);
   };
 
+  const handleFilterChange = (event) => {
+    setFilterType(event.target.value);
+  };
+
   const filteredConstraints = constraints.filter((constraint) =>
-    constraint.name.toLowerCase().includes(searchTerm.toLowerCase())
+    constraint.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (filterType === '' || constraint.type === filterType)
   );
 
   const indexOfLastConstraint = currentPage * constraintsPerPage;
@@ -95,6 +101,19 @@ const ConstraintList = () => {
               margin="normal"
             />
           </Tooltip>
+          <FormControl fullWidth margin="normal">
+            <InputLabel>Filter by Type</InputLabel>
+            <Select
+              value={filterType}
+              onChange={handleFilterChange}
+              label="Filter by Type"
+            >
+              <MenuItem value="">All</MenuItem>
+              <MenuItem value="type1">Type 1</MenuItem>
+              <MenuItem value="type2">Type 2</MenuItem>
+              <MenuItem value="type3">Type 3</MenuItem>
+            </Select>
+          </FormControl>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="constraints">
               {(provided) => (
