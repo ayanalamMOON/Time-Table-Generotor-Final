@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Pagination } from '@mui/material';
+import { TextField, Pagination, Button, Snackbar, Alert } from '@mui/material';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const TemplateList = () => {
   const [templates, setTemplates] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [templatesPerPage] = useState(10);
+  const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
+  const [calendarView, setCalendarView] = useState(false);
 
   useEffect(() => {
     fetchTemplates();
@@ -29,8 +34,10 @@ const TemplateList = () => {
     try {
       await axios.delete(`/api/templates/${templateId}`);
       fetchTemplates();
+      setNotification({ open: true, message: 'Template deleted successfully', severity: 'success' });
     } catch (error) {
       console.error('Error deleting template:', error);
+      setNotification({ open: true, message: 'Error deleting template', severity: 'error' });
     }
   };
 
@@ -50,6 +57,18 @@ const TemplateList = () => {
     setCurrentPage(value);
   };
 
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const reorderedTemplates = Array.from(currentTemplates);
+    const [movedTemplate] = reorderedTemplates.splice(result.source.index, 1);
+    reorderedTemplates.splice(result.destination.index, 0, movedTemplate);
+    setTemplates(reorderedTemplates);
+  };
+
+  const toggleCalendarView = () => {
+    setCalendarView(!calendarView);
+  };
+
   return (
     <div>
       <h2>Template List</h2>
@@ -61,21 +80,48 @@ const TemplateList = () => {
         fullWidth
         margin="normal"
       />
-      <ul>
-        {currentTemplates.map((template) => (
-          <li key={template.id}>
-            {template.name}
-            <button onClick={() => handleEdit(template.id)}>Edit</button>
-            <button onClick={() => handleDelete(template.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <Button variant="contained" color="primary" onClick={toggleCalendarView}>
+        {calendarView ? 'List View' : 'Calendar View'}
+      </Button>
+      {calendarView ? (
+        <Calendar />
+      ) : (
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="templates">
+            {(provided) => (
+              <ul {...provided.droppableProps} ref={provided.innerRef}>
+                {currentTemplates.map((template, index) => (
+                  <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
+                    {(provided) => (
+                      <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        {template.name}
+                        <button onClick={() => handleEdit(template.id)}>Edit</button>
+                        <button onClick={() => handleDelete(template.id)}>Delete</button>
+                      </li>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </ul>
+            )}
+          </Droppable>
+        </DragDropContext>
+      )}
       <Pagination
         count={Math.ceil(filteredTemplates.length / templatesPerPage)}
         page={currentPage}
         onChange={paginate}
         color="primary"
       />
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={() => setNotification({ ...notification, open: false })}
+      >
+        <Alert onClose={() => setNotification({ ...notification, open: false })} severity={notification.severity}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

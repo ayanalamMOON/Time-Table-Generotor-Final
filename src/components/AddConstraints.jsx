@@ -23,6 +23,9 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const AddConstraints = () => {
   const [selectedDays, setSelectedDays] = useState([]);
@@ -36,6 +39,9 @@ const AddConstraints = () => {
   const [sub2, setSub2] = useState("");
   const [nsub1, setnSub1] = useState("");
   const [nsub2, setnSub2] = useState("");
+  const [events, setEvents] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleDayClick = (day) => {
     const newSelectedDays = [...selectedDays];
@@ -130,6 +136,14 @@ const AddConstraints = () => {
       setSubjects(temp_subjects);
     });
   }, []);
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(events);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setEvents(items);
+  };
 
   return (
     <>
@@ -241,6 +255,30 @@ const AddConstraints = () => {
                   />
                 </Tooltip>
               </FormGroup>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="events">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {events.map((event, index) => (
+                        <Draggable key={event.id} draggableId={event.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                <Typography variant="body1">{event.name}</Typography>
+                              </Paper>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
               <Button
                 variant="contained"
                 color="primary"

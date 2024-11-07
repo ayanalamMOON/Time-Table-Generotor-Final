@@ -13,11 +13,19 @@ import {
 import { AddCircleOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
 import axios from "axios";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { useMediaQuery } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const AddCourse = () => {
   const [courseName, setCourseName] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSubmit = () => {
     if (courseName.trim() === "" || courseCode.trim() === "") {
@@ -54,6 +62,14 @@ const AddCourse = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(events);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setEvents(items);
   };
 
   return (
@@ -101,6 +117,30 @@ const AddCourse = () => {
                   Submit
                 </Button>
               </Stack>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="events">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {events.map((event, index) => (
+                        <Draggable key={event.id} draggableId={event.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                <Typography variant="body1">{event.name}</Typography>
+                              </Paper>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
             </Paper>
           </Container>
         </>

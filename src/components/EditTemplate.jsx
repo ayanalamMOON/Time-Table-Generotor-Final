@@ -3,12 +3,20 @@ import axios from 'axios';
 import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 const EditTemplate = () => {
   const { id } = useParams();
   const [templateName, setTemplateName] = useState('');
   const [templateDescription, setTemplateDescription] = useState('');
   const [loading, setLoading] = useState(true);
+  const [events, setEvents] = useState([]);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchTemplate = async () => {
@@ -59,6 +67,14 @@ const EditTemplate = () => {
     }
   };
 
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(events);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setEvents(items);
+  };
+
   return (
     <Container component="main" maxWidth="sm">
       <Paper variant="outlined" sx={{ my: 3, p: 3 }}>
@@ -92,6 +108,30 @@ const EditTemplate = () => {
               onChange={(e) => setTemplateDescription(e.target.value)}
             />
           </Tooltip>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="events">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  {events.map((event, index) => (
+                    <Draggable key={event.id} draggableId={event.id} index={index}>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                            <Typography variant="body1">{event.name}</Typography>
+                          </Paper>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
           <Button type="submit" fullWidth variant="contained" color="primary">
             {loading ? <CircularProgress size={24} /> : 'Update Template'}
           </Button>
