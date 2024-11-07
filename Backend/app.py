@@ -17,6 +17,7 @@ from aiocache import cached
 from fastapi_limiter import FastAPILimiter
 from fastapi_limiter.depends import RateLimiter
 from starlette.middleware.gzip import GZipMiddleware
+import aioredis
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
