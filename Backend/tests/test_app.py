@@ -540,3 +540,46 @@ async def test_project_running():
     async with AsyncClient(base_url="http://localhost:8000") as ac:
         response = await ac.get("/")
     assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_get_courses_pagination():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-courses?skip=0&limit=5")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+    assert len(response.json()) <= 5
+
+@pytest.mark.asyncio
+async def test_get_constraints_pagination():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-constraints?skip=0&limit=5")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+    assert len(response.json()) <= 5
+
+@pytest.mark.asyncio
+async def test_get_courses_caching():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response1 = await ac.get("/get-courses")
+        response2 = await ac.get("/get-courses")
+    assert response1.status_code == 200
+    assert response2.status_code == 200
+    assert response1.json() == response2.json()
+
+@pytest.mark.asyncio
+async def test_get_constraints_caching():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response1 = await ac.get("/get-constraints")
+        response2 = await ac.get("/get-constraints")
+    assert response1.status_code == 200
+    assert response2.status_code == 200
+    assert response1.json() == response2.json()
+
+@pytest.mark.asyncio
+async def test_rate_limiting():
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        for _ in range(10):
+            response = await ac.get("/get-courses")
+            assert response.status_code == 200
+        response = await ac.get("/get-courses")
+        assert response.status_code == 429

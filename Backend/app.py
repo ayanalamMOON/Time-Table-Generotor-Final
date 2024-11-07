@@ -13,6 +13,10 @@ from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
+from aiocache import cached
+from fastapi_limiter import FastAPILimiter
+from fastapi_limiter.depends import RateLimiter
+from starlette.middleware.gzip import GZipMiddleware
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -41,6 +45,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -162,24 +168,28 @@ if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0",
                 port=8000, reload=True, debug=True)
 
+@app.on_event("startup")
+async def on_startup():
+    redis = await aioredis.create_redis_pool("redis://localhost")
+    await FastAPILimiter.init(redis)
 
-@app.get("/get-courses")
-async def get_courses(current_user: User = Depends(get_current_active_user)) -> list[Course]:
+@app.get("/get-courses", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+@cached(ttl=60)
+async def get_courses(current_user: User = Depends(get_current_active_user), skip: int = 0, limit: int = 10) -> list[Course]:
     courses = []
-    cursor = courses_collection.find({})
+    cursor = courses_collection.find({}).skip(skip).limit(limit)
     async for document in cursor:
         courses.append(Course(**document))
     return courses
 
-
-@app.get("/get-constraints")
-async def get_constraints(current_user: User = Depends(get_current_active_user)) -> list[Constraint]:
+@app.get("/get-constraints", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+@cached(ttl=60)
+async def get_constraints(current_user: User = Depends(get_current_active_user), skip: int = 0, limit: int = 10) -> list[Constraint]:
     constraints = []
-    cursor = constraints_collection.find({})
+    cursor = constraints_collection.find({}).skip(skip).limit(limit)
     async for document in cursor:
         constraints.append(Constraint(**document))
     return constraints
-
 
 @app.post("/add-course", response_model=Course)
 async def post_course(course: CreateCourse, current_user: User = Depends(get_current_admin_user)) -> Course:
@@ -187,13 +197,11 @@ async def post_course(course: CreateCourse, current_user: User = Depends(get_cur
     await courses_collection.insert_one(document)
     return document
 
-
 @app.post("/add-constraints", response_model=Constraint)
 async def post_constraints(constraint: CreateConstraint, current_user: User = Depends(get_current_admin_user)) -> Constraint:
     document = constraint.dict()
     await constraints_collection.insert_one(document)
     return document
-
 
 @app.get("/generate-timetable")
 async def generate_timetable(current_user: User = Depends(get_current_active_user)) -> dict:
@@ -229,7 +237,6 @@ async def generate_timetable(current_user: User = Depends(get_current_active_use
     data = generate(constraints[-1].dict(), courses)
     return data
 
-
 class UpdateCourse(BaseModel):
     name: str
     lectureno: int
@@ -237,7 +244,6 @@ class UpdateCourse(BaseModel):
     instructor_name: str
     start_hr: int
     end_hr: int
-
 
 @app.put("/update-course/{course_id}", response_model=Course)
 async def update_course(course_id: str, course: UpdateCourse, current_user: User = Depends(get_current_admin_user)) -> Course:
@@ -249,13 +255,11 @@ async def update_course(course_id: str, course: UpdateCourse, current_user: User
     updated_course = await courses_collection.find_one({"_id": course_id})
     return updated_course
 
-
 @app.post("/add-template", response_model=ConstraintTemplate)
 async def add_template(template: ConstraintTemplate, current_user: User = Depends(get_current_admin_user)) -> ConstraintTemplate:
     document = template.dict()
     await templates_collection.insert_one(document)
     return document
-
 
 @app.get("/get-templates")
 async def get_templates(current_user: User = Depends(get_current_active_user)) -> list[ConstraintTemplate]:
@@ -265,7 +269,6 @@ async def get_templates(current_user: User = Depends(get_current_active_user)) -
         templates.append(ConstraintTemplate(**document))
     return templates
 
-
 @app.get("/get-template/{template_id}", response_model=ConstraintTemplate)
 async def get_template(template_id: str, current_user: User = Depends(get_current_active_user)) -> ConstraintTemplate:
     document = await templates_collection.find_one({"_id": template_id})
@@ -274,13 +277,11 @@ async def get_template(template_id: str, current_user: User = Depends(get_curren
         raise HTTPException(status_code=404, detail="Template not found")
     return ConstraintTemplate(**document)
 
-
 @app.post("/import-template", response_model=ConstraintTemplate)
 async def import_template(template: ConstraintTemplate, current_user: User = Depends(get_current_admin_user)) -> ConstraintTemplate:
     document = template.dict()
     await templates_collection.insert_one(document)
     return document
-
 
 @app.get("/export-template/{template_id}", response_model=ConstraintTemplate)
 async def export_template(template_id: str, current_user: User = Depends(get_current_active_user)) -> ConstraintTemplate:

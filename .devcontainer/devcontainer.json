@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "test": "pip install -r Backend/requirements.txt && cd Backend && pytest && cd .. && npm install && npm test",
+    "build": "pip install -r Backend/requirements.txt && npm install",
+    "launch": "cd Backend && uvicorn app:app --reload & cd .. && npm start"
+  }
+}
