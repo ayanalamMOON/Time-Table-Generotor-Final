@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { getCollaborationData, saveCollaborationData } from '../api/collaboration';
+import { WebSocket } from 'ws';
 
 const CollaborationFeatures = () => {
   const [collaborationData, setCollaborationData] = useState([]);
   const [newComment, setNewComment] = useState('');
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     fetchCollaborationData();
+    const ws = new WebSocket('ws://localhost:8000/ws/collaboration');
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setCollaborationData((prevData) => [...prevData, data]);
+    };
+    setSocket(ws);
+    return () => {
+      ws.close();
+    };
   }, []);
 
   const fetchCollaborationData = async () => {
@@ -22,6 +33,9 @@ const CollaborationFeatures = () => {
     const updatedData = await saveCollaborationData(newComment);
     setCollaborationData(updatedData);
     setNewComment('');
+    if (socket) {
+      socket.send(JSON.stringify({ comment: newComment }));
+    }
   };
 
   return (

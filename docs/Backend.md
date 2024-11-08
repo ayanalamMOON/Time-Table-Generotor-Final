@@ -96,6 +96,15 @@ uvicorn app:app --reload
 - `POST /import-template`: Import a constraint template.
 - `GET /export-template/{template_id}`: Export a specific constraint template by its ID.
 
+### Analytics
+
+- `GET /analytics`: Retrieve analytics and reporting data for timetables.
+- `GET /export-analytics`: Export analytics reports in PDF or Excel format.
+
+### Recommendations
+
+- `GET /get-recommendations`: Fetch course recommendations based on user preferences and constraints.
+
 ## AI Model
 
 The AI model is used to predict timetables based on historical data. The model is built using TensorFlow and consists of a bidirectional LSTM (Long Short-Term Memory) network. The model is trained on historical data and can be used to predict timetables based on input features.

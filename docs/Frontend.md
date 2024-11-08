@@ -23,6 +23,9 @@ The frontend application follows a component-based architecture. Each component 
 - `UserRegistration.jsx`: A component for user registration.
 - `UserLogin.jsx`: A component for user login.
 - `RoleBasedAccessControl.jsx`: A component for managing role-based access control.
+- `AnalyticsReporting.jsx`: A component for visualizing analytics data and exporting reports.
+- `CalendarIntegration.jsx`: A component for integrating and visualizing the timetable in a calendar view.
+- `CollaborationFeatures.jsx`: A component for providing real-time collaboration features.
 
 ## Technologies Used
 
@@ -33,6 +36,9 @@ The frontend application uses the following technologies:
 - Axios: A promise-based HTTP client for making API requests.
 - React Router: A library for handling routing in React applications.
 - SweetAlert2: A library for displaying beautiful and customizable alerts.
+- React Beautiful DnD: A library for drag-and-drop functionality.
+- React Big Calendar: A library for calendar integration and visualization.
+- Chart.js: A library for creating charts and graphs.
 
 ## Setup Instructions
 
@@ -100,7 +106,7 @@ The `TemplateList.jsx` component displays a list of templates. It allows users t
 
 ### `Timetable.jsx`
 
-The `Timetable.jsx` component displays the generated timetable. It fetches the timetable data from the backend and renders it in a calendar view.
+The `Timetable.jsx` component displays the generated timetable. It fetches the timetable data from the backend and renders it in a calendar view. It also provides a drag-and-drop interface for creating and editing timetables.
 
 ### `UserRegistration.jsx`
 
@@ -113,3 +119,15 @@ The `UserLogin.jsx` component provides a form for user login. It allows users to
 ### `RoleBasedAccessControl.jsx`
 
 The `RoleBasedAccessControl.jsx` component provides an interface for managing role-based access control. It allows administrators to assign roles and permissions to users.
+
+### `AnalyticsReporting.jsx`
+
+The `AnalyticsReporting.jsx` component provides visualizations for the analytics data, such as charts and graphs. It also allows users to export analytics reports in various formats, such as PDF or Excel.
+
+### `CalendarIntegration.jsx`
+
+The `CalendarIntegration.jsx` component integrates a calendar view to visualize the timetable. It allows users to sync schedules with different calendar types, such as Google Calendar and Microsoft Outlook.
+
+### `CollaborationFeatures.jsx`
+
+The `CollaborationFeatures.jsx` component provides real-time collaboration features, allowing multiple users to work on the same timetable simultaneously. It includes functionalities for adding comments and saving versions.

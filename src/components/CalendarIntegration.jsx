@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 const CalendarIntegration = () => {
   const [showModal, setShowModal] = useState(false);
@@ -58,6 +60,8 @@ const CalendarIntegration = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <Calendar />
     </div>
   );
 };

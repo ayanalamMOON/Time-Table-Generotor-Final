@@ -22,6 +22,8 @@ import google.auth
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from fpdf import FPDF
+import pandas as pd
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -292,6 +294,45 @@ async def collaboration_endpoint(websocket: WebSocket, timetable_id: str):
             await websocket.send_json({"status": "success", "action": action.action})
     except WebSocketDisconnect:
         logger.info(f"Collaboration session for timetable {timetable_id} disconnected")
+
+@app.get("/export-analytics")
+async def export_analytics(format: str, current_user: User = Depends(get_current_admin_user)):
+    """
+    Endpoint to export analytics reports in PDF or Excel format.
+    """
+    analytics_data = await get_timetable_analytics(current_user)
+    if format == "pdf":
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial", size=12)
+        pdf.cell(200, 10, txt="Timetable Analytics Report", ln=True, align="C")
+        pdf.cell(200, 10, txt=f"Course Distribution: {analytics_data.course_distribution}", ln=True)
+        pdf.cell(200, 10, txt=f"Instructor Workload: {analytics_data.instructor_workload}", ln=True)
+        pdf.cell(200, 10, txt=f"Constraint Satisfaction: {analytics_data.constraint_satisfaction}", ln=True)
+        pdf_output = pdf.output(dest="S").encode("latin1")
+        return HTMLResponse(content=pdf_output, media_type="application/pdf")
+    elif format == "excel":
+        df = pd.DataFrame({
+            "Course Distribution": [analytics_data.course_distribution],
+            "Instructor Workload": [analytics_data.instructor_workload],
+            "Constraint Satisfaction": [analytics_data.constraint_satisfaction]
+        })
+        excel_output = df.to_excel(index=False)
+        return HTMLResponse(content=excel_output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    else:
+        raise HTTPException(status_code=400, detail="Invalid format")
+
+@app.get("/get-recommendations")
+async def get_recommendations(current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to fetch course recommendations based on user preferences and constraints.
+    """
+    # Placeholder for actual recommendation logic
+    recommendations = [
+        {"courseName": "Course 1", "reason": "Based on your preferences"},
+        {"courseName": "Course 2", "reason": "Based on your constraints"}
+    ]
+    return recommendations
 
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0",

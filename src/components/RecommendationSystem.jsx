@@ -19,7 +19,7 @@ const RecommendationSystem = () => {
 
   const fetchRecommendations = async () => {
     try {
-      const response = await axios.get('/api/get-recommendations');
+      const response = await axios.get('/get-recommendations');
       setRecommendations(response.data);
     } catch (error) {
       console.error('Error fetching recommendations:', error);
