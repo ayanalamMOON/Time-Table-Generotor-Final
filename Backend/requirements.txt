@@ -25,7 +25,7 @@ pytest==6.2.4
 httpx==0.23.0
 python-dotenv==0.19.2
 scikit-optimize==0.8.1
-scikit-learn==0.24.2
+scikit-learn==1.5.0
 aiocache==0.11.1
 fastapi-limiter==0.1.5
 aiomcache==0.6.0
