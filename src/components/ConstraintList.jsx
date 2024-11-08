@@ -7,6 +7,9 @@ import 'react-calendar/dist/Calendar.css';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Swal from 'sweetalert2';
+import { CSSTransition } from 'react-transition-group';
+import { motion } from 'framer-motion';
+import './ConstraintList.css';
 
 const ConstraintList = () => {
   const [constraints, setConstraints] = useState([]);
@@ -90,63 +93,69 @@ const ConstraintList = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <>
-          <Tooltip title="Search for constraints">
-            <TextField
-              label="Search Constraints"
-              variant="outlined"
-              value={searchTerm}
-              onChange={handleSearch}
-              fullWidth
-              margin="normal"
+        <CSSTransition in={!loading} timeout={300} classNames="fade">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Tooltip title="Search for constraints">
+              <TextField
+                label="Search Constraints"
+                variant="outlined"
+                value={searchTerm}
+                onChange={handleSearch}
+                fullWidth
+                margin="normal"
+              />
+            </Tooltip>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Filter by Type</InputLabel>
+              <Select
+                value={filterType}
+                onChange={handleFilterChange}
+                label="Filter by Type"
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="type1">Type 1</MenuItem>
+                <MenuItem value="type2">Type 2</MenuItem>
+                <MenuItem value="type3">Type 3</MenuItem>
+              </Select>
+            </FormControl>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="constraints">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {currentConstraints.map((constraint, index) => (
+                      <Draggable key={constraint.id} draggableId={constraint.id} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                              <Typography variant="body1">{constraint.name}</Typography>
+                              <button onClick={() => handleEdit(constraint.id)}>Edit</button>
+                              <button onClick={() => handleDelete(constraint.id)}>Delete</button>
+                            </Paper>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <Pagination
+              count={Math.ceil(filteredConstraints.length / constraintsPerPage)}
+              page={currentPage}
+              onChange={paginate}
+              color="primary"
             />
-          </Tooltip>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Filter by Type</InputLabel>
-            <Select
-              value={filterType}
-              onChange={handleFilterChange}
-              label="Filter by Type"
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="type1">Type 1</MenuItem>
-              <MenuItem value="type2">Type 2</MenuItem>
-              <MenuItem value="type3">Type 3</MenuItem>
-            </Select>
-          </FormControl>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="constraints">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {currentConstraints.map((constraint, index) => (
-                    <Draggable key={constraint.id} draggableId={constraint.id} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                            <Typography variant="body1">{constraint.name}</Typography>
-                            <button onClick={() => handleEdit(constraint.id)}>Edit</button>
-                            <button onClick={() => handleDelete(constraint.id)}>Delete</button>
-                          </Paper>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <Pagination
-            count={Math.ceil(filteredConstraints.length / constraintsPerPage)}
-            page={currentPage}
-            onChange={paginate}
-            color="primary"
-          />
-        </>
+          </motion.div>
+        </CSSTransition>
       )}
     </div>
   );

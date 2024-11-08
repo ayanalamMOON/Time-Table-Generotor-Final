@@ -7,6 +7,9 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { CSSTransition } from 'react-transition-group';
+import { motion } from 'framer-motion';
+import './AddTemplate.css';
 
 const AddTemplate = () => {
   const [templateName, setTemplateName] = useState('');
@@ -62,65 +65,73 @@ const AddTemplate = () => {
   return (
     <Container component="main" maxWidth="sm">
       <Paper variant="outlined" sx={{ my: 3, p: 3 }}>
-        <Typography component="h1" variant="h5">
-          Add New Template
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Tooltip title="Enter the name of the template">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="templateName"
-              label="Template Name"
-              name="templateName"
-              value={templateName}
-              onChange={(e) => setTemplateName(e.target.value)}
-            />
-          </Tooltip>
-          <Tooltip title="Enter the description of the template">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="templateDescription"
-              label="Template Description"
-              name="templateDescription"
-              value={templateDescription}
-              onChange={(e) => setTemplateDescription(e.target.value)}
-            />
-          </Tooltip>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="events">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {events.map((event, index) => (
-                    <Draggable key={event.id} draggableId={event.id} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                            <Typography variant="body1">{event.name}</Typography>
-                          </Paper>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Add Template
-          </Button>
-        </form>
-        {loading && <CircularProgress />}
+        <CSSTransition in={!loading} timeout={300} classNames="fade">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Typography component="h1" variant="h5">
+              Add New Template
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Tooltip title="Enter the name of the template">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="templateName"
+                  label="Template Name"
+                  name="templateName"
+                  value={templateName}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                />
+              </Tooltip>
+              <Tooltip title="Enter the description of the template">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="templateDescription"
+                  label="Template Description"
+                  name="templateDescription"
+                  value={templateDescription}
+                  onChange={(e) => setTemplateDescription(e.target.value)}
+                />
+              </Tooltip>
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="events">
+                  {(provided) => (
+                    <div {...provided.droppableProps} ref={provided.innerRef}>
+                      {events.map((event, index) => (
+                        <Draggable key={event.id} draggableId={event.id} index={index}>
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                <Typography variant="body1">{event.name}</Typography>
+                              </Paper>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+              <Button type="submit" fullWidth variant="contained" color="primary">
+                Add Template
+              </Button>
+            </form>
+            {loading && <CircularProgress />}
+          </motion.div>
+        </CSSTransition>
       </Paper>
     </Container>
   );

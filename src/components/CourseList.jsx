@@ -4,6 +4,9 @@ import { TextField, Button, Pagination, Snackbar, Alert, Paper, Typography, Tool
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { CSSTransition } from 'react-transition-group';
+import { motion } from 'framer-motion';
+import './CourseList.css';
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
@@ -87,72 +90,78 @@ const CourseList = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <>
-          <Tooltip title="Search for courses">
-            <TextField
-              label="Search Courses"
-              variant="outlined"
-              value={searchTerm}
-              onChange={handleSearch}
-              fullWidth
-              margin="normal"
-            />
-          </Tooltip>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Filter by Category</InputLabel>
-            <Select
-              value={filter}
-              onChange={handleFilterChange}
-              label="Filter by Category"
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="Category1">Category1</MenuItem>
-              <MenuItem value="Category2">Category2</MenuItem>
-              <MenuItem value="Category3">Category3</MenuItem>
-            </Select>
-          </FormControl>
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="courses">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {currentCourses.map((course, index) => (
-                    <Draggable key={course.id} draggableId={course.id.toString()} index={index}>
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                            <Typography variant="body1">{course.name}</Typography>
-                            <button onClick={() => handleEdit(course.id)}>Edit</button>
-                            <button onClick={() => handleDelete(course.id)}>Delete</button>
-                          </Paper>
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-          <Pagination
-            count={Math.ceil(filteredCourses.length / coursesPerPage)}
-            page={currentPage}
-            onChange={paginate}
-            color="primary"
-          />
-          <Snackbar
-            open={notification.open}
-            autoHideDuration={6000}
-            onClose={handleCloseNotification}
+        <CSSTransition in={!loading} timeout={300} classNames="fade">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
           >
-            <Alert onClose={handleCloseNotification} severity={notification.severity}>
-              {notification.message}
-            </Alert>
-          </Snackbar>
-        </>
+            <Tooltip title="Search for courses">
+              <TextField
+                label="Search Courses"
+                variant="outlined"
+                value={searchTerm}
+                onChange={handleSearch}
+                fullWidth
+                margin="normal"
+              />
+            </Tooltip>
+            <FormControl fullWidth margin="normal">
+              <InputLabel>Filter by Category</InputLabel>
+              <Select
+                value={filter}
+                onChange={handleFilterChange}
+                label="Filter by Category"
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Category1">Category1</MenuItem>
+                <MenuItem value="Category2">Category2</MenuItem>
+                <MenuItem value="Category3">Category3</MenuItem>
+              </Select>
+            </FormControl>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="courses">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {currentCourses.map((course, index) => (
+                      <Draggable key={course.id} draggableId={course.id.toString()} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                              <Typography variant="body1">{course.name}</Typography>
+                              <button onClick={() => handleEdit(course.id)}>Edit</button>
+                              <button onClick={() => handleDelete(course.id)}>Delete</button>
+                            </Paper>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <Pagination
+              count={Math.ceil(filteredCourses.length / coursesPerPage)}
+              page={currentPage}
+              onChange={paginate}
+              color="primary"
+            />
+            <Snackbar
+              open={notification.open}
+              autoHideDuration={6000}
+              onClose={handleCloseNotification}
+            >
+              <Alert onClose={handleCloseNotification} severity={notification.severity}>
+                {notification.message}
+              </Alert>
+            </Snackbar>
+          </motion.div>
+        </CSSTransition>
       )}
     </div>
   );

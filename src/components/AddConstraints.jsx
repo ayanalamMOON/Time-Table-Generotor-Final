@@ -26,6 +26,9 @@ import "react-calendar/dist/Calendar.css";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import { CSSTransition } from "react-transition-group";
+import { motion } from "framer-motion";
+import "./AddConstraints.css";
 
 const AddConstraints = () => {
   const [selectedDays, setSelectedDays] = useState([]);
@@ -153,140 +156,148 @@ const AddConstraints = () => {
         <>
           <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
             <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-              <center>
-                <Typography variant="h6" gutterBottom>
-                  Time Table Details
-                </Typography>
-              </center>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={3}>
-                  <Tooltip title="Select the days for the timetable">
-                    <Calendar
-                      onClickDay={handleDayClick}
-                      tileClassName={({ date }) =>
-                        selectedDays.find((selectedDay) => selectedDay.getTime() === date.getTime())
-                          ? "selected-day"
-                          : ""
-                      }
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} sm={9}>
-                  <Stack direction="row" spacing={1} justifyContent="center">
-                    <Tooltip title="Select the time range for the timetable">
-                      <Slider
-                        value={timeRange}
-                        onChange={handleTimeRangeChange}
-                        valueLabelDisplay="auto"
-                        min={0}
-                        max={24}
-                        step={1}
-                        marks
+              <CSSTransition in={!loading} timeout={300} classNames="fade">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <center>
+                    <Typography variant="h6" gutterBottom>
+                      Time Table Details
+                    </Typography>
+                  </center>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={3}>
+                      <Tooltip title="Select the days for the timetable">
+                        <Calendar
+                          onClickDay={handleDayClick}
+                          tileClassName={({ date }) =>
+                            selectedDays.find((selectedDay) => selectedDay.getTime() === date.getTime())
+                              ? "selected-day"
+                              : ""
+                          }
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={9}>
+                      <Stack direction="row" spacing={1} justifyContent="center">
+                        <Tooltip title="Select the time range for the timetable">
+                          <Slider
+                            value={timeRange}
+                            onChange={handleTimeRangeChange}
+                            valueLabelDisplay="auto"
+                            min={0}
+                            max={24}
+                            step={1}
+                            marks
+                          />
+                        </Tooltip>
+                        <Tooltip title="Enter the time range in natural language">
+                          <TextField
+                            label="Natural Language Time"
+                            value={naturalLanguageTime}
+                            onChange={handleNaturalLanguageTimeChange}
+                            fullWidth
+                          />
+                        </Tooltip>
+                      </Stack>
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <Tooltip title="Select the first consecutive subject">
+                        <Autocomplete
+                          options={subjects}
+                          getOptionLabel={(option) => option.label}
+                          value={sub1}
+                          onChange={(event, newValue) => setSub1(newValue)}
+                          renderInput={(params) => <TextField {...params} label="Consecutive Subject 1" />}
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Tooltip title="Select the second consecutive subject">
+                        <Autocomplete
+                          options={subjects}
+                          getOptionLabel={(option) => option.label}
+                          value={sub2}
+                          onChange={(event, newValue) => setSub2(newValue)}
+                          renderInput={(params) => <TextField {...params} label="Consecutive Subject 2" />}
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Tooltip title="Select the first non-consecutive subject">
+                        <Autocomplete
+                          options={subjects}
+                          getOptionLabel={(option) => option.label}
+                          value={nsub1}
+                          onChange={(event, newValue) => setnSub1(newValue)}
+                          renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 1" />}
+                        />
+                      </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Tooltip title="Select the second non-consecutive subject">
+                        <Autocomplete
+                          options={subjects}
+                          getOptionLabel={(option) => option.label}
+                          value={nsub2}
+                          onChange={(event, newValue) => setnSub2(newValue)}
+                          renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 2" />}
+                        />
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+                  <FormGroup>
+                    <Tooltip title="Check this option if applicable">
+                      <FormControlLabel
+                        control={<Checkbox checked={checkedA} onChange={(e) => setCheckedA(e.target.checked)} />}
+                        label="Checked A"
                       />
                     </Tooltip>
-                    <Tooltip title="Enter the time range in natural language">
-                      <TextField
-                        label="Natural Language Time"
-                        value={naturalLanguageTime}
-                        onChange={handleNaturalLanguageTimeChange}
-                        fullWidth
+                    <Tooltip title="Check this option if applicable">
+                      <FormControlLabel
+                        control={<Checkbox checked={checkedB} onChange={(e) => setCheckedB(e.target.checked)} />}
+                        label="Checked B"
                       />
                     </Tooltip>
-                  </Stack>
-                </Grid>
-              </Grid>
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <Tooltip title="Select the first consecutive subject">
-                    <Autocomplete
-                      options={subjects}
-                      getOptionLabel={(option) => option.label}
-                      value={sub1}
-                      onChange={(event, newValue) => setSub1(newValue)}
-                      renderInput={(params) => <TextField {...params} label="Consecutive Subject 1" />}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Tooltip title="Select the second consecutive subject">
-                    <Autocomplete
-                      options={subjects}
-                      getOptionLabel={(option) => option.label}
-                      value={sub2}
-                      onChange={(event, newValue) => setSub2(newValue)}
-                      renderInput={(params) => <TextField {...params} label="Consecutive Subject 2" />}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Tooltip title="Select the first non-consecutive subject">
-                    <Autocomplete
-                      options={subjects}
-                      getOptionLabel={(option) => option.label}
-                      value={nsub1}
-                      onChange={(event, newValue) => setnSub1(newValue)}
-                      renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 1" />}
-                    />
-                  </Tooltip>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Tooltip title="Select the second non-consecutive subject">
-                    <Autocomplete
-                      options={subjects}
-                      getOptionLabel={(option) => option.label}
-                      value={nsub2}
-                      onChange={(event, newValue) => setnSub2(newValue)}
-                      renderInput={(params) => <TextField {...params} label="Non-Consecutive Subject 2" />}
-                    />
-                  </Tooltip>
-                </Grid>
-              </Grid>
-              <FormGroup>
-                <Tooltip title="Check this option if applicable">
-                  <FormControlLabel
-                    control={<Checkbox checked={checkedA} onChange={(e) => setCheckedA(e.target.checked)} />}
-                    label="Checked A"
-                  />
-                </Tooltip>
-                <Tooltip title="Check this option if applicable">
-                  <FormControlLabel
-                    control={<Checkbox checked={checkedB} onChange={(e) => setCheckedB(e.target.checked)} />}
-                    label="Checked B"
-                  />
-                </Tooltip>
-              </FormGroup>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="events">
-                  {(provided) => (
-                    <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {events.map((event, index) => (
-                        <Draggable key={event.id} draggableId={event.id} index={index}>
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                                <Typography variant="body1">{event.name}</Typography>
-                              </Paper>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-              <Button
-                variant="contained"
-                color="primary"
-                startIcon={<AddCircleOutlined />}
-                onClick={handleSubmit}
-              >
-                Submit
-              </Button>
+                  </FormGroup>
+                  <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="events">
+                      {(provided) => (
+                        <div {...provided.droppableProps} ref={provided.innerRef}>
+                          {events.map((event, index) => (
+                            <Draggable key={event.id} draggableId={event.id} index={index}>
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                    <Typography variant="body1">{event.name}</Typography>
+                                  </Paper>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddCircleOutlined />}
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                </motion.div>
+              </CSSTransition>
             </Paper>
           </Container>
         </>
