@@ -22,7 +22,7 @@ typed-ast==1.4.1
 typing-extensions==3.7.4.3
 uvicorn==0.32.0
 pytest==6.2.4
-httpx==0.18.2
+httpx==0.23.0
 python-dotenv==0.19.2
 scikit-optimize==0.8.1
 scikit-learn==0.24.2
