@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
 from csp import generate
-from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable, ConstraintTemplate, ConstraintTemplateManager
+from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableAIModel, train_ai_model, predict_timetable, ConstraintTemplate, ConstraintTemplateManager, TimetableCommit, TimetableBranch, commit_timetable, get_commits, get_commit, merge_commits, branch_commit
 from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 import motor.motor_asyncio
@@ -40,6 +40,8 @@ templates_collection = database.templates
 users_collection = database.users
 timetables_collection = database.timetables
 collaboration_collection = database.collaboration
+commits_collection = database.commits
+branches_collection = database.branches
 
 app = FastAPI()
 
@@ -404,6 +406,48 @@ async def get_recommendations(current_user: User = Depends(get_current_active_us
         {"courseName": "Course 2", "reason": "Based on your constraints"}
     ]
     return recommendations
+
+@app.post("/commit-timetable", response_model=TimetableCommit)
+async def commit_timetable_endpoint(commit: TimetableCommit, current_user: User = Depends(get_current_active_user)) -> TimetableCommit:
+    """
+    Endpoint to commit a timetable version.
+    """
+    commit_id = await commit_timetable(commit)
+    return {"commit_id": commit_id}
+
+@app.get("/get-commits", response_model=List[TimetableCommit])
+async def get_commits_endpoint(current_user: User = Depends(get_current_active_user)) -> List[TimetableCommit]:
+    """
+    Endpoint to retrieve all timetable commits.
+    """
+    commits = await get_commits()
+    return commits
+
+@app.get("/get-commit/{commit_id}", response_model=TimetableCommit)
+async def get_commit_endpoint(commit_id: str, current_user: User = Depends(get_current_active_user)) -> TimetableCommit:
+    """
+    Endpoint to retrieve a specific commit by ID.
+    """
+    commit = await get_commit(commit_id)
+    if not commit:
+        raise HTTPException(status_code=404, detail="Commit not found")
+    return commit
+
+@app.post("/merge-commits", response_model=TimetableCommit)
+async def merge_commits_endpoint(commit_ids: List[str], current_user: User = Depends(get_current_active_user)) -> TimetableCommit:
+    """
+    Endpoint to merge two timetable commits.
+    """
+    merged_commit = await merge_commits(commit_ids)
+    return merged_commit
+
+@app.post("/branch-commit", response_model=TimetableBranch)
+async def branch_commit_endpoint(commit_id: str, branch_name: str, current_user: User = Depends(get_current_active_user)) -> TimetableBranch:
+    """
+    Endpoint to create a new branch from a commit.
+    """
+    branch = await branch_commit(commit_id, branch_name)
+    return branch
 
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0",

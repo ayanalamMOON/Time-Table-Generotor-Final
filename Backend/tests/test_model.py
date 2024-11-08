@@ -1,5 +1,5 @@
 import pytest
-from model import CreateCourse, Course, CreateConstraints, Constraints, TimetableAIModel, train_ai_model, predict_timetable
+from model import CreateCourse, Course, CreateConstraints, Constraints, TimetableAIModel, train_ai_model, predict_timetable, commit_timetable, get_commits, get_commit, merge_commits, branch_commit
 import numpy as np
 
 def test_create_course():
@@ -343,3 +343,72 @@ def test_recommendation_system():
     input_data = np.array([1, 2, 3])
     recommendations = predict_timetable(model, input_data)
     assert recommendations is not None
+
+def test_commit_timetable():
+    """
+    Test the creation of a new timetable commit.
+    """
+    timetable_data = {
+        "courses": [
+            {
+                "name": "Test Course",
+                "lectureno": 10,
+                "duration": 2,
+                "instructor_name": "Test Instructor",
+                "start_hr": 9,
+                "end_hr": 11
+            }
+        ],
+        "constraints": {
+            "working_days": [
+                {
+                    "day": "Monday",
+                    "start_hr": 9,
+                    "end_hr": 17,
+                    "total_hours": 8
+                }
+            ],
+            "consecutive_subjects": ["Math", "Science"],
+            "non_consecutive_subjects": ["History", "Art"]
+        }
+    }
+    commit = commit_timetable(timetable_data, "Test User")
+    assert commit is not None
+    assert commit.user == "Test User"
+
+def test_get_commits():
+    """
+    Test the retrieval of all timetable commits.
+    """
+    commits = get_commits()
+    assert commits is not None
+    assert isinstance(commits, list)
+
+def test_get_commit():
+    """
+    Test the retrieval of a specific commit by ID.
+    """
+    commit_id = "some_commit_id"
+    commit = get_commit(commit_id)
+    assert commit is not None
+    assert commit.commit_id == commit_id
+
+def test_merge_commits():
+    """
+    Test the merging of two timetable commits.
+    """
+    commit_id_1 = "commit_id_1"
+    commit_id_2 = "commit_id_2"
+    merged_commit = merge_commits(commit_id_1, commit_id_2, "Test User")
+    assert merged_commit is not None
+    assert merged_commit.user == "Test User"
+
+def test_branch_commit():
+    """
+    Test the creation of a new branch from a commit.
+    """
+    commit_id = "some_commit_id"
+    branch_name = "new_branch"
+    branch = branch_commit(commit_id, branch_name)
+    assert branch is not None
+    assert branch.name == branch_name

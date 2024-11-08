@@ -688,3 +688,63 @@ async def test_rate_limiting():
             assert response.status_code == 200
         response = await ac.get("/get-courses")
         assert response.status_code == 429
+
+@pytest.mark.asyncio
+async def test_commit_timetable():
+    """
+    Test the /commit-timetable endpoint to ensure it commits a timetable version successfully.
+    """
+    commit_data = {
+        "commit_id": "test_commit_id",
+        "timestamp": "2023-01-01T00:00:00Z",
+        "user": "test_user",
+        "changes": {"change": "test_change"}
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/commit-timetable", json=commit_data)
+    assert response.status_code == 200
+    assert response.json()["commit_id"] == "test_commit_id"
+
+@pytest.mark.asyncio
+async def test_get_commits():
+    """
+    Test the /get-commits endpoint to ensure it returns a list of commits.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-commits")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+@pytest.mark.asyncio
+async def test_get_commit():
+    """
+    Test the /get-commit/{commit_id} endpoint to ensure it returns a specific commit or a 404 status code.
+    """
+    commit_id = "test_commit_id"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get(f"/get-commit/{commit_id}")
+    assert response.status_code == 200 or response.status_code == 404
+
+@pytest.mark.asyncio
+async def test_merge_commits():
+    """
+    Test the /merge-commits endpoint to ensure it merges two commits successfully.
+    """
+    commit_ids = ["commit_id_1", "commit_id_2"]
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/merge-commits", json=commit_ids)
+    assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_branch_commit():
+    """
+    Test the /branch-commit endpoint to ensure it creates a new branch from a commit successfully.
+    """
+    branch_data = {
+        "commit_id": "test_commit_id",
+        "branch_name": "test_branch"
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/branch-commit", json=branch_data)
+    assert response.status_code == 200
+    assert response.json()["branch_name"] == "test_branch"
