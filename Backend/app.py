@@ -38,6 +38,8 @@ courses_collection = database.courses
 constraints_collection = database.constraints
 templates_collection = database.templates
 users_collection = database.users
+timetables_collection = database.timetables
+collaboration_collection = database.collaboration
 
 app = FastAPI()
 
@@ -195,6 +197,23 @@ class CollaborationAction(BaseModel):
     action: str
     data: dict
 
+class ChatMessage(BaseModel):
+    sender: str
+    message: str
+    timestamp: datetime
+
+class TaskAssignment(BaseModel):
+    task: str
+    assigned_to: str
+    due_date: datetime
+    status: str
+
+class TimetableVersion(BaseModel):
+    version_id: str
+    changes: dict
+    timestamp: datetime
+    user: str
+
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """
@@ -294,6 +313,58 @@ async def collaboration_endpoint(websocket: WebSocket, timetable_id: str):
             await websocket.send_json({"status": "success", "action": action.action})
     except WebSocketDisconnect:
         logger.info(f"Collaboration session for timetable {timetable_id} disconnected")
+
+@app.websocket("/ws/chat/{timetable_id}")
+async def chat_endpoint(websocket: WebSocket, timetable_id: str):
+    """
+    WebSocket endpoint for real-time chat and messaging.
+    """
+    await websocket.accept()
+    try:
+        while True:
+            data = await websocket.receive_json()
+            message = ChatMessage(**data)
+            await websocket.send_json({"status": "success", "message": message.message})
+    except WebSocketDisconnect:
+        logger.info(f"Chat session for timetable {timetable_id} disconnected")
+
+@app.post("/assign-task", response_model=TaskAssignment)
+async def assign_task(task: TaskAssignment, current_user: User = Depends(get_current_active_user)) -> TaskAssignment:
+    """
+    Endpoint to assign a task to a team member.
+    """
+    await collaboration_collection.insert_one(task.dict())
+    return task
+
+@app.get("/get-tasks", response_model=List[TaskAssignment])
+async def get_tasks(current_user: User = Depends(get_current_active_user)) -> List[TaskAssignment]:
+    """
+    Endpoint to retrieve a list of assigned tasks.
+    """
+    tasks = []
+    cursor = collaboration_collection.find({})
+    async for document in cursor:
+        tasks.append(TaskAssignment(**document))
+    return tasks
+
+@app.post("/save-version", response_model=TimetableVersion)
+async def save_version(version: TimetableVersion, current_user: User = Depends(get_current_active_user)) -> TimetableVersion:
+    """
+    Endpoint to save a version of the timetable.
+    """
+    await timetables_collection.insert_one(version.dict())
+    return version
+
+@app.get("/get-versions", response_model=List[TimetableVersion])
+async def get_versions(current_user: User = Depends(get_current_active_user)) -> List[TimetableVersion]:
+    """
+    Endpoint to retrieve a list of timetable versions.
+    """
+    versions = []
+    cursor = timetables_collection.find({})
+    async for document in cursor:
+        versions.append(TimetableVersion(**document))
+    return versions
 
 @app.get("/export-analytics")
 async def export_analytics(format: str, current_user: User = Depends(get_current_admin_user)):

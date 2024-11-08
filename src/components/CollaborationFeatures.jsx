@@ -1,14 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { getCollaborationData, saveCollaborationData } from '../api/collaboration';
+import { getCollaborationData, saveCollaborationData, getTasks, assignTask, getProgress } from '../api/collaboration';
 import { WebSocket } from 'ws';
+import { Button, TextField, List, ListItem, ListItemText, Typography, Snackbar, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const CollaborationFeatures = () => {
   const [collaborationData, setCollaborationData] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [socket, setSocket] = useState(null);
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [progressData, setProgressData] = useState(null);
+  const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchCollaborationData();
+    fetchTasks();
+    fetchProgressData();
     const ws = new WebSocket('ws://localhost:8000/ws/collaboration');
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -25,6 +38,16 @@ const CollaborationFeatures = () => {
     setCollaborationData(data);
   };
 
+  const fetchTasks = async () => {
+    const data = await getTasks();
+    setTasks(data);
+  };
+
+  const fetchProgressData = async () => {
+    const data = await getProgress();
+    setProgressData(data);
+  };
+
   const handleCommentChange = (e) => {
     setNewComment(e.target.value);
   };
@@ -38,6 +61,45 @@ const CollaborationFeatures = () => {
     }
   };
 
+  const handleTaskChange = (e) => {
+    setNewTask(e.target.value);
+  };
+
+  const handleAssignedToChange = (e) => {
+    setAssignedTo(e.target.value);
+  };
+
+  const handleDueDateChange = (e) => {
+    setDueDate(e.target.value);
+  };
+
+  const handleTaskSubmit = async () => {
+    const task = { task: newTask, assigned_to: assignedTo, due_date: dueDate, status: 'Pending' };
+    const updatedTasks = await assignTask(task);
+    setTasks(updatedTasks);
+    setNewTask('');
+    setAssignedTo('');
+    setDueDate('');
+    setTaskDialogOpen(false);
+    setNotification({ open: true, message: 'Task assigned successfully', severity: 'success' });
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(tasks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setTasks(items);
+  };
+
+  const handleTaskDialogOpen = () => {
+    setTaskDialogOpen(true);
+  };
+
+  const handleTaskDialogClose = () => {
+    setTaskDialogOpen(false);
+  };
+
   return (
     <div>
       <h2>Collaboration Features</h2>
@@ -48,14 +110,108 @@ const CollaborationFeatures = () => {
             <li key={index}>{item.comment}</li>
           ))}
         </ul>
-        <input
+        <TextField
           type="text"
           value={newComment}
           onChange={handleCommentChange}
           placeholder="Add a comment"
+          fullWidth
         />
-        <button onClick={handleCommentSubmit}>Submit</button>
+        <Button onClick={handleCommentSubmit}>Submit</Button>
       </div>
+      <div>
+        <h3>Tasks</h3>
+        <Button variant="contained" color="primary" onClick={handleTaskDialogOpen}>
+          Assign Task
+        </Button>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId="tasks">
+            {(provided) => (
+              <List {...provided.droppableProps} ref={provided.innerRef}>
+                {tasks.map((task, index) => (
+                  <Draggable key={task.id} draggableId={task.id.toString()} index={index}>
+                    {(provided) => (
+                      <ListItem ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <ListItemText
+                          primary={task.task}
+                          secondary={`Assigned to: ${task.assigned_to}, Due date: ${task.due_date}, Status: ${task.status}`}
+                        />
+                      </ListItem>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </List>
+            )}
+          </Droppable>
+        </DragDropContext>
+      </div>
+      <div>
+        <h3>Progress Tracking</h3>
+        {progressData ? (
+          <Bar
+            data={{
+              labels: Object.keys(progressData),
+              datasets: [
+                {
+                  label: 'Progress',
+                  data: Object.values(progressData),
+                  backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                },
+              ],
+            }}
+          />
+        ) : (
+          <Typography>Loading progress data...</Typography>
+        )}
+      </div>
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={() => setNotification({ ...notification, open: false })}
+      >
+        <Alert onClose={() => setNotification({ ...notification, open: false })} severity={notification.severity}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
+      <Dialog open={taskDialogOpen} onClose={handleTaskDialogClose}>
+        <DialogTitle>Assign Task</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Task"
+            value={newTask}
+            onChange={handleTaskChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Assigned To"
+            value={assignedTo}
+            onChange={handleAssignedToChange}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Due Date"
+            type="date"
+            value={dueDate}
+            onChange={handleDueDateChange}
+            fullWidth
+            margin="normal"
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleTaskDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleTaskSubmit} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
