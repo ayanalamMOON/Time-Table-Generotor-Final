@@ -1,7 +1,7 @@
 {
   "tasks": {
     "test": "pip install -r Backend/requirements.txt && cd Backend && pytest && cd .. && npm install && npm test",
-    "build": "pip install -r Backend/requirements.txt && npm install",
+    "build": "npm start",
     "launch": "cd Backend && uvicorn app:app --reload & cd .. && npm start"
   },
   "postCreateCommand": "curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && source $HOME/.cargo/env"
