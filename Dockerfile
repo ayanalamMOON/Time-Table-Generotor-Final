@@ -18,3 +18,12 @@ ENV NAME World
 
 # Run app.py when the container launches
 CMD ["uvicorn", "Backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Use the official image as a parent image
+FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu
+
+# Install Rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y
+
+# Add Rust to the PATH
+ENV PATH="/root/.cargo/bin:${PATH}"
