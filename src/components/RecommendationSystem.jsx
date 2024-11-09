@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { motion } from 'framer-motion';
 
 const localizer = momentLocalizer(moment);
 
@@ -53,12 +54,21 @@ const RecommendationSystem = () => {
                   {recommendations.map((recommendation, index) => (
                     <Draggable key={recommendation.id} draggableId={recommendation.id.toString()} index={index}>
                       {(provided) => (
-                        <ListItem ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                          <ListItemText
-                            primary={recommendation.courseName}
-                            secondary={recommendation.reason}
-                          />
-                        </ListItem>
+                        <motion.div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          initial={{ opacity: 0, y: -20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5 }}
+                        >
+                          <ListItem>
+                            <ListItemText
+                              primary={recommendation.courseName}
+                              secondary={recommendation.reason}
+                            />
+                          </ListItem>
+                        </motion.div>
                       )}
                     </Draggable>
                   ))}
@@ -78,6 +88,17 @@ const RecommendationSystem = () => {
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500, margin: '50px 0' }}
+          components={{
+            event: ({ event }) => (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                {event.title}
+              </motion.div>
+            ),
+          }}
         />
       </Paper>
       <Snackbar

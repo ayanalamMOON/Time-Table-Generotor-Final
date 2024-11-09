@@ -129,17 +129,20 @@ const ConstraintList = () => {
                     {currentConstraints.map((constraint, index) => (
                       <Draggable key={constraint.id} draggableId={constraint.id} index={index}>
                         {(provided) => (
-                          <div
+                          <motion.div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
                           >
                             <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
                               <Typography variant="body1">{constraint.name}</Typography>
                               <button onClick={() => handleEdit(constraint.id)}>Edit</button>
                               <button onClick={() => handleDelete(constraint.id)}>Delete</button>
                             </Paper>
-                          </div>
+                          </motion.div>
                         )}
                       </Draggable>
                     ))}

@@ -6,6 +6,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
 import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { motion } from 'framer-motion';
 
 const Timetable = ({ timetable }) => {
   const [events, setEvents] = useState(timetable);
@@ -70,7 +71,15 @@ const Timetable = ({ timetable }) => {
       <Button variant="contained" color="secondary" onClick={handleCollaborationOpen}>
         Collaborate
       </Button>
-      <Dialog open={analyticsOpen} onClose={handleAnalyticsClose}>
+      <Dialog
+        open={analyticsOpen}
+        onClose={handleAnalyticsClose}
+        TransitionComponent={motion.div}
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.5 }}
+      >
         <DialogTitle>Analytics and Reporting</DialogTitle>
         <DialogContent>
           {/* Placeholder for analytics and reporting content */}
@@ -82,7 +91,15 @@ const Timetable = ({ timetable }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog open={collaborationOpen} onClose={handleCollaborationClose}>
+      <Dialog
+        open={collaborationOpen}
+        onClose={handleCollaborationClose}
+        TransitionComponent={motion.div}
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 50 }}
+        transition={{ duration: 0.5 }}
+      >
         <DialogTitle>Collaboration Features</DialogTitle>
         <DialogContent>
           <TextField

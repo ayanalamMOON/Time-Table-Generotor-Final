@@ -4,6 +4,7 @@ import { TextField, Pagination, Button, Snackbar, Alert, Dialog, DialogActions, 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { motion } from 'framer-motion';
 
 const TemplateList = () => {
   const [templates, setTemplates] = useState([]);
@@ -108,20 +109,27 @@ const TemplateList = () => {
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="templates">
               {(provided) => (
-                <ul {...provided.droppableProps} ref={provided.innerRef}>
+                <motion.ul {...provided.droppableProps} ref={provided.innerRef}>
                   {currentTemplates.map((template, index) => (
                     <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
                       {(provided) => (
-                        <li ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                        <motion.li
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ duration: 0.5 }}
+                        >
                           {template.name}
                           <button onClick={() => handleEdit(template.id)}>Edit</button>
                           <button onClick={() => handleDialogOpen('Delete Template', 'Are you sure you want to delete this template?', () => handleDelete(template.id))}>Delete</button>
-                        </li>
+                        </motion.li>
                       )}
                     </Draggable>
                   ))}
                   {provided.placeholder}
-                </ul>
+                </motion.ul>
               )}
             </Droppable>
           </DragDropContext>

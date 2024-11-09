@@ -126,17 +126,20 @@ const CourseList = () => {
                     {currentCourses.map((course, index) => (
                       <Draggable key={course.id} draggableId={course.id.toString()} index={index}>
                         {(provided) => (
-                          <div
+                          <motion.div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ duration: 0.5 }}
                           >
                             <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
                               <Typography variant="body1">{course.name}</Typography>
                               <button onClick={() => handleEdit(course.id)}>Edit</button>
                               <button onClick={() => handleDelete(course.id)}>Delete</button>
                             </Paper>
-                          </div>
+                          </motion.div>
                         )}
                       </Draggable>
                     ))}
