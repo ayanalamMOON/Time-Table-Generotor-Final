@@ -11,7 +11,7 @@ services:
       - MONGODB_CONNECTION_STRING=${MONGODB_CONNECTION_STRING}
     volumes:
       - .:/app
-    command: uvicorn Backend.app:app --host 0.0.0.0 --port 8000 --reload
+    command: hypercorn Backend.app:app --bind 0.0.0.0:8000 --reload
 
   frontend:
     image: node:14

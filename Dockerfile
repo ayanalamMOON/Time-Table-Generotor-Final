@@ -17,7 +17,7 @@ EXPOSE 8000
 ENV NAME World
 
 # Run app.py when the container launches
-CMD ["uvicorn", "Backend.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["hypercorn", "Backend.app:app", "--bind", "0.0.0.0:8000", "--reload"]
 
 # Use the official image as a parent image
 FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu

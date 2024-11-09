@@ -13,7 +13,7 @@ The backend architecture consists of the following main components:
 3. **Pydantic**: Used for data validation and serialization.
 4. **TensorFlow**: Used for the AI model to predict timetables.
 5. **Motor**: An asynchronous MongoDB driver for Python.
-6. **Uvicorn**: An ASGI server used to serve the FastAPI application.
+6. **Hypercorn**: An ASGI server used to serve the FastAPI application.
 
 ## Technologies Used
 
@@ -22,7 +22,7 @@ The backend architecture consists of the following main components:
 - **Pydantic**: A data validation and settings management library using Python type annotations.
 - **TensorFlow**: An open-source machine learning framework used for the AI model.
 - **Motor**: An asynchronous MongoDB driver for Python.
-- **Uvicorn**: A lightning-fast ASGI server implementation, using `uvloop` and `httptools`.
+- **Hypercorn**: A lightning-fast ASGI server implementation, using `uvloop` and `httptools`.
 
 ## Setup Instructions
 
@@ -68,7 +68,7 @@ MONGODB_CONNECTION_STRING=mongodb://localhost:27017/timetable
 6. Start the backend server:
 
 ```bash
-uvicorn app:app --reload
+hypercorn app:app --reload
 ```
 
 ## API Endpoints

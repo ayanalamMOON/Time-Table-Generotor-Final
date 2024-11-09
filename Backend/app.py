@@ -5,7 +5,7 @@ from model import Constraint, Course, CreateConstraint, CreateCourse, TimetableA
 from fastapi import FastAPI, HTTPException, Depends, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel
 import motor.motor_asyncio
-import uvicorn.run
+import hypercorn.asyncio
 import os
 import logging
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -450,7 +450,7 @@ async def branch_commit_endpoint(commit_id: str, branch_name: str, current_user:
     return branch
 
 if __name__ == '__main__':
-    uvicorn.run("app:app", host="0.0.0.0",
+    hypercorn.asyncio.run("app:app", host="0.0.0.0",
                 port=8000, reload=True, debug=True)
 
 @app.on_event("startup")

@@ -25,7 +25,7 @@ cd Backend
 3. Start the backend server:
 
 ```bash
-uvicorn app:app --reload
+hypercorn app:app --reload
 ```
 
 ### Frontend
