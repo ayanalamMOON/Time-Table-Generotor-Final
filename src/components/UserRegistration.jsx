@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip } from '@mui/material';
 import Swal from 'sweetalert2';
+import { useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import { CSSTransition } from 'react-transition-group';
+import { motion } from 'framer-motion';
 
 const UserRegistration = () => {
   const [username, setUsername] = useState('');
@@ -10,6 +14,8 @@ const UserRegistration = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -55,80 +61,88 @@ const UserRegistration = () => {
   return (
     <Container component="main" maxWidth="sm">
       <Paper variant="outlined" sx={{ my: 3, p: 3 }}>
-        <Typography component="h1" variant="h5">
-          User Registration
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <Tooltip title="Enter your username">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </Tooltip>
-          <Tooltip title="Enter your email">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </Tooltip>
-          <Tooltip title="Enter your full name">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              id="fullName"
-              label="Full Name"
-              name="fullName"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-            />
-          </Tooltip>
-          <Tooltip title="Enter your password">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="password"
-              label="Password"
-              name="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </Tooltip>
-          <Tooltip title="Enter your role">
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="role"
-              label="Role"
-              name="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-            />
-          </Tooltip>
-          <Button type="submit" fullWidth variant="contained" color="primary">
-            Register
-          </Button>
-        </form>
-        {loading && <CircularProgress />}
+        <CSSTransition in={!loading} timeout={300} classNames="fade">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Typography component="h1" variant="h5">
+              User Registration
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Tooltip title="Enter your username">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </Tooltip>
+              <Tooltip title="Enter your email">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </Tooltip>
+              <Tooltip title="Enter your full name">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  id="fullName"
+                  label="Full Name"
+                  name="fullName"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </Tooltip>
+              <Tooltip title="Enter your password">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="password"
+                  label="Password"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </Tooltip>
+              <Tooltip title="Enter your role">
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="role"
+                  label="Role"
+                  name="role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                />
+              </Tooltip>
+              <Button type="submit" fullWidth variant="contained" color="primary">
+                Register
+              </Button>
+            </form>
+            {loading && <CircularProgress />}
+          </motion.div>
+        </CSSTransition>
       </Paper>
     </Container>
   );

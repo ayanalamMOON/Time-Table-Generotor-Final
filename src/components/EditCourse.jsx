@@ -109,6 +109,8 @@ const EditCourse = () => {
                       value={courseName}
                       onChange={(e) => setCourseName(e.target.value)}
                       fullWidth
+                      error={courseName.trim() === ""}
+                      helperText={courseName.trim() === "" ? "Course Name is required" : ""}
                     />
                   </Tooltip>
                 </Grid>
@@ -119,6 +121,8 @@ const EditCourse = () => {
                       value={courseCode}
                       onChange={(e) => setCourseCode(e.target.value)}
                       fullWidth
+                      error={courseCode.trim() === ""}
+                      helperText={courseCode.trim() === "" ? "Course Code is required" : ""}
                     />
                   </Tooltip>
                 </Grid>
@@ -129,8 +133,9 @@ const EditCourse = () => {
                   color="primary"
                   startIcon={<EditOutlined />}
                   onClick={handleSubmit}
+                  disabled={loading}
                 >
-                  Submit
+                  {loading ? <CircularProgress size={24} /> : "Submit"}
                 </Button>
               </Stack>
               <DragDropContext onDragEnd={handleDragEnd}>

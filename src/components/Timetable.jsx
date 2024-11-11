@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
-import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 
 const Timetable = ({ timetable }) => {
@@ -13,6 +13,7 @@ const Timetable = ({ timetable }) => {
   const [analyticsOpen, setAnalyticsOpen] = useState(false);
   const [collaborationOpen, setCollaborationOpen] = useState(false);
   const [comment, setComment] = useState('');
+  const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -120,50 +121,66 @@ const Timetable = ({ timetable }) => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Suspense fallback={<div>Loading...</div>}>
-        <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="events">
-            {(provided) => (
-              <div {...provided.droppableProps} ref={provided.innerRef}>
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Time</th>
-                      <th>Monday</th>
-                      <th>Tuesday</th>
-                      <th>Wednesday</th>
-                      <th>Thursday</th>
-                      <th>Friday</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {events.map((row, index) => (
-                      <Draggable key={index} draggableId={index.toString()} index={index}>
-                        {(provided) => (
-                          <tr
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            onClick={() => handleEventClick(row)}
-                          >
-                            <td>{row.time}</td>
-                            <td>{row.monday}</td>
-                            <td>{row.tuesday}</td>
-                            <td>{row.wednesday}</td>
-                            <td>{row.thursday}</td>
-                            <td>{row.friday}</td>
-                          </tr>
-                        )}
-                      </Draggable>
-                    ))}
-                  </tbody>
-                </table>
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        </DragDropContext>
-      </Suspense>
+      {loading ? (
+        <CircularProgress />
+      ) : (
+        <Suspense fallback={<div>Loading...</div>}>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="events">
+              {(provided) => (
+                <div {...provided.droppableProps} ref={provided.innerRef}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Time</th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {events.map((row, index) => (
+                        <Draggable key={index} draggableId={index.toString()} index={index}>
+                          {(provided) => (
+                            <tr
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              onClick={() => handleEventClick(row)}
+                            >
+                              <Tooltip title={`Event: ${row.name}\nTime: ${row.time}`}>
+                                <td>{row.time}</td>
+                              </Tooltip>
+                              <Tooltip title={`Event: ${row.monday}`}>
+                                <td>{row.monday}</td>
+                              </Tooltip>
+                              <Tooltip title={`Event: ${row.tuesday}`}>
+                                <td>{row.tuesday}</td>
+                              </Tooltip>
+                              <Tooltip title={`Event: ${row.wednesday}`}>
+                                <td>{row.wednesday}</td>
+                              </Tooltip>
+                              <Tooltip title={`Event: ${row.thursday}`}>
+                                <td>{row.thursday}</td>
+                              </Tooltip>
+                              <Tooltip title={`Event: ${row.friday}`}>
+                                <td>{row.friday}</td>
+                              </Tooltip>
+                            </tr>
+                          )}
+                        </Draggable>
+                      ))}
+                    </tbody>
+                  </table>
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </Suspense>
+      )}
     </div>
   );
 };
