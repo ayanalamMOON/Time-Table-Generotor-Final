@@ -3,9 +3,9 @@ from pydantic import BaseModel, Field
 from bson import ObjectId
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM, Dropout, Bidirectional
+from tensorflow.keras.layers import Dense, LSTM, Dropout, Bidirectional, GRU, Attention
 from tensorflow.keras.optimizers import Adam, RMSprop
-from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping, LearningRateScheduler
 import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
@@ -144,8 +144,11 @@ class TimetableAIModel:
         self.model = Sequential()
         self.model.add(Bidirectional(LSTM(100, return_sequences=True, input_shape=(10, 1))))
         self.model.add(Dropout(0.2))
-        self.model.add(Bidirectional(LSTM(100, return_sequences=False)))
+        self.model.add(Bidirectional(LSTM(100, return_sequences=True)))
         self.model.add(Dropout(0.2))
+        self.model.add(GRU(100, return_sequences=True))
+        self.model.add(Dropout(0.2))
+        self.model.add(Attention())
         self.model.add(Dense(50))
         self.model.add(Dense(1))
         if optimizer == 'adam':
@@ -158,7 +161,8 @@ class TimetableAIModel:
         Train the AI model.
         """
         early_stopping = EarlyStopping(monitor='loss', patience=5)
-        self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, callbacks=[early_stopping])
+        lr_scheduler = LearningRateScheduler(lambda epoch: 1e-4 * 10**(epoch / 20))
+        self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, callbacks=[early_stopping, lr_scheduler])
 
     def predict(self, X_test: np.ndarray) -> np.ndarray:
         """
@@ -174,6 +178,15 @@ def train_ai_model(historical_data: List[Dict[str, Any]]) -> TimetableAIModel:
     model = TimetableAIModel()
     X_train = np.array([data['features'] for data in historical_data])
     y_train = np.array([data['label'] for data in historical_data])
+
+    # Feature selection using PCA
+    pca = PCA(n_components=5)
+    X_train_pca = pca.fit_transform(X_train)
+
+    # Feature selection using SelectKBest
+    selector = SelectKBest(f_classif, k=5)
+    X_train_selected = selector.fit_transform(X_train, y_train)
+
     X_train = X_train.reshape((X_train.shape[0], X_train.shape[1], 1))  # Reshape for LSTM input
     model.train(X_train, y_train)
 

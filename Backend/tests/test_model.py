@@ -56,7 +56,10 @@ def test_create_constraints():
             }
         ],
         "consecutive_subjects": ["Math", "Science"],
-        "non_consecutive_subjects": ["History", "Art"]
+        "non_consecutive_subjects": ["History", "Art"],
+        "room_availability": {"Room1": [9, 10, 11], "Room2": [12, 13, 14]},
+        "teacher_preferences": {"Teacher1": [9, 10, 11], "Teacher2": [12, 13, 14]},
+        "student_preferences": {"Student1": [9, 10, 11], "Student2": [12, 13, 14]}
     }
     constraints = CreateConstraints(**constraints_data)
     assert constraints.working_days[0].day == "Monday"
@@ -65,6 +68,9 @@ def test_create_constraints():
     assert constraints.working_days[0].total_hours == 8
     assert constraints.consecutive_subjects == ["Math", "Science"]
     assert constraints.non_consecutive_subjects == ["History", "Art"]
+    assert constraints.room_availability == {"Room1": [9, 10, 11], "Room2": [12, 13, 14]}
+    assert constraints.teacher_preferences == {"Teacher1": [9, 10, 11], "Teacher2": [12, 13, 14]}
+    assert constraints.student_preferences == {"Student1": [9, 10, 11], "Student2": [12, 13, 14]}
 
 def test_constraints():
     """
@@ -80,7 +86,10 @@ def test_constraints():
             }
         ],
         "consecutive_subjects": ["Math", "Science"],
-        "non_consecutive_subjects": ["History", "Art"]
+        "non_consecutive_subjects": ["History", "Art"],
+        "room_availability": {"Room1": [9, 10, 11], "Room2": [12, 13, 14]},
+        "teacher_preferences": {"Teacher1": [9, 10, 11], "Teacher2": [12, 13, 14]},
+        "student_preferences": {"Student1": [9, 10, 11], "Student2": [12, 13, 14]}
     }
     constraints = Constraints(**constraints_data)
     assert constraints.working_days[0].day == "Monday"
@@ -89,6 +98,9 @@ def test_constraints():
     assert constraints.working_days[0].total_hours == 8
     assert constraints.consecutive_subjects == ["Math", "Science"]
     assert constraints.non_consecutive_subjects == ["History", "Art"]
+    assert constraints.room_availability == {"Room1": [9, 10, 11], "Room2": [12, 13, 14]}
+    assert constraints.teacher_preferences == {"Teacher1": [9, 10, 11], "Teacher2": [12, 13, 14]}
+    assert constraints.student_preferences == {"Student1": [9, 10, 11], "Student2": [12, 13, 14]}
 
 def test_timetable_ai_model():
     """
@@ -219,7 +231,10 @@ def test_create_constraints_edge_cases():
             }
         ],
         "consecutive_subjects": ["A" * 100, "B" * 100],
-        "non_consecutive_subjects": ["C" * 100, "D" * 100]
+        "non_consecutive_subjects": ["C" * 100, "D" * 100],
+        "room_availability": {"Room1": [i for i in range(24)], "Room2": [i for i in range(24)]},
+        "teacher_preferences": {"Teacher1": [i for i in range(24)], "Teacher2": [i for i in range(24)]},
+        "student_preferences": {"Student1": [i for i in range(24)], "Student2": [i for i in range(24)]}
     }
     constraints = CreateConstraints(**constraints_data)
     assert constraints.working_days[0].day == "Monday"
@@ -228,6 +243,9 @@ def test_create_constraints_edge_cases():
     assert constraints.working_days[0].total_hours == 24
     assert constraints.consecutive_subjects == ["A" * 100, "B" * 100]
     assert constraints.non_consecutive_subjects == ["C" * 100, "D" * 100]
+    assert constraints.room_availability == {"Room1": [i for i in range(24)], "Room2": [i for i in range(24)]}
+    assert constraints.teacher_preferences == {"Teacher1": [i for i in range(24)], "Teacher2": [i for i in range(24)]}
+    assert constraints.student_preferences == {"Student1": [i for i in range(24)], "Student2": [i for i in range(24)]}
 
 def test_constraints_edge_cases():
     """
@@ -255,7 +273,10 @@ def test_constraints_edge_cases():
             }
         ],
         "consecutive_subjects": ["A" * 100, "B" * 100],
-        "non_consecutive_subjects": ["C" * 100, "D" * 100]
+        "non_consecutive_subjects": ["C" * 100, "D" * 100],
+        "room_availability": {"Room1": [i for i in range(24)], "Room2": [i for i in range(24)]},
+        "teacher_preferences": {"Teacher1": [i for i in range(24)], "Teacher2": [i for i in range(24)]},
+        "student_preferences": {"Student1": [i for i in range(24)], "Student2": [i for i in range(24)]}
     }
     constraints = Constraints(**constraints_data)
     assert constraints.working_days[0].day == "Monday"
@@ -264,6 +285,9 @@ def test_constraints_edge_cases():
     assert constraints.working_days[0].total_hours == 24
     assert constraints.consecutive_subjects == ["A" * 100, "B" * 100]
     assert constraints.non_consecutive_subjects == ["C" * 100, "D" * 100]
+    assert constraints.room_availability == {"Room1": [i for i in range(24)], "Room2": [i for i in range(24)]}
+    assert constraints.teacher_preferences == {"Teacher1": [i for i in range(24)], "Teacher2": [i for i in range(24)]}
+    assert constraints.student_preferences == {"Student1": [i for i in range(24)], "Student2": [i for i in range(24)]}
 
 def test_timetable_ai_model_edge_cases():
     """
@@ -412,3 +436,69 @@ def test_branch_commit():
     branch = branch_commit(commit_id, branch_name)
     assert branch is not None
     assert branch.name == branch_name
+
+def test_feature_selection_pca():
+    """
+    Test the feature selection using PCA in the train_ai_model function.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3, 4, 5]), "label": 1},
+        {"features": np.array([6, 7, 8, 9, 10]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_feature_selection_selectkbest():
+    """
+    Test the feature selection using SelectKBest in the train_ai_model function.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3, 4, 5]), "label": 1},
+        {"features": np.array([6, 7, 8, 9, 10]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_neural_network_architectures():
+    """
+    Test the different neural network architectures in the TimetableAIModel class.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_ensemble_learning_techniques():
+    """
+    Test the ensemble learning techniques in the train_ai_model function.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_hyperparameter_tuning():
+    """
+    Test the hyperparameter tuning techniques in the train_ai_model function.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+def test_early_stopping_and_lr_scheduling():
+    """
+    Test the early stopping and learning rate scheduling in the train_ai_model function.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None

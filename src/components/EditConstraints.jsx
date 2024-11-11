@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { CSSTransition } from 'react-transition-group';
+import { motion } from 'framer-motion';
 
 const EditConstraints = ({ match, history }) => {
   const [constraint, setConstraint] = useState({
@@ -78,96 +80,104 @@ const EditConstraints = ({ match, history }) => {
   return (
     <Container component="main" maxWidth="md" sx={{ mb: 4 }}>
       <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
-        <center>
-          <Typography variant="h6" gutterBottom>
-            Edit Constraint
-          </Typography>
-        </center>
-        {loading ? (
-          <CircularProgress />
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Tooltip title="Enter the name of the constraint">
-                  <TextField
-                    label="Name"
-                    id="name"
-                    name="name"
-                    value={constraint.name}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12}>
-                <Tooltip title="Enter the description of the constraint">
-                  <TextField
-                    label="Description"
-                    id="description"
-                    name="description"
-                    value={constraint.description}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12}>
-                <Tooltip title="Enter the type of the constraint">
-                  <TextField
-                    label="Type"
-                    id="type"
-                    name="type"
-                    value={constraint.type}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Tooltip>
-              </Grid>
-              <Grid item xs={12}>
-                <Tooltip title="Enter the value of the constraint">
-                  <TextField
-                    label="Value"
-                    id="value"
-                    name="value"
-                    value={constraint.value}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Tooltip>
-              </Grid>
-            </Grid>
-            <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-              <Button type="submit" variant="contained" color="primary">
-                Save
-              </Button>
-            </Stack>
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="events">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {events.map((event, index) => (
-                      <Draggable key={event.id} draggableId={event.id} index={index}>
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                              <Typography variant="body1">{event.name}</Typography>
-                            </Paper>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </form>
-        )}
+        <CSSTransition in={!loading} timeout={300} classNames="fade">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <center>
+              <Typography variant="h6" gutterBottom>
+                Edit Constraint
+              </Typography>
+            </center>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <form onSubmit={handleSubmit}>
+                <Grid container spacing={3}>
+                  <Grid item xs={12}>
+                    <Tooltip title="Enter the name of the constraint">
+                      <TextField
+                        label="Name"
+                        id="name"
+                        name="name"
+                        value={constraint.name}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Tooltip title="Enter the description of the constraint">
+                      <TextField
+                        label="Description"
+                        id="description"
+                        name="description"
+                        value={constraint.description}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Tooltip title="Enter the type of the constraint">
+                      <TextField
+                        label="Type"
+                        id="type"
+                        name="type"
+                        value={constraint.type}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Tooltip>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Tooltip title="Enter the value of the constraint">
+                      <TextField
+                        label="Value"
+                        id="value"
+                        name="value"
+                        value={constraint.value}
+                        onChange={handleChange}
+                        fullWidth
+                      />
+                    </Tooltip>
+                  </Grid>
+                </Grid>
+                <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                  <Button type="submit" variant="contained" color="primary">
+                    Save
+                  </Button>
+                </Stack>
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <Droppable droppableId="events">
+                    {(provided) => (
+                      <div {...provided.droppableProps} ref={provided.innerRef}>
+                        {events.map((event, index) => (
+                          <Draggable key={event.id} draggableId={event.id} index={index}>
+                            {(provided) => (
+                              <div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                              >
+                                <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                  <Typography variant="body1">{event.name}</Typography>
+                                </Paper>
+                              </div>
+                            )}
+                          </Draggable>
+                        ))}
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+              </form>
+            )}
+          </motion.div>
+        </CSSTransition>
       </Paper>
     </Container>
   );

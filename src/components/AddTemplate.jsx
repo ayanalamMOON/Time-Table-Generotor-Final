@@ -126,10 +126,9 @@ const AddTemplate = () => {
                 </Droppable>
               </DragDropContext>
               <Button type="submit" fullWidth variant="contained" color="primary">
-                Add Template
+                {loading ? <CircularProgress size={24} /> : 'Add Template'}
               </Button>
             </form>
-            {loading && <CircularProgress />}
           </motion.div>
         </CSSTransition>
       </Paper>
