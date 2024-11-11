@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
-import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from '@mui/material';
+import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 
 const Timetable = ({ timetable }) => {
@@ -129,51 +129,55 @@ const Timetable = ({ timetable }) => {
             <Droppable droppableId="events">
               {(provided) => (
                 <div {...provided.droppableProps} ref={provided.innerRef}>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Time</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {events.map((row, index) => (
-                        <Draggable key={index} draggableId={index.toString()} index={index}>
-                          {(provided) => (
-                            <tr
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              onClick={() => handleEventClick(row)}
-                            >
-                              <Tooltip title={`Event: ${row.name}\nTime: ${row.time}`}>
-                                <td>{row.time}</td>
-                              </Tooltip>
-                              <Tooltip title={`Event: ${row.monday}`}>
-                                <td>{row.monday}</td>
-                              </Tooltip>
-                              <Tooltip title={`Event: ${row.tuesday}`}>
-                                <td>{row.tuesday}</td>
-                              </Tooltip>
-                              <Tooltip title={`Event: ${row.wednesday}`}>
-                                <td>{row.wednesday}</td>
-                              </Tooltip>
-                              <Tooltip title={`Event: ${row.thursday}`}>
-                                <td>{row.thursday}</td>
-                              </Tooltip>
-                              <Tooltip title={`Event: ${row.friday}`}>
-                                <td>{row.friday}</td>
-                              </Tooltip>
-                            </tr>
-                          )}
-                        </Draggable>
-                      ))}
-                    </tbody>
-                  </table>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Time</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {events.map((row, index) => (
+                            <Draggable key={index} draggableId={index.toString()} index={index}>
+                              {(provided) => (
+                                <tr
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  onClick={() => handleEventClick(row)}
+                                >
+                                  <Tooltip title={`Event: ${row.name}\nTime: ${row.time}`}>
+                                    <td>{row.time}</td>
+                                  </Tooltip>
+                                  <Tooltip title={`Event: ${row.monday}`}>
+                                    <td>{row.monday}</td>
+                                  </Tooltip>
+                                  <Tooltip title={`Event: ${row.tuesday}`}>
+                                    <td>{row.tuesday}</td>
+                                  </Tooltip>
+                                  <Tooltip title={`Event: ${row.wednesday}`}>
+                                    <td>{row.wednesday}</td>
+                                  </Tooltip>
+                                  <Tooltip title={`Event: ${row.thursday}`}>
+                                    <td>{row.thursday}</td>
+                                  </Tooltip>
+                                  <Tooltip title={`Event: ${row.friday}`}>
+                                    <td>{row.friday}</td>
+                                  </Tooltip>
+                                </tr>
+                              )}
+                            </Draggable>
+                          ))}
+                        </tbody>
+                      </table>
+                    </Grid>
+                  </Grid>
                   {provided.placeholder}
                 </div>
               )}

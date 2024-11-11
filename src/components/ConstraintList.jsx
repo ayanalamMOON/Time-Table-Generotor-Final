@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Pagination, CircularProgress, Paper, Typography, Tooltip, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { TextField, Pagination, CircularProgress, Paper, Typography, Tooltip, MenuItem, Select, InputLabel, FormControl, Grid, Button } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -126,26 +126,30 @@ const ConstraintList = () => {
               <Droppable droppableId="constraints">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {currentConstraints.map((constraint, index) => (
-                      <Draggable key={constraint.id} draggableId={constraint.id} index={index}>
-                        {(provided) => (
-                          <motion.div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                              <Typography variant="body1">{constraint.name}</Typography>
-                              <button onClick={() => handleEdit(constraint.id)}>Edit</button>
-                              <button onClick={() => handleDelete(constraint.id)}>Delete</button>
-                            </Paper>
-                          </motion.div>
-                        )}
-                      </Draggable>
-                    ))}
+                    <Grid container spacing={2}>
+                      {currentConstraints.map((constraint, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={constraint.id}>
+                          <Draggable key={constraint.id} draggableId={constraint.id} index={index}>
+                            {(provided) => (
+                              <motion.div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.5 }}
+                              >
+                                <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                  <Typography variant="body1">{constraint.name}</Typography>
+                                  <Button variant="contained" color="primary" onClick={() => handleEdit(constraint.id)}>Edit</Button>
+                                  <Button variant="contained" color="secondary" onClick={() => handleDelete(constraint.id)}>Delete</Button>
+                                </Paper>
+                              </motion.div>
+                            )}
+                          </Draggable>
+                        </Grid>
+                      ))}
+                    </Grid>
                     {provided.placeholder}
                   </div>
                 )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import axios from 'axios';
-import { TextField, Pagination, Button, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Tooltip, Paper, Typography } from '@mui/material';
+import { TextField, Pagination, Button, Snackbar, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, CircularProgress, Tooltip, Paper, Typography, Grid } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -129,26 +129,30 @@ const TemplateList = () => {
                 <Droppable droppableId="templates">
                   {(provided) => (
                     <div {...provided.droppableProps} ref={provided.innerRef}>
-                      {currentTemplates.map((template, index) => (
-                        <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
-                          {(provided) => (
-                            <motion.div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 0.5 }}
-                            >
-                              <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                                <Typography variant="body1">{template.name}</Typography>
-                                <button onClick={() => handleEdit(template.id)}>Edit</button>
-                                <button onClick={() => handleDialogOpen('Delete Template', 'Are you sure you want to delete this template?', () => handleDelete(template.id))}>Delete</button>
-                              </Paper>
-                            </motion.div>
-                          )}
-                        </Draggable>
-                      ))}
+                      <Grid container spacing={2}>
+                        {currentTemplates.map((template, index) => (
+                          <Grid item xs={12} sm={6} md={4} key={template.id}>
+                            <Draggable key={template.id} draggableId={template.id.toString()} index={index}>
+                              {(provided) => (
+                                <motion.div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  transition={{ duration: 0.5 }}
+                                >
+                                  <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                    <Typography variant="body1">{template.name}</Typography>
+                                    <button onClick={() => handleEdit(template.id)}>Edit</button>
+                                    <button onClick={() => handleDialogOpen('Delete Template', 'Are you sure you want to delete this template?', () => handleDelete(template.id))}>Delete</button>
+                                  </Paper>
+                                </motion.div>
+                              )}
+                            </Draggable>
+                          </Grid>
+                        ))}
+                      </Grid>
                       {provided.placeholder}
                     </div>
                   )}

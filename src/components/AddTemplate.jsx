@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip } from '@mui/material';
+import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip, Grid, Stack } from '@mui/material';
 import Swal from 'sweetalert2';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
@@ -75,32 +75,38 @@ const AddTemplate = () => {
               Add New Template
             </Typography>
             <form onSubmit={handleSubmit}>
-              <Tooltip title="Enter the name of the template">
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="templateName"
-                  label="Template Name"
-                  name="templateName"
-                  value={templateName}
-                  onChange={(e) => setTemplateName(e.target.value)}
-                />
-              </Tooltip>
-              <Tooltip title="Enter the description of the template">
-                <TextField
-                  variant="outlined"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="templateDescription"
-                  label="Template Description"
-                  name="templateDescription"
-                  value={templateDescription}
-                  onChange={(e) => setTemplateDescription(e.target.value)}
-                />
-              </Tooltip>
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <Tooltip title="Enter the name of the template">
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="templateName"
+                      label="Template Name"
+                      name="templateName"
+                      value={templateName}
+                      onChange={(e) => setTemplateName(e.target.value)}
+                    />
+                  </Tooltip>
+                </Grid>
+                <Grid item xs={12}>
+                  <Tooltip title="Enter the description of the template">
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="templateDescription"
+                      label="Template Description"
+                      name="templateDescription"
+                      value={templateDescription}
+                      onChange={(e) => setTemplateDescription(e.target.value)}
+                    />
+                  </Tooltip>
+                </Grid>
+              </Grid>
               <DragDropContext onDragEnd={handleDragEnd}>
                 <Droppable droppableId="events">
                   {(provided) => (
@@ -125,9 +131,11 @@ const AddTemplate = () => {
                   )}
                 </Droppable>
               </DragDropContext>
-              <Button type="submit" fullWidth variant="contained" color="primary">
-                {loading ? <CircularProgress size={24} /> : 'Add Template'}
-              </Button>
+              <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                <Button type="submit" fullWidth variant="contained" color="primary">
+                  {loading ? <CircularProgress size={24} /> : 'Add Template'}
+                </Button>
+              </Stack>
             </form>
           </motion.div>
         </CSSTransition>

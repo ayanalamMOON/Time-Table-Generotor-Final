@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { TextField, Button, Pagination, Snackbar, Alert, Paper, Typography, Tooltip, CircularProgress, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { TextField, Button, Pagination, Snackbar, Alert, Paper, Typography, Tooltip, CircularProgress, MenuItem, Select, FormControl, InputLabel, Grid } from '@mui/material';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -123,26 +123,30 @@ const CourseList = () => {
               <Droppable droppableId="courses">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {currentCourses.map((course, index) => (
-                      <Draggable key={course.id} draggableId={course.id.toString()} index={index}>
-                        {(provided) => (
-                          <motion.div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.5 }}
-                          >
-                            <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
-                              <Typography variant="body1">{course.name}</Typography>
-                              <button onClick={() => handleEdit(course.id)}>Edit</button>
-                              <button onClick={() => handleDelete(course.id)}>Delete</button>
-                            </Paper>
-                          </motion.div>
-                        )}
-                      </Draggable>
-                    ))}
+                    <Grid container spacing={2}>
+                      {currentCourses.map((course, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={course.id}>
+                          <Draggable key={course.id} draggableId={course.id.toString()} index={index}>
+                            {(provided) => (
+                              <motion.div
+                                ref={provided.innerRef}
+                                {...provided.draggableProps}
+                                {...provided.dragHandleProps}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.5 }}
+                              >
+                                <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
+                                  <Typography variant="body1">{course.name}</Typography>
+                                  <Button onClick={() => handleEdit(course.id)}>Edit</Button>
+                                  <Button onClick={() => handleDelete(course.id)}>Delete</Button>
+                                </Paper>
+                              </motion.div>
+                            )}
+                          </Draggable>
+                        </Grid>
+                      ))}
+                    </Grid>
                     {provided.placeholder}
                   </div>
                 )}
