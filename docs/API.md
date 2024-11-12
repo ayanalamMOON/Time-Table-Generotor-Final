@@ -1,5 +1,41 @@
 # API Documentation
 
+## Table of Contents
+
+1. [Endpoints](#endpoints)
+   - [GET /get-courses](#get-get-courses)
+   - [GET /get-constraints](#get-get-constraints)
+   - [POST /add-course](#post-add-course)
+   - [POST /add-constraints](#post-add-constraints)
+   - [GET /generate-timetable](#get-generate-timetable)
+   - [PUT /update-course/{course_id}](#put-update-coursecourse_id)
+   - [POST /add-template](#post-add-template)
+   - [GET /get-templates](#get-get-templates)
+   - [GET /get-template/{template_id}](#get-get-templatetemplate_id)
+   - [POST /import-template](#post-import-template)
+   - [GET /export-template/{template_id}](#get-export-templatetemplate_id)
+   - [POST /token](#post-token)
+   - [POST /register](#post-register)
+   - [GET /get-current-user](#get-get-current-user)
+   - [GET /get-current-active-user](#get-get-current-active-user)
+   - [GET /get-current-admin-user](#get-get-current-admin-user)
+   - [GET /analytics](#get-analytics)
+   - [GET /export-analytics](#get-export-analytics)
+   - [POST /assign-task](#post-assign-task)
+   - [GET /get-tasks](#get-get-tasks)
+   - [POST /save-version](#post-save-version)
+   - [GET /get-versions](#get-get-versions)
+   - [GET /get-recommendations](#get-get-recommendations)
+   - [GET /ws/collaboration/{timetable_id}](#get-wscollaborationtimetable_id)
+   - [GET /ws/chat/{timetable_id}](#get-wschattimetable_id)
+   - [POST /commit-timetable](#post-commit-timetable)
+   - [GET /get-commits](#get-get-commits)
+   - [GET /get-commit/{commit_id}](#get-get-commitcommit_id)
+   - [POST /merge-commits](#post-merge-commits)
+   - [POST /branch-commit](#post-branch-commit)
+2. [Error Codes](#error-codes)
+3. [Usage Scenarios](#usage-scenarios)
+
 ## Endpoints
 
 ### `GET /get-courses`
@@ -712,7 +748,7 @@ Create a new branch from a commit.
 }
 ```
 
-### Error Codes
+## Error Codes
 
 The following error codes may be returned by the API:
 
@@ -722,29 +758,29 @@ The following error codes may be returned by the API:
 - `404 Not Found`: The requested resource could not be found.
 - `500 Internal Server Error`: An error occurred on the server side.
 
-### Usage Scenarios
+## Usage Scenarios
 
-#### Scenario 1: Registering a new user
+### Scenario 1: Registering a new user
 
 1. Send a `POST /register` request with the user's details.
 2. Receive a response with the registered user's information.
 
-#### Scenario 2: Logging in and obtaining an access token
+### Scenario 2: Logging in and obtaining an access token
 
 1. Send a `POST /token` request with the user's username and password.
 2. Receive a response with the access token.
 
-#### Scenario 3: Retrieving a list of courses
+### Scenario 3: Retrieving a list of courses
 
 1. Send a `GET /get-courses` request with a valid access token.
 2. Receive a response with the list of courses.
 
-#### Scenario 4: Adding a new course
+### Scenario 4: Adding a new course
 
 1. Send a `POST /add-course` request with the course details and a valid access token.
 2. Receive a response with the added course's information.
 
-#### Scenario 5: Generating a timetable
+### Scenario 5: Generating a timetable
 
 1. Send a `GET /generate-timetable` request with a valid access token.
 2. Receive a response with the generated timetable.

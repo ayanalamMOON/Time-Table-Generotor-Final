@@ -1,5 +1,31 @@
 # Frontend Documentation
 
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Technologies Used](#technologies-used)
+4. [Setup Instructions](#setup-instructions)
+5. [Component Details](#component-details)
+   - [App.jsx](#appjsx)
+   - [AddConstraints.jsx](#addconstraintsjsx)
+   - [AddCourse.jsx](#addcoursejsx)
+   - [AddTemplate.jsx](#addtemplatejsx)
+   - [ConstraintList.jsx](#constraintlistjsx)
+   - [CourseList.jsx](#courselistjsx)
+   - [EditConstraints.jsx](#editconstraintsjsx)
+   - [EditCourse.jsx](#editcoursejsx)
+   - [EditTemplate.jsx](#edittemplatejsx)
+   - [RecommendationSystem.jsx](#recommendationsystemjsx)
+   - [TemplateList.jsx](#templatelistjsx)
+   - [Timetable.jsx](#timetablejsx)
+   - [UserRegistration.jsx](#userregistrationjsx)
+   - [UserLogin.jsx](#userloginjsx)
+   - [RoleBasedAccessControl.jsx](#rolebasedaccesscontroljsx)
+   - [AnalyticsReporting.jsx](#analyticsreportingjsx)
+   - [CalendarIntegration.jsx](#calendarintegrationjsx)
+   - [CollaborationFeatures.jsx](#collaborationfeaturesjsx)
+
 ## Overview
 
 The frontend part of the project is built using React and Material-UI. It provides a user interface for managing courses, constraints, templates, and generating timetables.
@@ -26,6 +52,8 @@ The frontend application follows a component-based architecture. Each component 
 - `AnalyticsReporting.jsx`: A component for visualizing analytics data and exporting reports.
 - `CalendarIntegration.jsx`: A component for integrating and visualizing the timetable in a calendar view.
 - `CollaborationFeatures.jsx`: A component for providing real-time collaboration features.
+- `AsanaIntegration.jsx`: A component for integrating with Asana for task management.
+- `TrelloIntegration.jsx`: A component for integrating with Trello for task management.
 
 ## Technologies Used
 
@@ -131,3 +159,11 @@ The `CalendarIntegration.jsx` component integrates a calendar view to visualize 
 ### `CollaborationFeatures.jsx`
 
 The `CollaborationFeatures.jsx` component provides real-time collaboration features, allowing multiple users to work on the same timetable simultaneously. It includes functionalities for adding comments and saving versions.
+
+### `AsanaIntegration.jsx`
+
+The `AsanaIntegration.jsx` component provides a form for creating tasks in Asana. It allows users to enter task details and create tasks in Asana.
+
+### `TrelloIntegration.jsx`
+
+The `TrelloIntegration.jsx` component provides a form for creating tasks in Trello. It allows users to enter task details and create tasks in Trello.

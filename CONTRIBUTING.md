@@ -6,9 +6,10 @@ Thank you for considering contributing to our project! We welcome contributions 
 
 1. [Getting Started](#getting-started)
 2. [Coding Standards](#coding-standards)
-3. [Testing Procedures](#testing-procedures)
-4. [Submitting Pull Requests](#submitting-pull-requests)
-5. [Code of Conduct](#code-of-conduct)
+3. [Code Formatting Guidelines](#code-formatting-guidelines)
+4. [Testing Procedures](#testing-procedures)
+5. [Submitting Pull Requests](#submitting-pull-requests)
+6. [Code of Conduct](#code-of-conduct)
 
 ## Getting Started
 
