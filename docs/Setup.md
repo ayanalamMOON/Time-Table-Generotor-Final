@@ -2,6 +2,19 @@
 
 This document provides detailed instructions for setting up the Time Table Generator project.
 
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+2. [Backend Setup](#backend-setup)
+3. [Frontend Setup](#frontend-setup)
+4. [Docker Setup](#docker-setup)
+5. [Docker Compose Setup](#docker-compose-setup)
+6. [Running the Tests](#running-the-tests)
+   - [Backend Tests](#backend-tests)
+   - [Frontend Tests](#frontend-tests)
+7. [Troubleshooting Tips](#troubleshooting-tips)
+   - [Common Issues](#common-issues)
+
 ## Prerequisites
 
 Before setting up the project, ensure you have the following installed on your system:

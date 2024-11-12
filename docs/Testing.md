@@ -2,6 +2,14 @@
 
 This document provides detailed information about the testing framework, how to run tests, and how to write new tests for the project.
 
+## Table of Contents
+
+1. [Testing Framework](#testing-framework)
+2. [Running Tests](#running-tests)
+3. [Writing New Tests](#writing-new-tests)
+4. [Example Test](#example-test)
+5. [New Tests and Changes](#new-tests-and-changes)
+
 ## Testing Framework
 
 The project uses the following testing frameworks and libraries:
@@ -41,7 +49,7 @@ When writing new tests for the project, follow these guidelines:
 
 1. **Test structure**: Organize your tests in a way that makes them easy to understand and maintain. Group related tests together and use descriptive names for test functions.
 
-2. **Use fixtures**: Utilize pytest fixtures to set up any necessary test data or state. This helps keep your tests clean and focused on the specific functionality being tested.
+2. **Use fixtures****: Utilize pytest fixtures to set up any necessary test data or state. This helps keep your tests clean and focused on the specific functionality being tested.
 
 3. **Test async code**: If you need to test asynchronous code, use the `pytest-asyncio` plugin. Decorate your test functions with the `@pytest.mark.asyncio` decorator to indicate that they are asynchronous.
 
@@ -69,4 +77,49 @@ def test_read_main():
 
 This test uses the `TestClient` from FastAPI to make a request to the root endpoint (`/`) and checks that the response status code is 200 and the response JSON matches the expected output.
 
-By following these guidelines and examples, you can write effective tests that help ensure the quality and reliability of the project.
+## New Tests and Changes
+
+### New Tests
+
+The following new tests have been added to the project:
+
+1. **Backend Tests**:
+   - `test_generate_timetable_no_constraints_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it returns a 400 status code when no constraints are provided.
+   - `test_generate_timetable_no_courses_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it returns a 400 status code when no courses are provided.
+   - `test_generate_timetable_invalid_fields_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles invalid fields correctly.
+   - `test_generate_timetable_scheduling_conflicts_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles scheduling conflicts correctly.
+   - `test_generate_timetable_ai_model_issues_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles AI model issues correctly.
+   - `test_generate_timetable_new_csp_solver`: Tests the `/generate-timetable` endpoint to ensure it works with the new CSP solver.
+   - `test_generate_timetable_recommendation_system`: Tests the `/generate-timetable` endpoint to ensure it works with the recommendation system.
+
+2. **Frontend Tests**:
+   - `test_add_constraints_edge_cases`: Tests the `AddConstraints` component to ensure it handles edge cases correctly.
+   - `test_add_course_edge_cases`: Tests the `AddCourse` component to ensure it handles edge cases correctly.
+   - `test_edit_constraints_edge_cases`: Tests the `EditConstraints` component to ensure it handles edge cases correctly.
+   - `test_edit_course_edge_cases`: Tests the `EditCourse` component to ensure it handles edge cases correctly.
+   - `test_edit_template_edge_cases`: Tests the `EditTemplate` component to ensure it handles edge cases correctly.
+   - `test_recommendation_system_edge_cases`: Tests the `RecommendationSystem` component to ensure it handles edge cases correctly.
+   - `test_timetable_edge_cases`: Tests the `Timetable` component to ensure it handles edge cases correctly.
+
+### Changes to Existing Tests
+
+The following changes have been made to existing tests:
+
+1. **Backend Tests**:
+   - Updated the `test_generate_timetable` test to include additional assertions for edge cases.
+   - Updated the `test_add_constraints` test to include additional assertions for edge cases.
+   - Updated the `test_add_course` test to include additional assertions for edge cases.
+   - Updated the `test_edit_constraints` test to include additional assertions for edge cases.
+   - Updated the `test_edit_course` test to include additional assertions for edge cases.
+   - Updated the `test_edit_template` test to include additional assertions for edge cases.
+   - Updated the `test_recommendation_system` test to include additional assertions for edge cases.
+   - Updated the `test_timetable` test to include additional assertions for edge cases.
+
+2. **Frontend Tests**:
+   - Updated the `test_add_constraints` test to include additional assertions for edge cases.
+   - Updated the `test_add_course` test to include additional assertions for edge cases.
+   - Updated the `test_edit_constraints` test to include additional assertions for edge cases.
+   - Updated the `test_edit_course` test to include additional assertions for edge cases.
+   - Updated the `test_edit_template` test to include additional assertions for edge cases.
+   - Updated the `test_recommendation_system` test to include additional assertions for edge cases.
+   - Updated the `test_timetable` test to include additional assertions for edge cases.

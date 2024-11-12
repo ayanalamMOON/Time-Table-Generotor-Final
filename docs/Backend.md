@@ -1,5 +1,32 @@
 # Backend Documentation
 
+## Table of Contents
+
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Technologies Used](#technologies-used)
+4. [Setup Instructions](#setup-instructions)
+   - [Prerequisites](#prerequisites)
+   - [Installation](#installation)
+5. [API Endpoints](#api-endpoints)
+   - [Courses](#courses)
+   - [Constraints](#constraints)
+   - [Timetable](#timetable)
+   - [Templates](#templates)
+   - [Analytics](#analytics)
+   - [Recommendations](#recommendations)
+6. [AI Model](#ai-model)
+   - [Training the AI Model](#training-the-ai-model)
+   - [Predicting Timetables](#predicting-timetables)
+7. [Logging](#logging)
+8. [Error Handling](#error-handling)
+9. [Testing](#testing)
+10. [Deployment](#deployment)
+11. [Detailed Explanation of the AI Model and Training Process](#detailed-explanation-of-the-ai-model-and-training-process)
+   - [AI Model Architecture](#ai-model-architecture)
+   - [Training Process](#training-process)
+   - [Using the Trained AI Model](#using-the-trained-ai-model)
+
 ## Overview
 
 The backend of the Time Table Generator project is built using FastAPI, a modern, fast (high-performance), web framework for building APIs with Python 3.6+ based on standard Python type hints. The backend handles the core logic of the application, including managing courses, constraints, and generating timetables.
@@ -104,6 +131,46 @@ hypercorn app:app --reload
 ### Recommendations
 
 - `GET /get-recommendations`: Fetch course recommendations based on user preferences and constraints.
+
+### User Management
+
+- `POST /token`: Generate an access token for user authentication.
+- `POST /register`: Register a new user.
+- `POST /update-role`: Update a user's role.
+- `GET /get-current-user`: Retrieve the current authenticated user.
+- `GET /get-current-active-user`: Retrieve the current active user.
+- `GET /get-current-admin-user`: Retrieve the current admin user.
+
+### Notifications
+
+- `GET /ws/notifications/{user_id}`: WebSocket endpoint for sending notifications to users.
+
+### Calendar Integration
+
+- `POST /calendar/sync`: Sync a calendar event with Google Calendar.
+
+### Collaboration
+
+- `GET /ws/collaboration/{timetable_id}`: WebSocket endpoint for real-time collaboration on timetables.
+- `GET /ws/chat/{timetable_id}`: WebSocket endpoint for real-time chat and messaging.
+- `POST /assign-task`: Assign a task to a team member.
+- `GET /get-tasks`: Retrieve a list of assigned tasks.
+- `POST /save-version`: Save a version of the timetable.
+- `GET /get-versions`: Retrieve a list of timetable versions.
+- `POST /commit-timetable`: Commit a timetable version.
+- `GET /get-commits`: Retrieve all timetable commits.
+- `GET /get-commit/{commit_id}`: Retrieve a specific commit by ID.
+- `POST /merge-commits`: Merge two timetable commits.
+- `POST /branch-commit`: Create a new branch from a commit.
+
+### Task Management
+
+- `POST /trello/create-task`: Create a task in Trello.
+- `POST /trello/update-task`: Update a task in Trello.
+- `GET /trello/get-task`: Retrieve task information from Trello.
+- `POST /asana/create-task`: Create a task in Asana.
+- `POST /asana/update-task`: Update a task in Asana.
+- `GET /asana/get-task`: Retrieve task information from Asana.
 
 ## AI Model
 
