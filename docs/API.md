@@ -343,7 +343,7 @@ Generate an access token for user authentication.
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTYyMzQ2OTYwMH0.4f3d5e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTYyMzQ2OTYwMH0.4f3d5e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6",
   "token_type": "bearer"
 }
 ```
@@ -421,6 +421,294 @@ Retrieve the current admin user.
   "email": "adminuser@example.com",
   "full_name": "Admin User",
   "role": "admin"
+}
+```
+
+### `GET /analytics`
+
+Retrieve analytics and reporting data for timetables.
+
+**Response:**
+
+```json
+{
+  "course_distribution": {
+    "course1": 10,
+    "course2": 5
+  },
+  "instructor_workload": {
+    "instructor1": 15,
+    "instructor2": 10
+  },
+  "constraint_satisfaction": {
+    "constraint1": 90,
+    "constraint2": 80
+  }
+}
+```
+
+### `GET /export-analytics`
+
+Export analytics reports in PDF or Excel format.
+
+**Request Parameters:**
+
+- `format`: The format of the report (pdf or excel).
+
+**Response:**
+
+- PDF: A PDF file containing the analytics report.
+- Excel: An Excel file containing the analytics report.
+
+### `POST /assign-task`
+
+Assign a task to a team member.
+
+**Request Body:**
+
+```json
+{
+  "task": "Test Task",
+  "assigned_to": "test_user",
+  "due_date": "2023-01-01T00:00:00Z",
+  "status": "pending"
+}
+```
+
+**Response:**
+
+```json
+{
+  "task": "Test Task",
+  "assigned_to": "test_user",
+  "due_date": "2023-01-01T00:00:00Z",
+  "status": "pending"
+}
+```
+
+### `GET /get-tasks`
+
+Retrieve a list of assigned tasks.
+
+**Response:**
+
+```json
+[
+  {
+    "task": "Test Task",
+    "assigned_to": "test_user",
+    "due_date": "2023-01-01T00:00:00Z",
+    "status": "pending"
+  }
+]
+```
+
+### `POST /save-version`
+
+Save a version of the timetable.
+
+**Request Body:**
+
+```json
+{
+  "version_id": "test_version_id",
+  "changes": {
+    "change": "test_change"
+  },
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "test_user"
+}
+```
+
+**Response:**
+
+```json
+{
+  "version_id": "test_version_id",
+  "changes": {
+    "change": "test_change"
+  },
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "test_user"
+}
+```
+
+### `GET /get-versions`
+
+Retrieve a list of timetable versions.
+
+**Response:**
+
+```json
+[
+  {
+    "version_id": "test_version_id",
+    "changes": {
+      "change": "test_change"
+    },
+    "timestamp": "2023-01-01T00:00:00Z",
+    "user": "test_user"
+  }
+]
+```
+
+### `GET /get-recommendations`
+
+Fetch course recommendations based on user preferences and constraints.
+
+**Response:**
+
+```json
+[
+  {
+    "courseName": "Course 1",
+    "reason": "Based on your preferences"
+  },
+  {
+    "courseName": "Course 2",
+    "reason": "Based on your constraints"
+  }
+]
+```
+
+### `GET /ws/collaboration/{timetable_id}`
+
+WebSocket endpoint for real-time collaboration on timetables.
+
+**Request Parameters:**
+
+- `timetable_id`: The ID of the timetable.
+
+**Response:**
+
+- WebSocket connection for real-time collaboration.
+
+### `GET /ws/chat/{timetable_id}`
+
+WebSocket endpoint for real-time chat and messaging.
+
+**Request Parameters:**
+
+- `timetable_id`: The ID of the timetable.
+
+**Response:**
+
+- WebSocket connection for real-time chat and messaging.
+
+### `POST /commit-timetable`
+
+Commit a timetable version.
+
+**Request Body:**
+
+```json
+{
+  "commit_id": "test_commit_id",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "test_user",
+  "changes": {
+    "change": "test_change"
+  }
+}
+```
+
+**Response:**
+
+```json
+{
+  "commit_id": "test_commit_id",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "test_user",
+  "changes": {
+    "change": "test_change"
+  }
+}
+```
+
+### `GET /get-commits`
+
+Retrieve all timetable commits.
+
+**Response:**
+
+```json
+[
+  {
+    "commit_id": "test_commit_id",
+    "timestamp": "2023-01-01T00:00:00Z",
+    "user": "test_user",
+    "changes": {
+      "change": "test_change"
+    }
+  }
+]
+```
+
+### `GET /get-commit/{commit_id}`
+
+Retrieve a specific commit by ID.
+
+**Request Parameters:**
+
+- `commit_id`: The ID of the commit.
+
+**Response:**
+
+```json
+{
+  "commit_id": "test_commit_id",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "test_user",
+  "changes": {
+    "change": "test_change"
+  }
+}
+```
+
+### `POST /merge-commits`
+
+Merge two timetable commits.
+
+**Request Body:**
+
+```json
+{
+  "commit_ids": ["commit_id_1", "commit_id_2"]
+}
+```
+
+**Response:**
+
+```json
+{
+  "commit_id": "merged_commit_id",
+  "timestamp": "2023-01-01T00:00:00Z",
+  "user": "merged_user",
+  "changes": {
+    "change": "merged_change"
+  }
+}
+```
+
+### `POST /branch-commit`
+
+Create a new branch from a commit.
+
+**Request Body:**
+
+```json
+{
+  "commit_id": "test_commit_id",
+  "branch_name": "test_branch"
+}
+```
+
+**Response:**
+
+```json
+{
+  "branch_name": "test_branch",
+  "commit_id": "test_commit_id"
 }
 ```
 

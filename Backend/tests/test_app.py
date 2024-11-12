@@ -748,3 +748,111 @@ async def test_branch_commit():
         response = await ac.post("/branch-commit", json=branch_data)
     assert response.status_code == 200
     assert response.json()["branch_name"] == "test_branch"
+
+@pytest.mark.asyncio
+async def test_analytics():
+    """
+    Test the /analytics endpoint to ensure it retrieves analytics and reporting data.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/analytics")
+    assert response.status_code == 200
+    assert isinstance(response.json(), dict)
+
+@pytest.mark.asyncio
+async def test_export_analytics():
+    """
+    Test the /export-analytics endpoint to ensure it exports analytics reports in PDF or Excel format.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/export-analytics?format=pdf")
+    assert response.status_code == 200
+
+    response = await ac.get("/export-analytics?format=excel")
+    assert response.status_code == 200
+
+@pytest.mark.asyncio
+async def test_assign_task():
+    """
+    Test the /assign-task endpoint to ensure it assigns a task to a team member.
+    """
+    task_data = {
+        "task": "Test Task",
+        "assigned_to": "test_user",
+        "due_date": "2023-01-01T00:00:00Z",
+        "status": "pending"
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/assign-task", json=task_data)
+    assert response.status_code == 200
+    assert response.json()["task"] == "Test Task"
+
+@pytest.mark.asyncio
+async def test_get_tasks():
+    """
+    Test the /get-tasks endpoint to ensure it retrieves a list of assigned tasks.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-tasks")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+@pytest.mark.asyncio
+async def test_save_version():
+    """
+    Test the /save-version endpoint to ensure it saves a version of the timetable.
+    """
+    version_data = {
+        "version_id": "test_version_id",
+        "changes": {"change": "test_change"},
+        "timestamp": "2023-01-01T00:00:00Z",
+        "user": "test_user"
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/save-version", json=version_data)
+    assert response.status_code == 200
+    assert response.json()["version_id"] == "test_version_id"
+
+@pytest.mark.asyncio
+async def test_get_versions():
+    """
+    Test the /get-versions endpoint to ensure it retrieves a list of timetable versions.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-versions")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+@pytest.mark.asyncio
+async def test_get_recommendations():
+    """
+    Test the /get-recommendations endpoint to ensure it fetches course recommendations based on user preferences and constraints.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-recommendations")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
+
+@pytest.mark.asyncio
+async def test_ws_collaboration():
+    """
+    Test the /ws/collaboration/{timetable_id} WebSocket endpoint to ensure it handles real-time collaboration on timetables.
+    """
+    timetable_id = "test_timetable_id"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        async with ac.websocket_connect(f"/ws/collaboration/{timetable_id}") as websocket:
+            await websocket.send_json({"action": "test_action", "data": {}})
+            response = await websocket.receive_json()
+            assert response["status"] == "success"
+
+@pytest.mark.asyncio
+async def test_ws_chat():
+    """
+    Test the /ws/chat/{timetable_id} WebSocket endpoint to ensure it handles real-time chat and messaging.
+    """
+    timetable_id = "test_timetable_id"
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        async with ac.websocket_connect(f"/ws/chat/{timetable_id}") as websocket:
+            await websocket.send_json({"sender": "test_user", "message": "test_message", "timestamp": "2023-01-01T00:00:00Z"})
+            response = await websocket.receive_json()
+            assert response["status"] == "success"

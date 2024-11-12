@@ -511,3 +511,45 @@ async def branch_commit(commit_id: str, branch_name: str) -> TimetableBranch:
     # Save the branch to the database (pseudo-code)
     # await branches_collection.insert_one(branch.dict())
     return branch
+
+
+class TimetableVersion(BaseModel):
+    """
+    Model for a version of the timetable.
+    """
+    version_id: str
+    changes: dict
+    timestamp: datetime
+    user: str
+
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+
+
+class TaskAssignment(BaseModel):
+    """
+    Model for a task assignment.
+    """
+    task: str
+    assigned_to: str
+    due_date: datetime
+    status: str
+
+
+class CollaborationAction(BaseModel):
+    """
+    Model for a collaboration action.
+    """
+    action: str
+    data: dict
+
+
+class ChatMessage(BaseModel):
+    """
+    Model for a chat message.
+    """
+    sender: str
+    message: str
+    timestamp: datetime

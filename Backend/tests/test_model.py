@@ -1,6 +1,7 @@
 import pytest
-from model import CreateCourse, Course, CreateConstraints, Constraints, TimetableAIModel, train_ai_model, predict_timetable, commit_timetable, get_commits, get_commit, merge_commits, branch_commit
+from model import CreateCourse, Course, CreateConstraints, Constraints, TimetableAIModel, train_ai_model, predict_timetable, commit_timetable, get_commits, get_commit, merge_commits, branch_commit, TimetableVersion, TaskAssignment, CollaborationAction, ChatMessage, TimetableCommit, TimetableBranch
 import numpy as np
+from datetime import datetime
 
 def test_create_course():
     """
@@ -502,3 +503,86 @@ def test_early_stopping_and_lr_scheduling():
     ]
     model = train_ai_model(historical_data)
     assert model is not None
+
+def test_timetable_version():
+    """
+    Test the creation of a TimetableVersion model.
+    """
+    version_data = {
+        "version_id": "test_version_id",
+        "changes": {"change": "test_change"},
+        "timestamp": datetime.utcnow(),
+        "user": "test_user"
+    }
+    version = TimetableVersion(**version_data)
+    assert version.version_id == "test_version_id"
+    assert version.changes == {"change": "test_change"}
+    assert version.user == "test_user"
+
+def test_task_assignment():
+    """
+    Test the creation of a TaskAssignment model.
+    """
+    task_data = {
+        "task": "Test Task",
+        "assigned_to": "test_user",
+        "due_date": datetime.utcnow(),
+        "status": "pending"
+    }
+    task = TaskAssignment(**task_data)
+    assert task.task == "Test Task"
+    assert task.assigned_to == "test_user"
+    assert task.status == "pending"
+
+def test_collaboration_action():
+    """
+    Test the creation of a CollaborationAction model.
+    """
+    action_data = {
+        "action": "test_action",
+        "data": {"key": "value"}
+    }
+    action = CollaborationAction(**action_data)
+    assert action.action == "test_action"
+    assert action.data == {"key": "value"}
+
+def test_chat_message():
+    """
+    Test the creation of a ChatMessage model.
+    """
+    message_data = {
+        "sender": "test_user",
+        "message": "test_message",
+        "timestamp": datetime.utcnow()
+    }
+    message = ChatMessage(**message_data)
+    assert message.sender == "test_user"
+    assert message.message == "test_message"
+
+def test_timetable_commit():
+    """
+    Test the creation of a TimetableCommit model.
+    """
+    commit_data = {
+        "commit_id": "test_commit_id",
+        "timestamp": "2023-01-01T00:00:00Z",
+        "user": "test_user",
+        "changes": {"change": "test_change"}
+    }
+    commit = TimetableCommit(**commit_data)
+    assert commit.commit_id == "test_commit_id"
+    assert commit.timestamp == "2023-01-01T00:00:00Z"
+    assert commit.user == "test_user"
+    assert commit.changes == {"change": "test_change"}
+
+def test_timetable_branch():
+    """
+    Test the creation of a TimetableBranch model.
+    """
+    branch_data = {
+        "branch_name": "test_branch",
+        "commit_id": "test_commit_id"
+    }
+    branch = TimetableBranch(**branch_data)
+    assert branch.branch_name == "test_branch"
+    assert branch.commit_id == "test_commit_id"
