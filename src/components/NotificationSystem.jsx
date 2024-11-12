@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getNotifications } from '../api/notifications';
 import { motion } from 'framer-motion';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const NotificationSystem = () => {
   const [notifications, setNotifications] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -13,6 +17,21 @@ const NotificationSystem = () => {
 
     fetchNotifications();
   }, []);
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const latestNotification = notifications[notifications.length - 1];
+      setMessage(`${latestNotification.title}: ${latestNotification.message}`);
+      setOpen(true);
+    }
+  }, [notifications]);
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
 
   return (
     <div className="notification-system">
@@ -29,6 +48,11 @@ const NotificationSystem = () => {
           </motion.li>
         ))}
       </ul>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="info">
+          {message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -9,6 +9,10 @@ import {
   Button,
   CircularProgress,
   Tooltip,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { AddCircleOutlined } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -27,6 +31,13 @@ const AddCourse = () => {
   const [courseCode, setCourseCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [integrationType, setIntegrationType] = useState("");
+  const [taskName, setTaskName] = useState("");
+  const [taskDescription, setTaskDescription] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [listId, setListId] = useState("");
+  const [projectId, setProjectId] = useState("");
+
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -73,6 +84,82 @@ const AddCourse = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setEvents(items);
+  };
+
+  const handleIntegrationSubmit = async (event) => {
+    event.preventDefault();
+
+    if (integrationType === "trello") {
+      if (taskName.trim() === "" || taskDescription.trim() === "" || listId.trim() === "") {
+        Swal.fire({
+          text: "Please fill in all fields for Trello.",
+          icon: "warning",
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await axios.post("/trello/create-task", {
+          name: taskName,
+          description: taskDescription,
+          due_date: dueDate,
+          list_id: listId,
+        });
+        console.log("Task created:", response.data);
+        setTaskName("");
+        setTaskDescription("");
+        setDueDate("");
+        setListId("");
+        Swal.fire({
+          text: "Task created successfully in Trello!",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error("Error creating task in Trello:", error);
+        Swal.fire({
+          text: "Error creating task in Trello",
+          icon: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else if (integrationType === "asana") {
+      if (taskName.trim() === "" || taskDescription.trim() === "" || projectId.trim() === "") {
+        Swal.fire({
+          text: "Please fill in all fields for Asana.",
+          icon: "warning",
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await axios.post("/asana/create-task", {
+          name: taskName,
+          description: taskDescription,
+          due_date: dueDate,
+          project_id: projectId,
+        });
+        console.log("Task created:", response.data);
+        setTaskName("");
+        setTaskDescription("");
+        setDueDate("");
+        setProjectId("");
+        Swal.fire({
+          text: "Task created successfully in Asana!",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error("Error creating task in Asana:", error);
+        Swal.fire({
+          text: "Error creating task in Asana",
+          icon: "error",
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
@@ -150,6 +237,133 @@ const AddCourse = () => {
                       )}
                     </Droppable>
                   </DragDropContext>
+                  <center>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                      Integration Options
+                    </Typography>
+                  </center>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel id="integration-type-label">Integration Type</InputLabel>
+                        <Select
+                          labelId="integration-type-label"
+                          id="integration-type"
+                          value={integrationType}
+                          label="Integration Type"
+                          onChange={(e) => setIntegrationType(e.target.value)}
+                        >
+                          <MenuItem value="trello">Trello</MenuItem>
+                          <MenuItem value="asana">Asana</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    {integrationType === "trello" && (
+                      <>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the name of the task">
+                            <TextField
+                              label="Task Name"
+                              value={taskName}
+                              onChange={(e) => setTaskName(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the description of the task">
+                            <TextField
+                              label="Task Description"
+                              value={taskDescription}
+                              onChange={(e) => setTaskDescription(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the due date of the task">
+                            <TextField
+                              label="Due Date"
+                              type="date"
+                              value={dueDate}
+                              onChange={(e) => setDueDate(e.target.value)}
+                              fullWidth
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the list ID for the task">
+                            <TextField
+                              label="List ID"
+                              value={listId}
+                              onChange={(e) => setListId(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                      </>
+                    )}
+                    {integrationType === "asana" && (
+                      <>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the name of the task">
+                            <TextField
+                              label="Task Name"
+                              value={taskName}
+                              onChange={(e) => setTaskName(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the description of the task">
+                            <TextField
+                              label="Task Description"
+                              value={taskDescription}
+                              onChange={(e) => setTaskDescription(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the due date of the task">
+                            <TextField
+                              label="Due Date"
+                              type="date"
+                              value={dueDate}
+                              onChange={(e) => setDueDate(e.target.value)}
+                              fullWidth
+                              InputLabelProps={{
+                                shrink: true,
+                              }}
+                            />
+                          </Tooltip>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Tooltip title="Enter the project ID for the task">
+                            <TextField
+                              label="Project ID"
+                              value={projectId}
+                              onChange={(e) => setProjectId(e.target.value)}
+                              fullWidth
+                            />
+                          </Tooltip>
+                        </Grid>
+                      </>
+                    )}
+                  </Grid>
+                  <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleIntegrationSubmit}
+                    >
+                      Submit Integration Task
+                    </Button>
+                  </Stack>
                 </motion.div>
               </CSSTransition>
             </Paper>

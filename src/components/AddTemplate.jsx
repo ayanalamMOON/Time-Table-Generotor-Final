@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip, Grid, Stack } from '@mui/material';
+import { TextField, Button, Container, Paper, Typography, CircularProgress, Tooltip, Grid, Stack, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import Swal from 'sweetalert2';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Calendar from 'react-calendar';
@@ -16,13 +16,14 @@ const AddTemplate = () => {
   const [templateDescription, setTemplateDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [integrationType, setIntegrationType] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (templateName.trim() === '' || templateDescription.trim() === '') {
+    if (templateName.trim() === '' || templateDescription.trim() === '' || integrationType.trim() === '') {
       Swal.fire({
         text: 'Please fill in all fields.',
         icon: 'warning',
@@ -35,10 +36,12 @@ const AddTemplate = () => {
       const response = await axios.post('/api/add-template', {
         name: templateName,
         description: templateDescription,
+        integrationType: integrationType,
       });
       console.log('Template added:', response.data);
       setTemplateName('');
       setTemplateDescription('');
+      setIntegrationType('');
       Swal.fire({
         text: 'Template added successfully!',
         icon: 'success',
@@ -105,6 +108,21 @@ const AddTemplate = () => {
                       onChange={(e) => setTemplateDescription(e.target.value)}
                     />
                   </Tooltip>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth variant="outlined" margin="normal" required>
+                    <InputLabel id="integrationType-label">Integration Type</InputLabel>
+                    <Select
+                      labelId="integrationType-label"
+                      id="integrationType"
+                      value={integrationType}
+                      onChange={(e) => setIntegrationType(e.target.value)}
+                      label="Integration Type"
+                    >
+                      <MenuItem value="trello">Trello</MenuItem>
+                      <MenuItem value="asana">Asana</MenuItem>
+                    </Select>
+                  </FormControl>
                 </Grid>
               </Grid>
               <DragDropContext onDragEnd={handleDragEnd}>

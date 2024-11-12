@@ -24,6 +24,7 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from fpdf import FPDF
 import pandas as pd
+import requests
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -215,6 +216,18 @@ class TimetableVersion(BaseModel):
     changes: dict
     timestamp: datetime
     user: str
+
+class TrelloTask(BaseModel):
+    name: str
+    description: str
+    due_date: Optional[datetime] = None
+    list_id: str
+
+class AsanaTask(BaseModel):
+    name: str
+    notes: str
+    due_on: Optional[datetime] = None
+    projects: List[str]
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
@@ -448,6 +461,114 @@ async def branch_commit_endpoint(commit_id: str, branch_name: str, current_user:
     """
     branch = await branch_commit(commit_id, branch_name)
     return branch
+
+@app.post("/trello/create-task")
+async def create_trello_task(task: TrelloTask, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to create a task in Trello.
+    """
+    trello_key = os.getenv('TRELLO_API_KEY')
+    trello_token = os.getenv('TRELLO_API_TOKEN')
+    url = f"https://api.trello.com/1/cards?key={trello_key}&token={trello_token}"
+    payload = {
+        "name": task.name,
+        "desc": task.description,
+        "due": task.due_date.isoformat() if task.due_date else None,
+        "idList": task.list_id
+    }
+    response = requests.post(url, json=payload)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to create Trello task")
+    return response.json()
+
+@app.post("/trello/update-task")
+async def update_trello_task(task_id: str, task: TrelloTask, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to update a task in Trello.
+    """
+    trello_key = os.getenv('TRELLO_API_KEY')
+    trello_token = os.getenv('TRELLO_API_TOKEN')
+    url = f"https://api.trello.com/1/cards/{task_id}?key={trello_key}&token={trello_token}"
+    payload = {
+        "name": task.name,
+        "desc": task.description,
+        "due": task.due_date.isoformat() if task.due_date else None,
+        "idList": task.list_id
+    }
+    response = requests.put(url, json=payload)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to update Trello task")
+    return response.json()
+
+@app.get("/trello/get-task")
+async def get_trello_task(task_id: str, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to retrieve task information from Trello.
+    """
+    trello_key = os.getenv('TRELLO_API_KEY')
+    trello_token = os.getenv('TRELLO_API_TOKEN')
+    url = f"https://api.trello.com/1/cards/{task_id}?key={trello_key}&token={trello_token}"
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to retrieve Trello task")
+    return response.json()
+
+@app.post("/asana/create-task")
+async def create_asana_task(task: AsanaTask, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to create a task in Asana.
+    """
+    asana_token = os.getenv('ASANA_API_TOKEN')
+    url = "https://app.asana.com/api/1.0/tasks"
+    headers = {
+        "Authorization": f"Bearer {asana_token}"
+    }
+    payload = {
+        "name": task.name,
+        "notes": task.notes,
+        "due_on": task.due_on.isoformat() if task.due_on else None,
+        "projects": task.projects
+    }
+    response = requests.post(url, json=payload, headers=headers)
+    if response.status_code != 201:
+        raise HTTPException(status_code=response.status_code, detail="Failed to create Asana task")
+    return response.json()
+
+@app.post("/asana/update-task")
+async def update_asana_task(task_id: str, task: AsanaTask, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to update a task in Asana.
+    """
+    asana_token = os.getenv('ASANA_API_TOKEN')
+    url = f"https://app.asana.com/api/1.0/tasks/{task_id}"
+    headers = {
+        "Authorization": f"Bearer {asana_token}"
+    }
+    payload = {
+        "name": task.name,
+        "notes": task.notes,
+        "due_on": task.due_on.isoformat() if task.due_on else None,
+        "projects": task.projects
+    }
+    response = requests.put(url, json=payload, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to update Asana task")
+    return response.json()
+
+@app.get("/asana/get-task")
+async def get_asana_task(task_id: str, current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to retrieve task information from Asana.
+    """
+    asana_token = os.getenv('ASANA_API_TOKEN')
+    url = f"https://app.asana.com/api/1.0/tasks/{task_id}"
+    headers = {
+        "Authorization": f"Bearer {asana_token}"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail="Failed to retrieve Asana task")
+    return response.json()
 
 if __name__ == '__main__':
     hypercorn.asyncio.run("app:app", host="0.0.0.0",

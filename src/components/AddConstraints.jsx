@@ -43,6 +43,14 @@ const AddConstraints = () => {
   const [nsub1, setnSub1] = useState("");
   const [nsub2, setnSub2] = useState("");
   const [events, setEvents] = useState([]);
+  const [trelloTaskName, setTrelloTaskName] = useState("");
+  const [trelloTaskDescription, setTrelloTaskDescription] = useState("");
+  const [trelloDueDate, setTrelloDueDate] = useState("");
+  const [trelloListId, setTrelloListId] = useState("");
+  const [asanaTaskName, setAsanaTaskName] = useState("");
+  const [asanaTaskNotes, setAsanaTaskNotes] = useState("");
+  const [asanaDueDate, setAsanaDueDate] = useState("");
+  const [asanaProjectId, setAsanaProjectId] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -127,6 +135,84 @@ const AddConstraints = () => {
       .finally(() => {
         setLoading(false);
       });
+  };
+
+  const handleTrelloSubmit = async (event) => {
+    event.preventDefault();
+
+    if (trelloTaskName.trim() === '' || trelloTaskDescription.trim() === '' || trelloListId.trim() === '') {
+      Swal.fire({
+        text: 'Please fill in all fields.',
+        icon: 'warning',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post('/trello/create-task', {
+        name: trelloTaskName,
+        description: trelloTaskDescription,
+        due_date: trelloDueDate,
+        list_id: trelloListId,
+      });
+      console.log('Task created:', response.data);
+      setTrelloTaskName('');
+      setTrelloTaskDescription('');
+      setTrelloDueDate('');
+      setTrelloListId('');
+      Swal.fire({
+        text: 'Task created successfully!',
+        icon: 'success',
+      });
+    } catch (error) {
+      console.error('Error creating task:', error);
+      Swal.fire({
+        text: 'Error creating task',
+        icon: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAsanaSubmit = async (event) => {
+    event.preventDefault();
+
+    if (asanaTaskName.trim() === '' || asanaTaskNotes.trim() === '' || asanaProjectId.trim() === '') {
+      Swal.fire({
+        text: 'Please fill in all fields.',
+        icon: 'warning',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post('/asana/create-task', {
+        name: asanaTaskName,
+        notes: asanaTaskNotes,
+        due_on: asanaDueDate,
+        projects: [asanaProjectId],
+      });
+      console.log('Task created:', response.data);
+      setAsanaTaskName('');
+      setAsanaTaskNotes('');
+      setAsanaDueDate('');
+      setAsanaProjectId('');
+      Swal.fire({
+        text: 'Task created successfully!',
+        icon: 'success',
+      });
+    } catch (error) {
+      console.error('Error creating task:', error);
+      Swal.fire({
+        text: 'Error creating task',
+        icon: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -296,6 +382,156 @@ const AddConstraints = () => {
                   >
                     Submit
                   </Button>
+                  <form onSubmit={handleTrelloSubmit}>
+                    <Typography variant="h6" gutterBottom>
+                      Trello Task Details
+                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the name of the Trello task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="trelloTaskName"
+                            label="Task Name"
+                            name="trelloTaskName"
+                            value={trelloTaskName}
+                            onChange={(e) => setTrelloTaskName(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the description of the Trello task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="trelloTaskDescription"
+                            label="Task Description"
+                            name="trelloTaskDescription"
+                            value={trelloTaskDescription}
+                            onChange={(e) => setTrelloTaskDescription(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the due date of the Trello task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="trelloDueDate"
+                            label="Due Date"
+                            name="trelloDueDate"
+                            type="date"
+                            value={trelloDueDate}
+                            onChange={(e) => setTrelloDueDate(e.target.value)}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the list ID for the Trello task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="trelloListId"
+                            label="List ID"
+                            name="trelloListId"
+                            value={trelloListId}
+                            onChange={(e) => setTrelloListId(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                    </Grid>
+                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                      <Button type="submit" fullWidth variant="contained" color="primary">
+                        {loading ? <CircularProgress size={24} /> : 'Create Task'}
+                      </Button>
+                    </Stack>
+                  </form>
+                  <form onSubmit={handleAsanaSubmit}>
+                    <Typography variant="h6" gutterBottom>
+                      Asana Task Details
+                    </Typography>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the name of the Asana task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="asanaTaskName"
+                            label="Task Name"
+                            name="asanaTaskName"
+                            value={asanaTaskName}
+                            onChange={(e) => setAsanaTaskName(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the notes for the Asana task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="asanaTaskNotes"
+                            label="Task Notes"
+                            name="asanaTaskNotes"
+                            value={asanaTaskNotes}
+                            onChange={(e) => setAsanaTaskNotes(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the due date of the Asana task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            fullWidth
+                            id="asanaDueDate"
+                            label="Due Date"
+                            name="asanaDueDate"
+                            type="date"
+                            value={asanaDueDate}
+                            onChange={(e) => setAsanaDueDate(e.target.value)}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        </Tooltip>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Tooltip title="Enter the project ID for the Asana task">
+                          <TextField
+                            variant="outlined"
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="asanaProjectId"
+                            label="Project ID"
+                            name="asanaProjectId"
+                            value={asanaProjectId}
+                            onChange={(e) => setAsanaProjectId(e.target.value)}
+                          />
+                        </Tooltip>
+                      </Grid>
+                    </Grid>
+                    <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
+                      <Button type="submit" fullWidth variant="contained" color="primary">
+                        {loading ? <CircularProgress size={24} /> : 'Create Task'}
+                      </Button>
+                    </Stack>
+                  </form>
                 </motion.div>
               </CSSTransition>
             </Paper>

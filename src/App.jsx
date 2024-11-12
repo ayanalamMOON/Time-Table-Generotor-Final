@@ -14,6 +14,8 @@ import Timetable from './components/Timetable';
 import UserRegistration from './components/UserRegistration';
 import UserLogin from './components/UserLogin';
 import RoleBasedAccessControl from './components/RoleBasedAccessControl';
+import TrelloIntegration from './components/TrelloIntegration';
+import AsanaIntegration from './components/AsanaIntegration';
 
 const App = () => {
   return (
@@ -33,6 +35,8 @@ const App = () => {
         <Route path="/register" component={UserRegistration} />
         <Route path="/login" component={UserLogin} />
         <Route path="/role-based-access-control" component={RoleBasedAccessControl} />
+        <Route path="/trello-integration" component={TrelloIntegration} />
+        <Route path="/asana-integration" component={AsanaIntegration} />
       </Switch>
     </Router>
   );
