@@ -6,7 +6,7 @@ email-validator==1.1.2
 fastapi
 flake8==3.8.4
 h11==0.11.0
-idna==3.7
+idna==2.10
 mccabe==0.6.1
 motor==2.3.0
 mypy-extensions==0.4.3
@@ -30,3 +30,5 @@ fastapi-limiter==0.1.5
 aiomcache==0.6.0
 rust
 hypercorn==0.14.3
+trello==0.10.0
+asana==1.0.0
