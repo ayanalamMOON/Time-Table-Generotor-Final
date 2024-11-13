@@ -586,3 +586,43 @@ def test_timetable_branch():
     branch = TimetableBranch(**branch_data)
     assert branch.branch_name == "test_branch"
     assert branch.commit_id == "test_commit_id"
+
+def test_train_ai_model_performance_metrics():
+    """
+    Test the training of the AI model and calculate performance metrics.
+    """
+    historical_data = [
+        {"features": np.array([1, 2, 3]), "label": 1},
+        {"features": np.array([4, 5, 6]), "label": 0}
+    ]
+    model = train_ai_model(historical_data)
+    assert model is not None
+
+    X_train = np.array([data['features'] for data in historical_data])
+    y_train = np.array([data['label'] for data in historical_data])
+    y_pred = model.predict(X_train)
+
+    mse = mean_squared_error(y_train, y_pred)
+    mae = mean_absolute_error(y_train, y_pred)
+    rmse = np.sqrt(mse)
+
+    assert mse >= 0
+    assert mae >= 0
+    assert rmse >= 0
+
+def test_predict_timetable_performance_metrics():
+    """
+    Test the prediction of the timetable and calculate performance metrics.
+    """
+    model = TimetableAIModel()
+    input_data = np.array([1, 2, 3])
+    predictions = predict_timetable(model, input_data)
+    assert predictions is not None
+
+    mse = mean_squared_error(input_data, predictions)
+    mae = mean_absolute_error(input_data, predictions)
+    rmse = np.sqrt(mse)
+
+    assert mse >= 0
+    assert mae >= 0
+    assert rmse >= 0

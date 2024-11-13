@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import Swal from 'sweetalert2';
 
 const CalendarIntegration = () => {
   const [showModal, setShowModal] = useState(false);
@@ -15,6 +16,14 @@ const CalendarIntegration = () => {
   const handleCalendarLinkChange = (e) => setCalendarLink(e.target.value);
 
   const handleSync = () => {
+    if (calendarType.trim() === '' || calendarLink.trim() === '') {
+      Swal.fire({
+        text: 'Please fill in all fields.',
+        icon: 'warning',
+      });
+      return;
+    }
+
     // Add logic to sync schedules with the selected calendar type
     console.log(`Syncing with ${calendarType} using link: ${calendarLink}`);
     handleCloseModal();

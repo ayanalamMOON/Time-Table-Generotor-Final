@@ -34,18 +34,30 @@ const CollaborationFeatures = () => {
   }, []);
 
   const fetchCollaborationData = async () => {
-    const data = await getCollaborationData();
-    setCollaborationData(data);
+    try {
+      const data = await getCollaborationData();
+      setCollaborationData(data);
+    } catch (error) {
+      setNotification({ open: true, message: 'Failed to fetch collaboration data', severity: 'error' });
+    }
   };
 
   const fetchTasks = async () => {
-    const data = await getTasks();
-    setTasks(data);
+    try {
+      const data = await getTasks();
+      setTasks(data);
+    } catch (error) {
+      setNotification({ open: true, message: 'Failed to fetch tasks', severity: 'error' });
+    }
   };
 
   const fetchProgressData = async () => {
-    const data = await getProgress();
-    setProgressData(data);
+    try {
+      const data = await getProgress();
+      setProgressData(data);
+    } catch (error) {
+      setNotification({ open: true, message: 'Failed to fetch progress data', severity: 'error' });
+    }
   };
 
   const handleCommentChange = (e) => {
@@ -53,11 +65,15 @@ const CollaborationFeatures = () => {
   };
 
   const handleCommentSubmit = async () => {
-    const updatedData = await saveCollaborationData(newComment);
-    setCollaborationData(updatedData);
-    setNewComment('');
-    if (socket) {
-      socket.send(JSON.stringify({ comment: newComment }));
+    try {
+      const updatedData = await saveCollaborationData(newComment);
+      setCollaborationData(updatedData);
+      setNewComment('');
+      if (socket) {
+        socket.send(JSON.stringify({ comment: newComment }));
+      }
+    } catch (error) {
+      setNotification({ open: true, message: 'Failed to save comment', severity: 'error' });
     }
   };
 
@@ -75,13 +91,17 @@ const CollaborationFeatures = () => {
 
   const handleTaskSubmit = async () => {
     const task = { task: newTask, assigned_to: assignedTo, due_date: dueDate, status: 'Pending' };
-    const updatedTasks = await assignTask(task);
-    setTasks(updatedTasks);
-    setNewTask('');
-    setAssignedTo('');
-    setDueDate('');
-    setTaskDialogOpen(false);
-    setNotification({ open: true, message: 'Task assigned successfully', severity: 'success' });
+    try {
+      const updatedTasks = await assignTask(task);
+      setTasks(updatedTasks);
+      setNewTask('');
+      setAssignedTo('');
+      setDueDate('');
+      setTaskDialogOpen(false);
+      setNotification({ open: true, message: 'Task assigned successfully', severity: 'success' });
+    } catch (error) {
+      setNotification({ open: true, message: 'Failed to assign task', severity: 'error' });
+    }
   };
 
   const handleDragEnd = (result) => {

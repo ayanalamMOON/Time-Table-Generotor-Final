@@ -10,9 +10,11 @@ const AsanaIntegration = () => {
   const [projectId, setProjectId] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    // Form validation
     if (taskName.trim() === '' || taskNotes.trim() === '' || projectId.trim() === '') {
       Swal.fire({
         text: 'Please fill in all fields.',

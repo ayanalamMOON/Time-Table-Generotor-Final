@@ -379,7 +379,7 @@ Generate an access token for user authentication.
 
 ```json
 {
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTYyMzQ2OTYwMH0.4f3d5e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6",
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0dXNlciIsImV4cCI6MTYyMzQ2OTYwMH0.4f3d5e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6e5f5d6",
   "token_type": "bearer"
 }
 ```

@@ -56,6 +56,7 @@ const AddConstraints = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Handle day click event
   const handleDayClick = (day) => {
     const newSelectedDays = [...selectedDays];
     const index = newSelectedDays.findIndex(
@@ -69,14 +70,17 @@ const AddConstraints = () => {
     setSelectedDays(newSelectedDays);
   };
 
+  // Handle time range change event
   const handleTimeRangeChange = (event, newValue) => {
     setTimeRange(newValue);
   };
 
+  // Handle natural language time change event
   const handleNaturalLanguageTimeChange = (event) => {
     setNaturalLanguageTime(event.target.value);
   };
 
+  // Handle form submission
   const handleSubmit = () => {
     if (selectedDays.length === 0) {
       Swal.fire({
@@ -139,6 +143,7 @@ const AddConstraints = () => {
       });
   };
 
+  // Handle integration form submission
   const handleIntegrationSubmit = async (event) => {
     event.preventDefault();
 
@@ -215,6 +220,7 @@ const AddConstraints = () => {
     }
   };
 
+  // Fetch subjects from the backend
   useEffect(() => {
     axios.get("http://localhost:8000/get-courses").then((res) => {
       setLoading(false);
@@ -226,6 +232,7 @@ const AddConstraints = () => {
     });
   }, []);
 
+  // Handle drag end event
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(events);

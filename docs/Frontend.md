@@ -25,6 +25,9 @@
    - [AnalyticsReporting.jsx](#analyticsreportingjsx)
    - [CalendarIntegration.jsx](#calendarintegrationjsx)
    - [CollaborationFeatures.jsx](#collaborationfeaturesjsx)
+   - [AsanaIntegration.jsx](#asanaintegrationjsx)
+   - [TrelloIntegration.jsx](#trellointegrationjsx)
+6. [Testing Procedures and Best Practices](#testing-procedures-and-best-practices)
 
 ## Overview
 
@@ -167,3 +170,16 @@ The `AsanaIntegration.jsx` component provides a form for creating tasks in Asana
 ### `TrelloIntegration.jsx`
 
 The `TrelloIntegration.jsx` component provides a form for creating tasks in Trello. It allows users to enter task details and create tasks in Trello.
+
+## Testing Procedures and Best Practices
+
+To maintain a high level of code quality, please follow these testing procedures and best practices:
+
+- Write tests for any new functionality or changes to existing functionality.
+- Ensure that all critical functionality is covered by tests.
+- Use the existing test files (`src/tests/AddConstraints.test.js`, `src/tests/App.test.js`) as examples for writing new tests.
+- Run all tests locally before submitting a pull request to ensure that they pass.
+- Use Jest and React Testing Library for writing and running tests.
+- Mock external dependencies and API calls to ensure tests are isolated and reliable.
+- Aim for high test coverage, but prioritize testing critical and complex parts of the application.
+- Regularly run tests during development to catch issues early.

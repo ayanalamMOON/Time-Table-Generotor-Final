@@ -41,6 +41,7 @@ const AddCourse = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Handle form submission
   const handleSubmit = () => {
     if (courseName.trim() === "" || courseCode.trim() === "") {
       Swal.fire({
@@ -78,6 +79,7 @@ const AddCourse = () => {
       });
   };
 
+  // Handle drag end event
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(events);
@@ -86,6 +88,7 @@ const AddCourse = () => {
     setEvents(items);
   };
 
+  // Handle integration form submission
   const handleIntegrationSubmit = async (event) => {
     event.preventDefault();
 

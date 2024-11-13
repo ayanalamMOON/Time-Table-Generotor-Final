@@ -6,22 +6,38 @@ import 'chart.js/auto';
 
 const AnalyticsReporting = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getAnalyticsData = async () => {
-      const data = await fetchAnalyticsData();
-      setAnalyticsData(data);
+      try {
+        const data = await fetchAnalyticsData();
+        setAnalyticsData(data);
+      } catch (error) {
+        setError('Error fetching analytics data');
+      } finally {
+        setLoading(false);
+      }
     };
 
     getAnalyticsData();
   }, []);
 
   const handleExport = async (format) => {
-    await exportAnalyticsReport(format);
+    try {
+      await exportAnalyticsReport(format);
+    } catch (error) {
+      setError('Error exporting analytics report');
+    }
   };
 
-  if (!analyticsData) {
+  if (loading) {
     return <div>Loading analytics data...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
   }
 
   const courseDistributionData = {

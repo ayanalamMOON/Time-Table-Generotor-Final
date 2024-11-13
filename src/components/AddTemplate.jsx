@@ -20,6 +20,7 @@ const AddTemplate = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -57,6 +58,7 @@ const AddTemplate = () => {
     }
   };
 
+  // Handle drag end event
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const items = Array.from(events);

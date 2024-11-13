@@ -56,6 +56,7 @@ pip install -r requirements.txt
 
 ```env
 MONGODB_CONNECTION_STRING=mongodb://localhost:27017/timetable
+SECRET_KEY=your_secret_key
 ```
 
 6. Start the backend server:

@@ -856,3 +856,39 @@ async def test_ws_chat():
             await websocket.send_json({"sender": "test_user", "message": "test_message", "timestamp": "2023-01-01T00:00:00Z"})
             response = await websocket.receive_json()
             assert response["status"] == "success"
+
+@pytest.mark.asyncio
+async def test_error_handling():
+    """
+    Test the error handling for invalid endpoints.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/invalid-endpoint")
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Not Found"
+
+@pytest.mark.asyncio
+async def test_edge_case_handling():
+    """
+    Test the edge case handling for invalid data.
+    """
+    invalid_course_data = {
+        "name": "",
+        "lectureno": -1,
+        "duration": -1,
+        "instructor_name": "",
+        "start_hr": -1,
+        "end_hr": -1
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/add-course", json=invalid_course_data)
+    assert response.status_code == 422
+
+    invalid_constraints_data = {
+        "working_days": [],
+        "consecutive_subjects": [],
+        "non_consecutive_subjects": []
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/add-constraints", json=invalid_constraints_data)
+    assert response.status_code == 422

@@ -284,3 +284,9 @@ predicted_timetable = predict_timetable(ai_model, input_data)
 ```
 
 The predicted timetable can then be used to generate the final timetable based on the provided constraints and courses.
+
+## Logging and Error Handling Mechanisms
+
+The backend includes logging and error handling mechanisms to capture and log errors effectively. The `logging` module is used to log important events and errors. The logging configuration is set up in the `app.py` file. The logs are printed to the console and can be used for debugging and monitoring purposes.
+
+The backend uses FastAPI's built-in error handling mechanisms to handle errors and exceptions. Custom error messages are returned for specific error cases, such as when a course or constraint is not found. The error handling mechanisms ensure that the backend can gracefully handle errors and provide meaningful error messages to the users.
