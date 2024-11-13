@@ -33,6 +33,12 @@
    - [GET /get-commit/{commit_id}](#get-get-commitcommit_id)
    - [POST /merge-commits](#post-merge-commits)
    - [POST /branch-commit](#post-branch-commit)
+   - [POST /trello/create-task](#post-trello-create-task)
+   - [POST /trello/update-task](#post-trello-update-task)
+   - [GET /trello/get-task](#get-trello-get-task)
+   - [POST /asana/create-task](#post-asana-create-task)
+   - [POST /asana/update-task](#post-asana-update-task)
+   - [GET /asana/get-task](#get-asana-get-task)
 2. [Error Codes](#error-codes)
 3. [Usage Scenarios](#usage-scenarios)
 
@@ -745,6 +751,156 @@ Create a new branch from a commit.
 {
   "branch_name": "test_branch",
   "commit_id": "test_commit_id"
+}
+```
+
+### `POST /trello/create-task`
+
+Create a task in Trello.
+
+**Request Body:**
+
+```json
+{
+  "name": "Test Task",
+  "description": "This is a test task",
+  "due_date": "2023-01-01T00:00:00Z",
+  "list_id": "test_list_id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d3f",
+  "name": "Test Task",
+  "description": "This is a test task",
+  "due_date": "2023-01-01T00:00:00Z",
+  "list_id": "test_list_id"
+}
+```
+
+### `POST /trello/update-task`
+
+Update a task in Trello.
+
+**Request Body:**
+
+```json
+{
+  "task_id": "60c72b2f9b1e8a001c8e4d3f",
+  "name": "Updated Task",
+  "description": "This is an updated test task",
+  "due_date": "2023-01-02T00:00:00Z",
+  "list_id": "updated_list_id"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d3f",
+  "name": "Updated Task",
+  "description": "This is an updated test task",
+  "due_date": "2023-01-02T00:00:00Z",
+  "list_id": "updated_list_id"
+}
+```
+
+### `GET /trello/get-task`
+
+Retrieve task information from Trello.
+
+**Request Parameters:**
+
+- `task_id`: The ID of the task.
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d3f",
+  "name": "Test Task",
+  "description": "This is a test task",
+  "due_date": "2023-01-01T00:00:00Z",
+  "list_id": "test_list_id"
+}
+```
+
+### `POST /asana/create-task`
+
+Create a task in Asana.
+
+**Request Body:**
+
+```json
+{
+  "name": "Test Task",
+  "notes": "These are test notes",
+  "due_on": "2023-01-01",
+  "projects": ["test_project_id"]
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d40",
+  "name": "Test Task",
+  "notes": "These are test notes",
+  "due_on": "2023-01-01",
+  "projects": ["test_project_id"]
+}
+```
+
+### `POST /asana/update-task`
+
+Update a task in Asana.
+
+**Request Body:**
+
+```json
+{
+  "task_id": "60c72b2f9b1e8a001c8e4d40",
+  "name": "Updated Task",
+  "notes": "These are updated test notes",
+  "due_on": "2023-01-02",
+  "projects": ["updated_project_id"]
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d40",
+  "name": "Updated Task",
+  "notes": "These are updated test notes",
+  "due_on": "2023-01-02",
+  "projects": ["updated_project_id"]
+}
+```
+
+### `GET /asana/get-task`
+
+Retrieve task information from Asana.
+
+**Request Parameters:**
+
+- `task_id`: The ID of the task.
+
+**Response:**
+
+```json
+{
+  "id": "60c72b2f9b1e8a001c8e4d40",
+  "name": "Test Task",
+  "notes": "These are test notes",
+  "due_on": "2023-01-01",
+  "projects": ["test_project_id"]
 }
 ```
 

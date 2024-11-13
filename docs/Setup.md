@@ -14,6 +14,9 @@ This document provides detailed instructions for setting up the Time Table Gener
    - [Frontend Tests](#frontend-tests)
 7. [Troubleshooting Tips](#troubleshooting-tips)
    - [Common Issues](#common-issues)
+8. [Integration Setup](#integration-setup)
+   - [Trello Integration](#trello-integration)
+   - [Asana Integration](#asana-integration)
 
 ## Prerequisites
 
@@ -158,3 +161,30 @@ npm test
 
 4. **Issue**: Tests failing.
    **Solution**: Ensure that all dependencies are installed correctly and that the backend server is running before running the tests.
+
+## Integration Setup
+
+### Trello Integration
+
+1. Create a Trello account and obtain your API key and token from the Trello Developer Portal.
+
+2. Add the following environment variables to your `.env` file in the `Backend` directory:
+
+```env
+TRELLO_API_KEY=your_trello_api_key
+TRELLO_TOKEN=your_trello_token
+```
+
+3. Restart the backend server to apply the changes.
+
+### Asana Integration
+
+1. Create an Asana account and obtain your Personal Access Token from the Asana Developer Portal.
+
+2. Add the following environment variables to your `.env` file in the `Backend` directory:
+
+```env
+ASANA_ACCESS_TOKEN=your_asana_access_token
+```
+
+3. Restart the backend server to apply the changes.

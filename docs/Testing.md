@@ -91,6 +91,19 @@ The following new tests have been added to the project:
    - `test_generate_timetable_ai_model_issues_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles AI model issues correctly.
    - `test_generate_timetable_new_csp_solver`: Tests the `/generate-timetable` endpoint to ensure it works with the new CSP solver.
    - `test_generate_timetable_recommendation_system`: Tests the `/generate-timetable` endpoint to ensure it works with the recommendation system.
+   - `test_get_courses_edge_cases`: Tests the `/get-courses` endpoint to ensure it handles edge cases correctly.
+   - `test_get_constraints_edge_cases`: Tests the `/get-constraints` endpoint to ensure it handles edge cases correctly.
+   - `test_post_course_edge_cases`: Tests the `/add-course` endpoint to ensure it handles edge cases correctly.
+   - `test_post_constraints_edge_cases`: Tests the `/add-constraints` endpoint to ensure it handles edge cases correctly.
+   - `test_generate_timetable_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles edge cases correctly.
+   - `test_update_course_edge_cases`: Tests the `/update-course/{course_id}` endpoint to ensure it handles edge cases correctly.
+   - `test_generate_timetable_no_constraints_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it returns a 400 status code when no constraints are provided.
+   - `test_generate_timetable_no_courses_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it returns a 400 status code when no courses are provided.
+   - `test_generate_timetable_invalid_fields_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles invalid fields correctly.
+   - `test_generate_timetable_scheduling_conflicts_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles scheduling conflicts correctly.
+   - `test_generate_timetable_ai_model_issues_edge_cases`: Tests the `/generate-timetable` endpoint to ensure it handles AI model issues correctly.
+   - `test_generate_timetable_new_csp_solver`: Tests the `/generate-timetable` endpoint to ensure it works with the new CSP solver.
+   - `test_generate_timetable_recommendation_system`: Tests the `/generate-timetable` endpoint to ensure it works with the recommendation system.
 
 2. **Frontend Tests**:
    - `test_add_constraints_edge_cases`: Tests the `AddConstraints` component to ensure it handles edge cases correctly.

@@ -46,6 +46,12 @@ This project is a Time Table Generator that allows users to create and manage ti
      - [GET /get-commit/{commit_id}](#get-get-commitcommit_id)
      - [POST /merge-commits](#post-merge-commits)
      - [POST /branch-commit](#post-branch-commit)
+     - [POST /trello/create-task](#post-trello-create-task)
+     - [POST /trello/update-task](#post-trello-update-task)
+     - [GET /trello/get-task](#get-trello-get-task)
+     - [POST /asana/create-task](#post-asana-create-task)
+     - [POST /asana/update-task](#post-asana-update-task)
+     - [GET /asana/get-task](#get-asana-get-task)
    - [Request and Response Examples](#request-and-response-examples)
      - [POST /add-course](#post-add-course)
      - [POST /add-constraints](#post-add-constraints)
@@ -316,6 +322,30 @@ Merge two timetable commits.
 #### `POST /branch-commit`
 
 Create a new branch from a commit.
+
+#### `POST /trello/create-task`
+
+Create a task in Trello.
+
+#### `POST /trello/update-task`
+
+Update a task in Trello.
+
+#### `GET /trello/get-task`
+
+Retrieve task information from Trello.
+
+#### `POST /asana/create-task`
+
+Create a task in Asana.
+
+#### `POST /asana/update-task`
+
+Update a task in Asana.
+
+#### `GET /asana/get-task`
+
+Retrieve task information from Asana.
 
 ### Request and Response Examples
 

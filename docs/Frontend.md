@@ -70,6 +70,8 @@ The frontend application uses the following technologies:
 - React Beautiful DnD: A library for drag-and-drop functionality.
 - React Big Calendar: A library for calendar integration and visualization.
 - Chart.js: A library for creating charts and graphs.
+- Framer Motion: A library for creating animations and interactive elements.
+- React Aria: A library for improving accessibility in React applications.
 
 ## Setup Instructions
 
