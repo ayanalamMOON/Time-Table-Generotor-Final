@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import AddConstraints from '../components/AddConstraints';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
@@ -18,45 +18,39 @@ describe('AddConstraints Component', () => {
   });
 
   test('adds constraints successfully', async () => {
-    mock.onPost('http://localhost:8000/add.constraints').reply(200);
+    mock.onPost('/api/add-constraints').reply(200);
 
     render(<AddConstraints />);
 
     fireEvent.click(screen.getByText('Monday'));
     fireEvent.click(screen.getByText('Tuesday'));
 
-    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '09:00' } });
-    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '17:00' } });
+    fireEvent.change(screen.getByLabelText('Natural Language Time'), { target: { value: '9 AM to 5 PM' } });
 
     fireEvent.click(screen.getByText('Submit'));
 
-    await screen.findByText('Constraints added successfully!');
-
-    expect(Swal.fire).toHaveBeenCalledWith({
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
       text: 'Constraints added successfully!',
       icon: 'success',
-    });
+    }));
   });
 
   test('handles API error', async () => {
-    mock.onPost('http://localhost:8000/add.constraints').reply(500);
+    mock.onPost('/api/add-constraints').reply(500);
 
     render(<AddConstraints />);
 
     fireEvent.click(screen.getByText('Monday'));
     fireEvent.click(screen.getByText('Tuesday'));
 
-    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '09:00' } });
-    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '17:00' } });
+    fireEvent.change(screen.getByLabelText('Natural Language Time'), { target: { value: '9 AM to 5 PM' } });
 
     fireEvent.click(screen.getByText('Submit'));
 
-    await screen.findByText('Error adding constraints');
-
-    expect(Swal.fire).toHaveBeenCalledWith({
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
       text: 'Error adding constraints',
       icon: 'error',
-    });
+    }));
   });
 
   test('renders calendar view', () => {
@@ -103,44 +97,119 @@ describe('AddConstraints Component', () => {
   });
 
   test('handles edge cases for adding constraints', async () => {
-    mock.onPost('http://localhost:8000/add.constraints').reply(200);
+    mock.onPost('/api/add-constraints').reply(200);
 
     render(<AddConstraints />);
 
     fireEvent.click(screen.getByText('Monday'));
     fireEvent.click(screen.getByText('Tuesday'));
 
-    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '00:00' } });
-    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '23:59' } });
+    fireEvent.change(screen.getByLabelText('Natural Language Time'), { target: { value: '00:00 to 23:59' } });
 
     fireEvent.click(screen.getByText('Submit'));
 
-    await screen.findByText('Constraints added successfully!');
-
-    expect(Swal.fire).toHaveBeenCalledWith({
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
       text: 'Constraints added successfully!',
       icon: 'success',
-    });
+    }));
   });
 
   test('handles edge cases for API error', async () => {
-    mock.onPost('http://localhost:8000/add.constraints').reply(500);
+    mock.onPost('/api/add-constraints').reply(500);
 
     render(<AddConstraints />);
 
     fireEvent.click(screen.getByText('Monday'));
     fireEvent.click(screen.getByText('Tuesday'));
 
-    fireEvent.change(screen.getByLabelText('Start Time'), { target: { value: '00:00' } });
-    fireEvent.change(screen.getByLabelText('End Time'), { target: { value: '23:59' } });
+    fireEvent.change(screen.getByLabelText('Natural Language Time'), { target: { value: '00:00 to 23:59' } });
 
     fireEvent.click(screen.getByText('Submit'));
 
-    await screen.findByText('Error adding constraints');
-
-    expect(Swal.fire).toHaveBeenCalledWith({
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
       text: 'Error adding constraints',
       icon: 'error',
-    });
+    }));
+  });
+
+  test('renders integration options', () => {
+    render(<AddConstraints />);
+    expect(screen.getByText('Integration Options')).toBeInTheDocument();
+  });
+
+  test('handles Trello integration form submission', async () => {
+    mock.onPost('/trello/create-task').reply(200);
+
+    render(<AddConstraints />);
+
+    fireEvent.change(screen.getByLabelText('Integration Type'), { target: { value: 'trello' } });
+    fireEvent.change(screen.getByLabelText('Task Name'), { target: { value: 'Test Task' } });
+    fireEvent.change(screen.getByLabelText('Task Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText('Due Date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(screen.getByLabelText('List ID'), { target: { value: '12345' } });
+
+    fireEvent.click(screen.getByText('Submit Integration Task'));
+
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Task created successfully in Trello!',
+      icon: 'success',
+    }));
+  });
+
+  test('handles Asana integration form submission', async () => {
+    mock.onPost('/asana/create-task').reply(200);
+
+    render(<AddConstraints />);
+
+    fireEvent.change(screen.getByLabelText('Integration Type'), { target: { value: 'asana' } });
+    fireEvent.change(screen.getByLabelText('Task Name'), { target: { value: 'Test Task' } });
+    fireEvent.change(screen.getByLabelText('Task Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText('Due Date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(screen.getByLabelText('Project ID'), { target: { value: '67890' } });
+
+    fireEvent.click(screen.getByText('Submit Integration Task'));
+
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Task created successfully in Asana!',
+      icon: 'success',
+    }));
+  });
+
+  test('handles Trello integration form submission error', async () => {
+    mock.onPost('/trello/create-task').reply(500);
+
+    render(<AddConstraints />);
+
+    fireEvent.change(screen.getByLabelText('Integration Type'), { target: { value: 'trello' } });
+    fireEvent.change(screen.getByLabelText('Task Name'), { target: { value: 'Test Task' } });
+    fireEvent.change(screen.getByLabelText('Task Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText('Due Date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(screen.getByLabelText('List ID'), { target: { value: '12345' } });
+
+    fireEvent.click(screen.getByText('Submit Integration Task'));
+
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Error creating task in Trello',
+      icon: 'error',
+    }));
+  });
+
+  test('handles Asana integration form submission error', async () => {
+    mock.onPost('/asana/create-task').reply(500);
+
+    render(<AddConstraints />);
+
+    fireEvent.change(screen.getByLabelText('Integration Type'), { target: { value: 'asana' } });
+    fireEvent.change(screen.getByLabelText('Task Name'), { target: { value: 'Test Task' } });
+    fireEvent.change(screen.getByLabelText('Task Description'), { target: { value: 'Test Description' } });
+    fireEvent.change(screen.getByLabelText('Due Date'), { target: { value: '2023-12-31' } });
+    fireEvent.change(screen.getByLabelText('Project ID'), { target: { value: '67890' } });
+
+    fireEvent.click(screen.getByText('Submit Integration Task'));
+
+    await waitFor(() => expect(Swal.fire).toHaveBeenCalledWith({
+      text: 'Error creating task in Asana',
+      icon: 'error',
+    }));
   });
 });

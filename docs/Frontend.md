@@ -97,11 +97,11 @@ The `App.jsx` file is the main entry point of the application. It sets up the ro
 
 ### `AddConstraints.jsx`
 
-The `AddConstraints.jsx` component provides a form for adding new constraints. It allows users to select days, time ranges, and specify consecutive and non-consecutive subjects.
+The `AddConstraints.jsx` component provides a form for adding new constraints. It allows users to select days, time ranges, and specify consecutive and non-consecutive subjects. Tooltips are provided to help users understand how to use the form. The component also includes better error handling and user feedback mechanisms using SweetAlert2, as well as interactive elements and animations using Framer Motion. Accessibility has been improved by following best practices for web accessibility.
 
 ### `AddCourse.jsx`
 
-The `AddCourse.jsx` component provides a form for adding new courses. It allows users to enter the course name and code.
+The `AddCourse.jsx` component provides a form for adding new courses. It allows users to enter the course name and code. Tooltips are provided to help users understand how to use the form. The component also includes better error handling and user feedback mechanisms using SweetAlert2, as well as interactive elements and animations using Framer Motion. Accessibility has been improved by following best practices for web accessibility.
 
 ### `AddTemplate.jsx`
 
