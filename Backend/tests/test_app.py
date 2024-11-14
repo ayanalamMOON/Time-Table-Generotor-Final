@@ -892,3 +892,68 @@ async def test_edge_case_handling():
     async with AsyncClient(app=app, base_url="http://test") as ac:
         response = await ac.post("/add-constraints", json=invalid_constraints_data)
     assert response.status_code == 422
+
+@pytest.mark.asyncio
+async def test_mongodb_connection_pooling():
+    """
+    Test MongoDB connection pooling by checking the maxPoolSize and minPoolSize parameters.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-courses")
+    assert response.status_code == 200
+    # Check if the connection pool size is within the expected range
+    client_info = app.mongodb_client.server_info()
+    assert client_info['connections']['current'] <= 50
+    assert client_info['connections']['current'] >= 10
+
+@pytest.mark.asyncio
+async def test_redis_connection_pooling():
+    """
+    Test Redis connection pooling by checking the minsize and maxsize parameters.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-courses")
+    assert response.status_code == 200
+    # Check if the connection pool size is within the expected range
+    redis_info = await app.redis.info()
+    assert int(redis_info['connected_clients']) <= 10
+    assert int(redis_info['connected_clients']) >= 5
+
+@pytest.mark.asyncio
+async def test_security_headers():
+    """
+    Test the presence of security headers in the response.
+    """
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.get("/get-courses")
+    assert response.status_code == 200
+    assert "Content-Security-Policy" in response.headers
+    assert "X-Content-Type-Options" in response.headers
+    assert "X-Frame-Options" in response.headers
+    assert "X-XSS-Protection" in response.headers
+
+@pytest.mark.asyncio
+async def test_input_validation_and_sanitization():
+    """
+    Test input validation and sanitization for user inputs.
+    """
+    invalid_course_data = {
+        "name": "<script>alert('XSS')</script>",
+        "lectureno": -1,
+        "duration": -1,
+        "instructor_name": "",
+        "start_hr": -1,
+        "end_hr": -1
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/add-course", json=invalid_course_data)
+    assert response.status_code == 422
+
+    invalid_constraints_data = {
+        "working_days": [],
+        "consecutive_subjects": [],
+        "non_consecutive_subjects": []
+    }
+    async with AsyncClient(app=app, base_url="http://test") as ac:
+        response = await ac.post("/add-constraints", json=invalid_constraints_data)
+    assert response.status_code == 422

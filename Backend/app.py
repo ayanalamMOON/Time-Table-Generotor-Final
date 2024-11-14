@@ -33,7 +33,7 @@ load_dotenv()
 # Get the MongoDB connection string from environment variables
 MONGODB_CONNECTION_STRING = os.getenv('MONGODB_CONNECTION_STRING', 'mongodb://localhost:27017/timetable')
 
-client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_CONNECTION_STRING)
+client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_CONNECTION_STRING, maxPoolSize=50, minPoolSize=10)
 database = client.timetable
 courses_collection = database.courses
 constraints_collection = database.constraints
@@ -579,7 +579,7 @@ async def on_startup() -> None:
     """
     Event handler for application startup.
     """
-    redis = await aioredis.create_redis_pool("redis://localhost")
+    redis = await aioredis.create_redis_pool("redis://localhost", minsize=5, maxsize=10)
     await FastAPILimiter.init(redis)
 
 @app.get("/get-courses", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
@@ -589,7 +589,7 @@ async def get_courses(current_user: User = Depends(get_current_active_user), ski
     Endpoint to retrieve a list of courses.
     """
     courses = []
-    cursor = courses_collection.find({}).skip(skip).limit(limit)
+    cursor = courses_collection.find({}, {"name": 1, "lectureno": 1}).skip(skip).limit(limit)
     async for document in cursor:
         courses.append(Course(**document))
     return courses
@@ -601,7 +601,7 @@ async def get_constraints(current_user: User = Depends(get_current_active_user),
     Endpoint to retrieve a list of constraints.
     """
     constraints = []
-    cursor = constraints_collection.find({}).skip(skip).limit(limit)
+    cursor = constraints_collection.find({}, {"working_days": 1, "consecutive_subjects": 1}).skip(skip).limit(limit)
     async for document in cursor:
         constraints.append(Constraint(**document))
     return constraints
