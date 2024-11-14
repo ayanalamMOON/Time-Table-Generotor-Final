@@ -25,6 +25,10 @@ from googleapiclient.discovery import build
 from fpdf import FPDF
 import pandas as pd
 import requests
+import sentry_sdk
+from sentry_sdk.integrations.fastapi import FastAPIIntegration
+from prometheus_client import start_http_server, Summary, Counter, Gauge, Histogram
+from prometheus_fastapi_instrumentator import Instrumentator
 
 # Load environment variables from .env file
 from dotenv import load_dotenv
@@ -581,6 +585,12 @@ async def on_startup() -> None:
     """
     redis = await aioredis.create_redis_pool("redis://localhost", minsize=5, maxsize=10)
     await FastAPILimiter.init(redis)
+    sentry_sdk.init(
+        dsn=os.getenv('SENTRY_DSN'),
+        integrations=[FastAPIIntegration()]
+    )
+    start_http_server(8001)  # Start Prometheus metrics server
+    Instrumentator().instrument(app).expose(app)
 
 @app.get("/get-courses", dependencies=[Depends(RateLimiter(times=10, seconds=60))])
 @cached(ttl=60)
@@ -732,3 +742,31 @@ async def export_template(template_id: str, current_user: User = Depends(get_cur
         logger.error(f"Template with id {template_id} not found")
         raise HTTPException(status_code=404, detail="Template not found")
     return ConstraintTemplate(**document)
+
+# Prometheus and Grafana setup instructions
+"""
+To set up Prometheus and Grafana for monitoring the FastAPI application, follow these steps:
+
+1. Install Prometheus and Grafana:
+   - Prometheus: https://prometheus.io/docs/prometheus/latest/installation/
+   - Grafana: https://grafana.com/docs/grafana/latest/installation/
+
+2. Configure Prometheus to scrape metrics from the FastAPI application:
+   - Add the following job to the Prometheus configuration file (prometheus.yml):
+     scrape_configs:
+       - job_name: 'fastapi'
+         static_configs:
+           - targets: ['localhost:8001']
+
+3. Start Prometheus and Grafana:
+   - Prometheus: ./prometheus --config.file=prometheus.yml
+   - Grafana: ./bin/grafana-server
+
+4. Add Prometheus as a data source in Grafana:
+   - Open Grafana in a web browser (default: http://localhost:3000)
+   - Go to Configuration > Data Sources > Add data source
+   - Select Prometheus and configure the URL (default: http://localhost:9090)
+
+5. Create Grafana dashboards to visualize the metrics collected by Prometheus.
+"""
+
