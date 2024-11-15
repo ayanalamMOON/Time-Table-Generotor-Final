@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const CalendarIntegration = () => {
   const [showModal, setShowModal] = useState(false);
   const [calendarType, setCalendarType] = useState('');
   const [calendarLink, setCalendarLink] = useState('');
+  const [events, setEvents] = useState([]);
 
   const handleShowModal = () => setShowModal(true);
   const handleCloseModal = () => setShowModal(false);
@@ -15,7 +17,7 @@ const CalendarIntegration = () => {
   const handleCalendarTypeChange = (e) => setCalendarType(e.target.value);
   const handleCalendarLinkChange = (e) => setCalendarLink(e.target.value);
 
-  const handleSync = () => {
+  const handleSync = async () => {
     if (calendarType.trim() === '' || calendarLink.trim() === '') {
       Swal.fire({
         text: 'Please fill in all fields.',
@@ -24,10 +26,40 @@ const CalendarIntegration = () => {
       return;
     }
 
-    // Add logic to sync schedules with the selected calendar type
-    console.log(`Syncing with ${calendarType} using link: ${calendarLink}`);
+    try {
+      const response = await axios.post('/calendar/sync', {
+        type: calendarType,
+        link: calendarLink,
+      });
+      console.log('Calendar synced:', response.data);
+      Swal.fire({
+        text: 'Calendar synced successfully!',
+        icon: 'success',
+      });
+      setEvents(response.data.events);
+    } catch (error) {
+      console.error('Error syncing calendar:', error);
+      Swal.fire({
+        text: 'Error syncing calendar',
+        icon: 'error',
+      });
+    }
+
     handleCloseModal();
   };
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await axios.get('/calendar/events');
+        setEvents(response.data.events);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div>
@@ -70,7 +102,12 @@ const CalendarIntegration = () => {
         </Modal.Footer>
       </Modal>
 
-      <Calendar />
+      <Calendar
+        tileContent={({ date, view }) => {
+          const event = events.find(event => new Date(event.date).toDateString() === date.toDateString());
+          return event ? <p>{event.title}</p> : null;
+        }}
+      />
     </div>
   );
 };

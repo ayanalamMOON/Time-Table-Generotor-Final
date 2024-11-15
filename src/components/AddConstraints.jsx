@@ -53,6 +53,10 @@ const AddConstraints = () => {
   const [dueDate, setDueDate] = useState("");
   const [listId, setListId] = useState("");
   const [projectId, setProjectId] = useState("");
+  const [analyticsData, setAnalyticsData] = useState(null);
+  const [calendarType, setCalendarType] = useState("");
+  const [calendarLink, setCalendarLink] = useState("");
+  const [notifications, setNotifications] = useState([]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
@@ -239,6 +243,55 @@ const AddConstraints = () => {
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
     setEvents(items);
+  };
+
+  // Fetch analytics data
+  const fetchAnalyticsData = async () => {
+    try {
+      const response = await axios.get("/analytics");
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error("Error fetching analytics data:", error);
+    }
+  };
+
+  // Handle calendar sync
+  const handleCalendarSync = async () => {
+    if (calendarType.trim() === "" || calendarLink.trim() === "") {
+      Swal.fire({
+        text: "Please fill in all fields.",
+        icon: "warning",
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post("/calendar/sync", {
+        type: calendarType,
+        link: calendarLink,
+      });
+      console.log("Calendar synced:", response.data);
+      Swal.fire({
+        text: "Calendar synced successfully!",
+        icon: "success",
+      });
+    } catch (error) {
+      console.error("Error syncing calendar:", error);
+      Swal.fire({
+        text: "Error syncing calendar",
+        icon: "error",
+      });
+    }
+  };
+
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get("/notifications");
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+    }
   };
 
   return (
@@ -516,6 +569,81 @@ const AddConstraints = () => {
                       Submit Integration Task
                     </Button>
                   </Stack>
+                  <center>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                      Analytics and Reporting
+                    </Typography>
+                  </center>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={fetchAnalyticsData}
+                  >
+                    Fetch Analytics Data
+                  </Button>
+                  {analyticsData && (
+                    <div>
+                      <Typography variant="body1">Course Distribution: {JSON.stringify(analyticsData.courseDistribution)}</Typography>
+                      <Typography variant="body1">Instructor Workload: {JSON.stringify(analyticsData.instructorWorkload)}</Typography>
+                      <Typography variant="body1">Constraint Satisfaction: {JSON.stringify(analyticsData.constraintSatisfaction)}</Typography>
+                    </div>
+                  )}
+                  <center>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                      Calendar Integration
+                    </Typography>
+                  </center>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <FormControl fullWidth>
+                        <InputLabel id="calendar-type-label">Calendar Type</InputLabel>
+                        <Select
+                          labelId="calendar-type-label"
+                          id="calendar-type"
+                          value={calendarType}
+                          label="Calendar Type"
+                          onChange={(e) => setCalendarType(e.target.value)}
+                        >
+                          <MenuItem value="google">Google Calendar</MenuItem>
+                          <MenuItem value="outlook">Microsoft Outlook</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Tooltip title="Enter the calendar link">
+                        <TextField
+                          label="Calendar Link"
+                          value={calendarLink}
+                          onChange={(e) => setCalendarLink(e.target.value)}
+                          fullWidth
+                        />
+                      </Tooltip>
+                    </Grid>
+                  </Grid>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCalendarSync}
+                  >
+                    Sync Calendar
+                  </Button>
+                  <center>
+                    <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
+                      Notifications
+                    </Typography>
+                  </center>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={fetchNotifications}
+                  >
+                    Fetch Notifications
+                  </Button>
+                  <ul>
+                    {notifications.map((notification, index) => (
+                      <li key={index}>{notification.message}</li>
+                    ))}
+                  </ul>
                 </motion.div>
               </CSSTransition>
             </Paper>

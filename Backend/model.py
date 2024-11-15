@@ -553,3 +553,51 @@ class ChatMessage(BaseModel):
     sender: str
     message: str
     timestamp: datetime
+
+
+class TimetableAnalytics(BaseModel):
+    """
+    Model for timetable analytics.
+    """
+    course_distribution: Dict[str, int]
+    instructor_workload: Dict[str, int]
+    constraint_satisfaction: Dict[str, float]
+
+
+class CalendarEvent(BaseModel):
+    """
+    Model for a calendar event.
+    """
+    summary: str
+    location: str
+    description: str
+    start: Dict[str, str]
+    end: Dict[str, str]
+
+
+class TrelloTask(BaseModel):
+    """
+    Model for a Trello task.
+    """
+    name: str
+    description: str
+    due_date: Optional[datetime] = None
+    list_id: str
+
+
+class AsanaTask(BaseModel):
+    """
+    Model for an Asana task.
+    """
+    name: str
+    notes: str
+    due_on: Optional[datetime] = None
+    projects: List[str]
+
+
+class Notification(BaseModel):
+    """
+    Model for a notification.
+    """
+    user_id: str
+    message: str

@@ -13,9 +13,11 @@ const RecommendationSystem = () => {
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
+  const [analyticsData, setAnalyticsData] = useState(null);
 
   useEffect(() => {
     fetchRecommendations();
+    fetchAnalyticsData();
   }, []);
 
   const fetchRecommendations = async () => {
@@ -27,6 +29,16 @@ const RecommendationSystem = () => {
       setNotification({ open: true, message: 'Error fetching recommendations', severity: 'error' });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAnalyticsData = async () => {
+    try {
+      const response = await axios.get('/analytics');
+      setAnalyticsData(response.data);
+    } catch (error) {
+      console.error('Error fetching analytics data:', error);
+      setNotification({ open: true, message: 'Error fetching analytics data', severity: 'error' });
     }
   };
 
@@ -100,6 +112,13 @@ const RecommendationSystem = () => {
             ),
           }}
         />
+        {analyticsData && (
+          <div>
+            <Typography variant="body1">Course Distribution: {JSON.stringify(analyticsData.courseDistribution)}</Typography>
+            <Typography variant="body1">Instructor Workload: {JSON.stringify(analyticsData.instructorWorkload)}</Typography>
+            <Typography variant="body1">Constraint Satisfaction: {JSON.stringify(analyticsData.constraintSatisfaction)}</Typography>
+          </div>
+        )}
       </Paper>
       <Snackbar
         open={notification.open}

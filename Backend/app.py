@@ -574,6 +574,25 @@ async def get_asana_task(task_id: str, current_user: User = Depends(get_current_
         raise HTTPException(status_code=response.status_code, detail="Failed to retrieve Asana task")
     return response.json()
 
+@app.post("/notifications/send", response_model=Notification)
+async def send_notification(notification: Notification, current_user: User = Depends(get_current_active_user)) -> Notification:
+    """
+    Endpoint to send a notification to a user.
+    """
+    await collaboration_collection.insert_one(notification.dict())
+    return notification
+
+@app.get("/notifications", response_model=List[Notification])
+async def get_notifications(current_user: User = Depends(get_current_active_user)) -> List[Notification]:
+    """
+    Endpoint to retrieve notifications for the current user.
+    """
+    notifications = []
+    cursor = collaboration_collection.find({"user_id": current_user["username"]})
+    async for document in cursor:
+        notifications.append(Notification(**document))
+    return notifications
+
 if __name__ == '__main__':
     hypercorn.asyncio.run("app:app", host="0.0.0.0",
                 port=8000, reload=True, debug=True)

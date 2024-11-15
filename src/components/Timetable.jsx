@@ -1,12 +1,13 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import Swal from 'sweetalert2';
-import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Grid } from '@mui/material';
+import { Paper, Typography, Tooltip, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress, Grid, Snackbar, Alert, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { motion } from 'framer-motion';
+import axios from 'axios';
 
 const Timetable = ({ timetable }) => {
   const [events, setEvents] = useState(timetable);
@@ -14,8 +15,32 @@ const Timetable = ({ timetable }) => {
   const [collaborationOpen, setCollaborationOpen] = useState(false);
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
+  const [calendarType, setCalendarType] = useState('');
+  const [calendarLink, setCalendarLink] = useState('');
+  const [integrationType, setIntegrationType] = useState('');
+  const [taskName, setTaskName] = useState('');
+  const [taskDescription, setTaskDescription] = useState('');
+  const [dueDate, setDueDate] = useState('');
+  const [listId, setListId] = useState('');
+  const [projectId, setProjectId] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [notificationOpen, setNotificationOpen] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const response = await axios.get('/notifications');
+      setNotifications(response.data);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    }
+  };
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -58,6 +83,125 @@ const Timetable = ({ timetable }) => {
     console.log('Comment submitted:', comment);
     setComment('');
     setCollaborationOpen(false);
+  };
+
+  const handleCalendarTypeChange = (e) => setCalendarType(e.target.value);
+  const handleCalendarLinkChange = (e) => setCalendarLink(e.target.value);
+
+  const handleSync = async () => {
+    if (calendarType.trim() === '' || calendarLink.trim() === '') {
+      Swal.fire({
+        text: 'Please fill in all fields.',
+        icon: 'warning',
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('/calendar/sync', {
+        type: calendarType,
+        link: calendarLink,
+      });
+      console.log('Calendar synced:', response.data);
+      Swal.fire({
+        text: 'Calendar synced successfully!',
+        icon: 'success',
+      });
+      setEvents(response.data.events);
+    } catch (error) {
+      console.error('Error syncing calendar:', error);
+      Swal.fire({
+        text: 'Error syncing calendar',
+        icon: 'error',
+      });
+    }
+  };
+
+  const handleIntegrationTypeChange = (e) => setIntegrationType(e.target.value);
+  const handleTaskNameChange = (e) => setTaskName(e.target.value);
+  const handleTaskDescriptionChange = (e) => setTaskDescription(e.target.value);
+  const handleDueDateChange = (e) => setDueDate(e.target.value);
+  const handleListIdChange = (e) => setListId(e.target.value);
+  const handleProjectIdChange = (e) => setProjectId(e.target.value);
+
+  const handleIntegrationSubmit = async (event) => {
+    event.preventDefault();
+
+    if (integrationType === 'trello') {
+      if (taskName.trim() === '' || taskDescription.trim() === '' || listId.trim() === '') {
+        Swal.fire({
+          text: 'Please fill in all fields for Trello.',
+          icon: 'warning',
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await axios.post('/trello/create-task', {
+          name: taskName,
+          description: taskDescription,
+          due_date: dueDate,
+          list_id: listId,
+        });
+        console.log('Task created:', response.data);
+        setTaskName('');
+        setTaskDescription('');
+        setDueDate('');
+        setListId('');
+        Swal.fire({
+          text: 'Task created successfully in Trello!',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('Error creating task in Trello:', error);
+        Swal.fire({
+          text: 'Error creating task in Trello',
+          icon: 'error',
+        });
+      } finally {
+        setLoading(false);
+      }
+    } else if (integrationType === 'asana') {
+      if (taskName.trim() === '' || taskDescription.trim() === '' || projectId.trim() === '') {
+        Swal.fire({
+          text: 'Please fill in all fields for Asana.',
+          icon: 'warning',
+        });
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await axios.post('/asana/create-task', {
+          name: taskName,
+          description: taskDescription,
+          due_date: dueDate,
+          project_id: projectId,
+        });
+        console.log('Task created:', response.data);
+        setTaskName('');
+        setTaskDescription('');
+        setDueDate('');
+        setProjectId('');
+        Swal.fire({
+          text: 'Task created successfully in Asana!',
+          icon: 'success',
+        });
+      } catch (error) {
+        console.error('Error creating task in Asana:', error);
+        Swal.fire({
+          text: 'Error creating task in Asana',
+          icon: 'error',
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationOpen(false);
   };
 
   return (
@@ -185,6 +329,134 @@ const Timetable = ({ timetable }) => {
           </DragDropContext>
         </Suspense>
       )}
+      <Dialog open={notificationOpen} onClose={handleNotificationClose}>
+        <DialogTitle>Notifications</DialogTitle>
+        <DialogContent>
+          <List>
+            {notifications.map((notification, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={notification.message} />
+              </ListItem>
+            ))}
+          </List>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleNotificationClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <FormControl fullWidth>
+        <InputLabel id="calendar-type-label">Calendar Type</InputLabel>
+        <Select
+          labelId="calendar-type-label"
+          id="calendar-type"
+          value={calendarType}
+          label="Calendar Type"
+          onChange={handleCalendarTypeChange}
+        >
+          <MenuItem value="google">Google Calendar</MenuItem>
+          <MenuItem value="outlook">Microsoft Outlook</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        label="Calendar Link"
+        value={calendarLink}
+        onChange={handleCalendarLinkChange}
+        fullWidth
+      />
+      <Button variant="contained" color="primary" onClick={handleSync}>
+        Sync Calendar
+      </Button>
+      <FormControl fullWidth>
+        <InputLabel id="integration-type-label">Integration Type</InputLabel>
+        <Select
+          labelId="integration-type-label"
+          id="integration-type"
+          value={integrationType}
+          label="Integration Type"
+          onChange={handleIntegrationTypeChange}
+        >
+          <MenuItem value="trello">Trello</MenuItem>
+          <MenuItem value="asana">Asana</MenuItem>
+        </Select>
+      </FormControl>
+      {integrationType === 'trello' && (
+        <>
+          <TextField
+            label="Task Name"
+            value={taskName}
+            onChange={handleTaskNameChange}
+            fullWidth
+          />
+          <TextField
+            label="Task Description"
+            value={taskDescription}
+            onChange={handleTaskDescriptionChange}
+            fullWidth
+          />
+          <TextField
+            label="Due Date"
+            type="date"
+            value={dueDate}
+            onChange={handleDueDateChange}
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            label="List ID"
+            value={listId}
+            onChange={handleListIdChange}
+            fullWidth
+          />
+        </>
+      )}
+      {integrationType === 'asana' && (
+        <>
+          <TextField
+            label="Task Name"
+            value={taskName}
+            onChange={handleTaskNameChange}
+            fullWidth
+          />
+          <TextField
+            label="Task Description"
+            value={taskDescription}
+            onChange={handleTaskDescriptionChange}
+            fullWidth
+          />
+          <TextField
+            label="Due Date"
+            type="date"
+            value={dueDate}
+            onChange={handleDueDateChange}
+            fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+          <TextField
+            label="Project ID"
+            value={projectId}
+            onChange={handleProjectIdChange}
+            fullWidth
+          />
+        </>
+      )}
+      <Button variant="contained" color="primary" onClick={handleIntegrationSubmit}>
+        Submit Integration Task
+      </Button>
+      <Snackbar
+        open={notificationOpen}
+        autoHideDuration={6000}
+        onClose={handleNotificationClose}
+      >
+        <Alert onClose={handleNotificationClose} severity="info">
+          {notificationMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
