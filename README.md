@@ -10,6 +10,7 @@ This project is a Time Table Generator that allows users to create and manage ti
    - [Frontend](#frontend)
    - [Docker](#docker)
    - [Docker Compose](#docker-compose)
+   - [Nix](#nix)
 3. [Running the Tests](#running-the-tests)
    - [Backend Tests](#backend-tests)
    - [Frontend Tests](#frontend-tests)
@@ -133,6 +134,47 @@ docker run -p 8000:8000 timetable-generator
 
 ```bash
 docker-compose up
+```
+
+### Nix
+
+1. Install Nix package manager by following the instructions on the [Nix website](https://nixos.org/download.html).
+
+2. Enable flakes by adding the following lines to your `~/.config/nix/nix.conf` file:
+
+```conf
+experimental-features = nix-command flakes
+```
+
+3. Clone the repository and navigate to the project directory:
+
+```bash
+git clone https://github.com/ayanalamMOON/Time-Table-Generotor-Final.git
+cd Time-Table-Generotor-Final
+```
+
+4. Run the development shell using Nix flakes:
+
+```bash
+nix develop
+```
+
+5. Activate the virtual environment:
+
+```bash
+source venv/bin/activate
+```
+
+6. Start the backend server:
+
+```bash
+hypercorn app:app --reload
+```
+
+7. In a new terminal, navigate to the project directory and start the frontend development server:
+
+```bash
+npm start
 ```
 
 ## Running the Tests
