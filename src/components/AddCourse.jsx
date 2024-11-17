@@ -240,34 +240,40 @@ const AddCourse = () => {
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
                       <Tooltip title="Enter the name of the course">
-                        <TextField
-                          label="Course Name"
-                          value={courseName}
-                          onChange={(e) => setCourseName(e.target.value)}
-                          fullWidth
-                        />
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                          <TextField
+                            label="Course Name"
+                            value={courseName}
+                            onChange={(e) => setCourseName(e.target.value)}
+                            fullWidth
+                          />
+                        </motion.div>
                       </Tooltip>
                     </Grid>
                     <Grid item xs={12}>
                       <Tooltip title="Enter the code of the course">
-                        <TextField
-                          label="Course Code"
-                          value={courseCode}
-                          onChange={(e) => setCourseCode(e.target.value)}
-                          fullWidth
-                        />
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                          <TextField
+                            label="Course Code"
+                            value={courseCode}
+                            onChange={(e) => setCourseCode(e.target.value)}
+                            fullWidth
+                          />
+                        </motion.div>
                       </Tooltip>
                     </Grid>
                   </Grid>
                   <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      startIcon={<AddCircleOutlined />}
-                      onClick={handleSubmit}
-                    >
-                      Submit
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.1 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddCircleOutlined />}
+                        onClick={handleSubmit}
+                      >
+                        Submit
+                      </Button>
+                    </motion.div>
                   </Stack>
                   <DragDropContext onDragEnd={handleDragEnd}>
                     <Droppable droppableId="events">
@@ -276,15 +282,16 @@ const AddCourse = () => {
                           {events.map((event, index) => (
                             <Draggable key={event.id} draggableId={event.id} index={index}>
                               {(provided) => (
-                                <div
+                                <motion.div
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
+                                  whileHover={{ scale: 1.05 }}
                                 >
                                   <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
                                     <Typography variant="body1">{event.name}</Typography>
                                   </Paper>
-                                </div>
+                                </motion.div>
                               )}
                             </Draggable>
                           ))}
@@ -318,46 +325,54 @@ const AddCourse = () => {
                       <>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the name of the task">
-                            <TextField
-                              label="Task Name"
-                              value={taskName}
-                              onChange={(e) => setTaskName(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Task Name"
+                                value={taskName}
+                                onChange={(e) => setTaskName(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the description of the task">
-                            <TextField
-                              label="Task Description"
-                              value={taskDescription}
-                              onChange={(e) => setTaskDescription(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Task Description"
+                                value={taskDescription}
+                                onChange={(e) => setTaskDescription(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the due date of the task">
-                            <TextField
-                              label="Due Date"
-                              type="date"
-                              value={dueDate}
-                              onChange={(e) => setDueDate(e.target.value)}
-                              fullWidth
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Due Date"
+                                type="date"
+                                value={dueDate}
+                                onChange={(e) => setDueDate(e.target.value)}
+                                fullWidth
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the list ID for the task">
-                            <TextField
-                              label="List ID"
-                              value={listId}
-                              onChange={(e) => setListId(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="List ID"
+                                value={listId}
+                                onChange={(e) => setListId(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                       </>
@@ -366,59 +381,69 @@ const AddCourse = () => {
                       <>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the name of the task">
-                            <TextField
-                              label="Task Name"
-                              value={taskName}
-                              onChange={(e) => setTaskName(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Task Name"
+                                value={taskName}
+                                onChange={(e) => setTaskName(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the description of the task">
-                            <TextField
-                              label="Task Description"
-                              value={taskDescription}
-                              onChange={(e) => setTaskDescription(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Task Description"
+                                value={taskDescription}
+                                onChange={(e) => setTaskDescription(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the due date of the task">
-                            <TextField
-                              label="Due Date"
-                              type="date"
-                              value={dueDate}
-                              onChange={(e) => setDueDate(e.target.value)}
-                              fullWidth
-                              InputLabelProps={{
-                                shrink: true,
-                              }}
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Due Date"
+                                type="date"
+                                value={dueDate}
+                                onChange={(e) => setDueDate(e.target.value)}
+                                fullWidth
+                                InputLabelProps={{
+                                  shrink: true,
+                                }}
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                         <Grid item xs={12}>
                           <Tooltip title="Enter the project ID for the task">
-                            <TextField
-                              label="Project ID"
-                              value={projectId}
-                              onChange={(e) => setProjectId(e.target.value)}
-                              fullWidth
-                            />
+                            <motion.div whileHover={{ scale: 1.05 }}>
+                              <TextField
+                                label="Project ID"
+                                value={projectId}
+                                onChange={(e) => setProjectId(e.target.value)}
+                                fullWidth
+                              />
+                            </motion.div>
                           </Tooltip>
                         </Grid>
                       </>
                     )}
                   </Grid>
                   <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleIntegrationSubmit}
-                    >
-                      Submit Integration Task
-                    </Button>
+                    <motion.div whileHover={{ scale: 1.1 }}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleIntegrationSubmit}
+                      >
+                        Submit Integration Task
+                      </Button>
+                    </motion.div>
                   </Stack>
                   <center>
                     <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
@@ -462,12 +487,14 @@ const AddCourse = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <Tooltip title="Enter the calendar link">
-                        <TextField
-                          label="Calendar Link"
-                          value={calendarLink}
-                          onChange={(e) => setCalendarLink(e.target.value)}
-                          fullWidth
-                        />
+                        <motion.div whileHover={{ scale: 1.05 }}>
+                          <TextField
+                            label="Calendar Link"
+                            value={calendarLink}
+                            onChange={(e) => setCalendarLink(e.target.value)}
+                            fullWidth
+                          />
+                        </motion.div>
                       </Tooltip>
                     </Grid>
                   </Grid>
@@ -492,7 +519,9 @@ const AddCourse = () => {
                   </Button>
                   <ul>
                     {notifications.map((notification, index) => (
-                      <li key={index}>{notification.message}</li>
+                      <motion.li key={index} whileHover={{ scale: 1.05 }}>
+                        {notification.message}
+                      </motion.li>
                     ))}
                   </ul>
                 </motion.div>

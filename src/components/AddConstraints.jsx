@@ -417,15 +417,17 @@ const AddConstraints = () => {
                           {events.map((event, index) => (
                             <Draggable key={event.id} draggableId={event.id} index={index}>
                               {(provided) => (
-                                <div
+                                <motion.div
                                   ref={provided.innerRef}
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
+                                  whileHover={{ scale: 1.05 }}
+                                  transition={{ duration: 0.3 }}
                                 >
                                   <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
                                     <Typography variant="body1">{event.name}</Typography>
                                   </Paper>
-                                </div>
+                                </motion.div>
                               )}
                             </Draggable>
                           ))}
@@ -439,6 +441,9 @@ const AddConstraints = () => {
                     color="primary"
                     startIcon={<AddCircleOutlined />}
                     onClick={handleSubmit}
+                    component={motion.div}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     Submit
                   </Button>
@@ -565,6 +570,9 @@ const AddConstraints = () => {
                       variant="contained"
                       color="primary"
                       onClick={handleIntegrationSubmit}
+                      component={motion.div}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{ duration: 0.3 }}
                     >
                       Submit Integration Task
                     </Button>
@@ -578,6 +586,9 @@ const AddConstraints = () => {
                     variant="contained"
                     color="primary"
                     onClick={fetchAnalyticsData}
+                    component={motion.div}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     Fetch Analytics Data
                   </Button>
@@ -624,6 +635,9 @@ const AddConstraints = () => {
                     variant="contained"
                     color="primary"
                     onClick={handleCalendarSync}
+                    component={motion.div}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     Sync Calendar
                   </Button>
@@ -636,12 +650,21 @@ const AddConstraints = () => {
                     variant="contained"
                     color="primary"
                     onClick={fetchNotifications}
+                    component={motion.div}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
                   >
                     Fetch Notifications
                   </Button>
                   <ul>
                     {notifications.map((notification, index) => (
-                      <li key={index}>{notification.message}</li>
+                      <motion.li
+                        key={index}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        {notification.message}
+                      </motion.li>
                     ))}
                   </ul>
                 </motion.div>

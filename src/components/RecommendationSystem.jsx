@@ -90,34 +90,44 @@ const RecommendationSystem = () => {
             </Droppable>
           </DragDropContext>
         )}
-        <Calendar
-          localizer={localizer}
-          events={recommendations.map((rec) => ({
-            title: rec.courseName,
-            start: new Date(),
-            end: new Date(),
-          }))}
-          startAccessor="start"
-          endAccessor="end"
-          style={{ height: 500, margin: '50px 0' }}
-          components={{
-            event: ({ event }) => (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-              >
-                {event.title}
-              </motion.div>
-            ),
-          }}
-        />
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Calendar
+            localizer={localizer}
+            events={recommendations.map((rec) => ({
+              title: rec.courseName,
+              start: new Date(),
+              end: new Date(),
+            }))}
+            startAccessor="start"
+            endAccessor="end"
+            style={{ height: 500, margin: '50px 0' }}
+            components={{
+              event: ({ event }) => (
+                <motion.div
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {event.title}
+                </motion.div>
+              ),
+            }}
+          />
+        </motion.div>
         {analyticsData && (
-          <div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
             <Typography variant="body1">Course Distribution: {JSON.stringify(analyticsData.courseDistribution)}</Typography>
             <Typography variant="body1">Instructor Workload: {JSON.stringify(analyticsData.instructorWorkload)}</Typography>
             <Typography variant="body1">Constraint Satisfaction: {JSON.stringify(analyticsData.constraintSatisfaction)}</Typography>
-          </div>
+          </motion.div>
         )}
       </Paper>
       <Snackbar

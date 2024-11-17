@@ -3,6 +3,7 @@ import { fetchAnalyticsData, exportAnalyticsReport } from '../api/analytics';
 import { Button } from '@mui/material';
 import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
+import { motion } from 'framer-motion';
 
 const AnalyticsReporting = () => {
   const [analyticsData, setAnalyticsData] = useState(null);
@@ -77,19 +78,41 @@ const AnalyticsReporting = () => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <h2>Analytics and Reporting</h2>
       <div>
         <h3>Course Distribution</h3>
-        <Bar data={courseDistributionData} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Bar data={courseDistributionData} />
+        </motion.div>
       </div>
       <div>
         <h3>Instructor Workload</h3>
-        <Bar data={instructorWorkloadData} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Bar data={instructorWorkloadData} />
+        </motion.div>
       </div>
       <div>
         <h3>Constraint Satisfaction</h3>
-        <Pie data={constraintSatisfactionData} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <Pie data={constraintSatisfactionData} />
+        </motion.div>
       </div>
       <Button variant="contained" color="primary" onClick={() => handleExport('pdf')}>
         Export as PDF
@@ -97,7 +120,7 @@ const AnalyticsReporting = () => {
       <Button variant="contained" color="secondary" onClick={() => handleExport('excel')}>
         Export as Excel
       </Button>
-    </div>
+    </motion.div>
   );
 };
 

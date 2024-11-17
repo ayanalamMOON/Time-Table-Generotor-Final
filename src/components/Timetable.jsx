@@ -205,7 +205,11 @@ const Timetable = ({ timetable }) => {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Typography variant="h4" gutterBottom>
         Generated Timetable
       </Typography>
@@ -297,22 +301,22 @@ const Timetable = ({ timetable }) => {
                                   onClick={() => handleEventClick(row)}
                                 >
                                   <Tooltip title={`Event: ${row.name}\nTime: ${row.time}`}>
-                                    <td>{row.time}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.time}</motion.td>
                                   </Tooltip>
                                   <Tooltip title={`Event: ${row.monday}`}>
-                                    <td>{row.monday}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.monday}</motion.td>
                                   </Tooltip>
                                   <Tooltip title={`Event: ${row.tuesday}`}>
-                                    <td>{row.tuesday}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.tuesday}</motion.td>
                                   </Tooltip>
                                   <Tooltip title={`Event: ${row.wednesday}`}>
-                                    <td>{row.wednesday}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.wednesday}</motion.td>
                                   </Tooltip>
                                   <Tooltip title={`Event: ${row.thursday}`}>
-                                    <td>{row.thursday}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.thursday}</motion.td>
                                   </Tooltip>
                                   <Tooltip title={`Event: ${row.friday}`}>
-                                    <td>{row.friday}</td>
+                                    <motion.td whileHover={{ scale: 1.05 }} transition={{ duration: 0.3 }}>{row.friday}</motion.td>
                                   </Tooltip>
                                 </tr>
                               )}
@@ -457,7 +461,7 @@ const Timetable = ({ timetable }) => {
           {notificationMessage}
         </Alert>
       </Snackbar>
-    </div>
+    </motion.div>
   );
 };
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import AddConstraints from './components/AddConstraints';
 import AddCourse from './components/AddCourse';
 import AddTemplate from './components/AddTemplate';
@@ -20,24 +21,26 @@ import AsanaIntegration from './components/AsanaIntegration';
 const App = () => {
   return (
     <Router>
-      <Switch>
-        <Route path="/add-constraints" component={AddConstraints} />
-        <Route path="/add-course" component={AddCourse} />
-        <Route path="/add-template" component={AddTemplate} />
-        <Route path="/constraint-list" component={ConstraintList} />
-        <Route path="/course-list" component={CourseList} />
-        <Route path="/edit-constraints/:id" component={EditConstraints} />
-        <Route path="/edit-course/:id" component={EditCourse} />
-        <Route path="/edit-template/:id" component={EditTemplate} />
-        <Route path="/recommendations" component={RecommendationSystem} />
-        <Route path="/template-list" component={TemplateList} />
-        <Route path="/timetable" component={Timetable} />
-        <Route path="/register" component={UserRegistration} />
-        <Route path="/login" component={UserLogin} />
-        <Route path="/role-based-access-control" component={RoleBasedAccessControl} />
-        <Route path="/trello-integration" component={TrelloIntegration} />
-        <Route path="/asana-integration" component={AsanaIntegration} />
-      </Switch>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+        <Switch>
+          <Route path="/add-constraints" component={AddConstraints} />
+          <Route path="/add-course" component={AddCourse} />
+          <Route path="/add-template" component={AddTemplate} />
+          <Route path="/constraint-list" component={ConstraintList} />
+          <Route path="/course-list" component={CourseList} />
+          <Route path="/edit-constraints/:id" component={EditConstraints} />
+          <Route path="/edit-course/:id" component={EditCourse} />
+          <Route path="/edit-template/:id" component={EditTemplate} />
+          <Route path="/recommendations" component={RecommendationSystem} />
+          <Route path="/template-list" component={TemplateList} />
+          <Route path="/timetable" component={Timetable} />
+          <Route path="/register" component={UserRegistration} />
+          <Route path="/login" component={UserLogin} />
+          <Route path="/role-based-access-control" component={RoleBasedAccessControl} />
+          <Route path="/trello-integration" component={TrelloIntegration} />
+          <Route path="/asana-integration" component={AsanaIntegration} />
+        </Switch>
+      </motion.div>
     </Router>
   );
 };
