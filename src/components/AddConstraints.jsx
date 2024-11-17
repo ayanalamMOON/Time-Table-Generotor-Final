@@ -422,6 +422,7 @@ const AddConstraints = () => {
                                   {...provided.draggableProps}
                                   {...provided.dragHandleProps}
                                   whileHover={{ scale: 1.05 }}
+                                  whileTap={{ scale: 0.95 }}
                                   transition={{ duration: 0.3 }}
                                 >
                                   <Paper variant="outlined" sx={{ my: 1, p: 2 }}>
@@ -436,17 +437,20 @@ const AddConstraints = () => {
                       )}
                     </Droppable>
                   </DragDropContext>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddCircleOutlined />}
-                    onClick={handleSubmit}
-                    component={motion.div}
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Submit
-                  </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<AddCircleOutlined />}
+                      onClick={handleSubmit}
+                    >
+                      Submit
+                    </Button>
+                  </motion.div>
                   <center>
                     <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
                       Integration Options
@@ -566,32 +570,38 @@ const AddConstraints = () => {
                     )}
                   </Grid>
                   <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 3 }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleIntegrationSubmit}
-                      component={motion.div}
+                    <motion.div
                       whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                       transition={{ duration: 0.3 }}
                     >
-                      Submit Integration Task
-                    </Button>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleIntegrationSubmit}
+                      >
+                        Submit Integration Task
+                      </Button>
+                    </motion.div>
                   </Stack>
                   <center>
                     <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
                       Analytics and Reporting
                     </Typography>
                   </center>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={fetchAnalyticsData}
-                    component={motion.div}
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Fetch Analytics Data
-                  </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={fetchAnalyticsData}
+                    >
+                      Fetch Analytics Data
+                    </Button>
+                  </motion.div>
                   {analyticsData && (
                     <div>
                       <Typography variant="body1">Course Distribution: {JSON.stringify(analyticsData.courseDistribution)}</Typography>
@@ -631,36 +641,43 @@ const AddConstraints = () => {
                       </Tooltip>
                     </Grid>
                   </Grid>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleCalendarSync}
-                    component={motion.div}
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Sync Calendar
-                  </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCalendarSync}
+                    >
+                      Sync Calendar
+                    </Button>
+                  </motion.div>
                   <center>
                     <Typography variant="h6" gutterBottom sx={{ mt: 4 }}>
                       Notifications
                     </Typography>
                   </center>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={fetchNotifications}
-                    component={motion.div}
+                  <motion.div
                     whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     transition={{ duration: 0.3 }}
                   >
-                    Fetch Notifications
-                  </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={fetchNotifications}
+                    >
+                      Fetch Notifications
+                    </Button>
+                  </motion.div>
                   <ul>
                     {notifications.map((notification, index) => (
                       <motion.li
                         key={index}
                         whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                         transition={{ duration: 0.3 }}
                       >
                         {notification.message}
